@@ -55,6 +55,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 
 			$this->file_aliases = get_option( 'analytics_file_aliases' );
 
+            // TODO: Need to change the function name its GA4 but title of function is UA
 			$this->tracking_id = WP_ANALYTIFY_FUNCTIONS::get_UA_code();
 
 			$this->host_analytics_locally = WPANALYTIFY_Utils::get_option( 'locally_host_analytics', 'wp-analytify-advanced', false );

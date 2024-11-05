@@ -176,7 +176,7 @@
                     </label>
                     <input type="button" class="button button-secondary button-skip wpb-sdk_deactivation-frm-popup-skip-feedback" value="Skip &amp; Deactivate">
                     <div class="action-btns">
-                        <span class="wpb-sdk_deactivation-frm-spinner"><img src="<?php echo admin_url('/images/spinner.gif'); ?>" alt=""></span>
+                        <span class="wpb-sdk_deactivation-frm-spinner"><img src="<?php echo admin_url('/images/spinner.gif'); ?>" alt="spinner"></span>
                         <input type="submit" class="button button-secondary button-deactivate wpb-sdk_deactivation-frm-popup-allow-deactivate" value="Submit &amp; Deactivate" disabled="disabled">
                         <a href="#" class="button button-primary wpb-sdk_deactivation-frm-popup-button-close">
                             <?php _e('Cancel'); ?>

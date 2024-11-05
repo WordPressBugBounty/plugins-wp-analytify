@@ -239,7 +239,7 @@ $version = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION : ANALYTIF
 					<div class="wpb_plugin_tabs_content analytify-dashboard-content">
 						<div class="wrap analytify-addons-wrapper">
  
-							<h2 class='opt-title'><span id='icon-options-general' class='analytics-options'><img src="<?php echo plugins_url( '../assets/img/wp-analytics-logo.png', __FILE__ );?>" alt=""></span>
+							<h2 class='opt-title'><span id='icon-options-general' class='analytics-options'><img src="<?php echo plugins_url( '../assets/img/wp-analytics-logo.png', __FILE__ );?>" alt="analytics"></span>
 							<?php esc_html_e( 'Extend the functionality of Analytify with these awesome Add-ons', 'wp-analytify' ); ?>
 							</h2>
 

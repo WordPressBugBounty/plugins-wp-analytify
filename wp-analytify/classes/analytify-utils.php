@@ -891,24 +891,7 @@ class WPANALYTIFY_Utils {
 	 * @return string
 	 */
 	public static function get_ga_mode( $property_for = 'profile_for_dashboard' ) {
-
-		$ga_mode     = WPANALYTIFY_Utils::get_option( 'google_analytics_version', 'wp-analytify-advanced' );
-		$old_version = get_option('WP_ANALYTIFY_PLUGIN_VERSION_OLD');
-
-		if( ! empty( $ga_mode ) ) {
-			return $ga_mode;
-		}
-
-		$property_id = self::get_option( 'profile_for_dashboard' , 'wp-analytify-profile' );
-
-		if( empty( $old_version ) || false !== strpos( $property_id, 'ga4') ){
-			$ga_mode = 'ga4';
-		} else {
-			$ga_mode = 'ga3';
-		}
-
-
-		return $ga_mode;
+		return 'ga4';
 	}
 
 	/**
@@ -934,15 +917,9 @@ class WPANALYTIFY_Utils {
 	 */
 	public static function dashboard_subtitle_section() {
 
-		$dashboard_profile_ID = self::get_reporting_property();
 
-		if ( 'ga4' === self::get_ga_mode() ) {
 			$name = WP_ANALYTIFY_FUNCTIONS::ga_reporting_property_info( 'stream_name' );
 			$url  = WP_ANALYTIFY_FUNCTIONS::ga_reporting_property_info( 'url' );
-		} else {
-			$name = WP_ANALYTIFY_FUNCTIONS::search_profile_info( $dashboard_profile_ID, 'name' );
-			$url = WP_ANALYTIFY_FUNCTIONS::search_profile_info( $dashboard_profile_ID, 'websiteUrl' );
-		}
 
 		if ( $name && $url ) {
 		?>
@@ -1142,7 +1119,6 @@ class WPANALYTIFY_Utils {
 	 */
 	public static function get_all_stats_link( $report_url, $report, $date_range = false ) {
 
-		if ( 'ga4' === self::get_ga_mode() ) {
 			switch ( $report ) {
 				case 'top_pages':
 					$link = 'top_pages';
@@ -1169,37 +1145,7 @@ class WPANALYTIFY_Utils {
 					$link = '';
 					break;
 			}
-		} else {
-			switch ( $report ) {
-				case 'top_pages':
-					$link = 'https://analytics.google.com/analytics/web/#report/content-pages/' . $report_url . $date_range;
-					break;
-				case 'top_countries':
-					$link = 'https://analytics.google.com/analytics/web/#report/visitors-geo/' . $report_url . $date_range;
-					break;
-				case 'top_cities':
-					$link = 'https://analytics.google.com/analytics/web/#report/visitors-geo/' . $report_url . $date_range;
-					break;
-				case 'top_products':
-					$link = 'https://analytics.google.com/analytics/web/#/report/conversions-ecommerce-product-performance/' . $report_url . $date_range;
-					break;
-				case 'source_medium':
-					$link = 'https://analytics.google.com/analytics/web/#/report/trafficsources-all-traffic/' . $report_url . $date_range . '&explorer-table-dataTable.sortColumnName=analytics.transactionRevenue&explorer-table-dataTable.sortDescending=true&explorer-table.plotKeys=%5B%5D/';
-					break;
-				case 'top_countries_sales':
-					$link = 'https://analytics.google.com/analytics/web/#/report/visitors-geo/' . $report_url . $date_range . '&geo-table-dataTable.sortColumnName=analytics.transactions&geo-table-dataTable.sortDescending=true&geo-table.plotKeys=%5B%5D/';
-					break;
-				case 'social_media':
-					$link = 'https://analytics.google.com/analytics/web/#report/social-overview/' . $report_url . $date_range;
-					break;
-				case 'referer':
-					$link = 'https://analytics.google.com/analytics/web/#/report/trafficsources-all-traffic/' . $report_url . $date_range . '&explorer-table-dataTable.sortColumnName=analytics.visits&explorer-table-dataTable.sortDescending=true&explorer-table.plotKeys=%5B%5D&explorer-table.secSegmentId=analytics.sourceMedium';
-					break;
-				default:
-					$link = '';
-					break;
-			}
-		}
+
 
 		return $link;
 	}

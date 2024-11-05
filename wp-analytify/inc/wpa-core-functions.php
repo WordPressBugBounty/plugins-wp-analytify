@@ -360,7 +360,7 @@ function analytify_is_track_user() {
 		echo '<div class="wp-analytify-notification '. $class .'">
 							<a class="" href="#" aria-label="Dismiss the welcome panel"></a>
 							<div class="wp-analytify-notice-logo">
-								<img src="' . plugins_url( 'assets/img/notice-logo.svg', dirname ( __FILE__ ) ) . '" alt="">
+								<img src="' . plugins_url( 'assets/img/notice-logo.svg', dirname ( __FILE__ ) ) . '" alt="notice">
 							</div>
 							<div class="wp-analytify-notice-discription">
 								<p>' . $message .'</p>
@@ -538,25 +538,6 @@ class WP_ANALYTIFY_FUNCTIONS {
 						}
 					}
 				}
-			} elseif ( 'ga3' === WPANALYTIFY_Utils::get_ga_mode() ) {
-				$ua_profiles_raw  = $wp_analytify->pt_get_analytics_accounts_summary();
-				if ( ! empty( $ua_profiles_raw ) && isset( $ua_profiles_raw->items ) ) {
-					foreach ( $ua_profiles_raw->getItems() as $account ) {
-						foreach ( $account->getWebProperties() as $key => $property ) {
-							foreach ( $property->getProfiles() as $profile ) {
-								// Push into an array with the property name as key and profile ID as child key.
-								$properties['UA'][ $property->getName() ][ $profile->getId() ] = array(
-									'name'            => $profile->getName(),
-									'code'            => $property->getId(),
-									'property_id'     => $account->getId(),
-									'website_url'     => $property->getWebsiteUrl(),
-									'web_property_id' => $property->getInternalWebPropertyId(),
-									'view_id'         => $profile->getId(),
-								);
-							}
-						}
-					}
-				}
 			}
 
 			update_option( 'analytify-ga-properties-summery', $properties );
@@ -682,9 +663,7 @@ class WP_ANALYTIFY_FUNCTIONS {
 	public static function get_ga_report_url( $dashboard_profile_ID ) {
 		if ( 'ga4' === WPANALYTIFY_Utils::get_ga_mode() ) {
 			return 'p' . WPANALYTIFY_Utils::get_reporting_property();
-		} else {
-			return 'a' .  WP_ANALYTIFY_FUNCTIONS::search_profile_info( $dashboard_profile_ID, 'accountId' ) . 'w' . WP_ANALYTIFY_FUNCTIONS::search_profile_info( $dashboard_profile_ID, 'internalWebPropertyId' ) . 'p' . $dashboard_profile_ID . '/';
-		}	
+		}
 	}
 
 	public static function get_ga_report_range( $start_date, $end_date, $compare_start_date, $compare_end_date ) {

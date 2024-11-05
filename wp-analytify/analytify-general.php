@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '5.4.3' );
+define( 'ANALYTIFY_VERSION', '5.5.0' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -105,20 +105,12 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			
 			$this->is_reporting_in_ga4  = 'ga4' === WPANALYTIFY_Utils::get_ga_mode() ? true : false;
 
-			if ( $this->is_reporting_in_ga4 === true ) {
 				// Rankmath Instant Indexing addon Compatibility.
 				if( ( isset( $_GET['page'] ) && $_GET['page'] == 'instant-indexing' ) || strpos( wp_get_referer(), 'instant-indexing' ) !== false ){
 					return;
 				}
 				require_once ANALYTIFY_LIB_PATH . '/Google-GA4/vendor/autoload.php';
 				$this->client = new Google\Client();
-			} else {
-				if ( ! class_exists( 'Analytify_Google_Client' ) ) {
-					require_once ANALYTIFY_LIB_PATH . 'Google/Client.php';
-					require_once ANALYTIFY_LIB_PATH . 'Google/Service/Analytics.php';
-				}
-				$this->client = new Analytify_Google_Client();
-			}
 
 			$this->client->setApprovalPrompt( 'force' );
 			$this->client->setAccessType( 'offline' );
@@ -137,8 +129,6 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 
 			$this->client->setScopes( ANALYTIFY_SCOPE );
 
-			if ( $this->is_reporting_in_ga4 === true ) {
-
 				try {
 					$this->service = new Google\Service\Analytics( $this->client );
 					$this->pa_connect();
@@ -154,24 +144,6 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					}
 				}
 
-			} else {
-
-				try {
-					$this->service = new Analytify_Google_Service_Analytics( $this->client );
-					$this->pa_connect();
-				} catch ( Exception $e ) {
-					// Show error message only for logged in users.
-					if ( current_user_can( 'manage_options' ) ) {
-						echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
-					}
-				} catch ( Exception $e ) {
-					// Show error message only for logged in users.
-					if ( current_user_can( 'manage_options' ) ) {
-						echo sprintf( esc_html__( '%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %4$s', 'wp-analytify' ), '<br /><br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . 'title="Reset">', '</a>', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
-					}
-				}
-
-			}
 
 			add_action( 'after_setup_theme', array( $this, 'set_cache_time' ) );
 
@@ -186,7 +158,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 */
 		public function set_tracking_mode() {
 			if ( ! defined( 'ANALYTIFY_TRACKING_MODE' ) ) {
-				define( 'ANALYTIFY_TRACKING_MODE', $this->settings->get_option( 'gtag_tracking_mode', 'wp-analytify-advanced', 'ga' ) );
+                define( 'ANALYTIFY_TRACKING_MODE', $this->settings->get_option( 'gtag_tracking_mode', 'wp-analytify-advanced', 'gtag' ) );
 			}
 		}
 		/**
@@ -230,13 +202,9 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				}
 			}
 
-			if ( $this->is_reporting_in_ga4 === true ) {
 				$access_token = $this->client->getAccessToken();	
 				$access_token = $access_token['access_token'];
 				$this->token = json_decode( $access_token );
-			} else {
-				$this->token = json_decode( $this->client->getAccessToken() );
-			}
 
 			return true;
 		}
@@ -1316,105 +1284,20 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			}
 		}
 
-		/**
-		 * This function grabs the data from Google Analytics for dashboard.
-		 *
-		 * @param string $metrics
-		 * @param string $start_date
-		 * @param string $end_date
-		 * @param boolean $dimensions
-		 * @param boolean $sort
-		 * @param boolean $filter
-		 * @param boolean $limit
-		 * @param string $name
-		 * 
-		 * @return void
-		 */
+		// TODO: Mock Function to resist GA3 removal conflicts.
 		public function pa_get_analytics_dashboard( $metrics, $start_date, $end_date, $dimensions = false, $sort = false, $filter = false, $limit = false, $name = '' ) {
-
 			if ( $this->is_reporting_in_ga4 ) {
 				return null;
 			}
+			return false;
+		}
 
-			try {
-				$params = array();
-
-				if ( $dimensions ) {
-					$params['dimensions'] = $dimensions;
-				}
-				if ( $sort ) {
-					$params['sort'] = $sort;
-				}
-				if ( $filter ) {
-					$params['filters'] = $filter;
-				}
-				if ( $limit ) {
-					$params['max-results'] = $limit;
-				}
-
-				$profile_id = $this->settings->get_option( 'profile_for_dashboard', 'wp-analytify-profile' );
-
-				if ( ! $profile_id ) {
-					return false;
-				}
-
-				$transient_key = 'analytify_transient_';
-
-				$is_custom_api = $this->settings->get_option( 'user_advanced_keys', 'wp-analytify-advanced' );
-				$cache_result = get_transient( $transient_key . md5( $name . $profile_id . $start_date . $end_date . $filter ) );
-
-				// if ( 'on' !== $is_custom_api ) {
-				// 	// If exception, return if the cache result else return the error.
-				// 	if ( $exception = get_transient( 'analytify_quota_exception' ) ) {
-				// 		return $this->tackle_exception( $exception, $cache_result );
-				// 	}
-				// }
-
-				// If custom keys set. Fetch fresh result always.
-				if ( 'on' === $is_custom_api || $cache_result === false ) {
-					$result = $this->service->data_ga->get( 'ga:' . $profile_id, $start_date, $end_date, $metrics, $params );
-					set_transient( $transient_key . md5( $name . $profile_id . $start_date . $end_date . $filter ) , $result, $this->get_cache_time() );
-					return $result;
-
-				} else {
-					return $cache_result;
-				}
-			} catch ( Analytify_Google_Service_Exception $e ) {
-				$logger = analytify_get_logger();
-				$logger->warning( $e->getMessage(), array( 'source' => 'analytify_fetch_data' ) );
-
-				set_transient( 'analytify_quota_exception', $e->getMessage(), HOUR_IN_SECONDS );
-
-				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
-					$error_code = $e->getErrors();
-					if ( $error_code[0]['reason'] == 'userRateLimitExceeded' ) {
-					echo $this->show_error_box( 'API error: User Rate Limit Exceeded <a href="https://analytify.io/user-rate-limit-exceeded-guide" target="_blank" class="error_help">help?</a>' );
-					} elseif( $error_code[0]['reason'] == 'dailyLimitExceeded' ) {
-						echo $this->show_error_box( 'API error: Daily Limit Exceeded <a href="https://analytify.io/daily-limit-exceeded" target="_blank" class="error_help">help?</a>' );
-					} else{
-					echo $this->show_error_box( $e->getMessage() );
-					}
-				}
-			} catch ( Analytify_Google_Auth_Exception $e ) {
-				$logger = analytify_get_logger();
-				$logger->warning( $e->getMessage(), array( 'source' => 'analytify_fetch_data' ) );
-
-				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
-
-					echo sprintf( esc_html__( '%1$s Oops, Try to %3$s Reset %4$s Authentication. %2$s %7$s %2$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . ' title="Reset">', '</a>', '<i>', '</i>', esc_html( $e->getMessage() ) );
-				}
-			} catch ( Analytify_Google_IO_Exception $e ) {
-				$logger = analytify_get_logger();
-				$logger->warning( $e->getMessage(), array( 'source' => 'analytify_fetch_data' ) );
-
-				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
-
-					echo sprintf( esc_html__( '%1$s Oops! %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
-				}
+		// TODO: Mock Function to resist GA3 removal conflicts.
+		public function pa_get_analytics_dashboard_via_rest( $metrics, $start_date, $end_date, $dimensions = false, $sort = false, $filter = false, $limit = false, $name = '' ) {
+			if ( $this->is_reporting_in_ga4 ) {
+				return null;
 			}
+			return false;
 		}
 
 		/**
@@ -1636,123 +1519,6 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 */
 		public function set_ga4_exception( $exception ) {
 			$this->ga4_exception = $exception;
-		}
-		/**
-		 * Fetch data from Google Analytics for dashboard.
-		 *
-		 * @param string $metrics
-		 * @param string $start_date
-		 * @param string $end_date
-		 * @param boolean $dimensions
-		 * @param boolean $sort
-		 * @param boolean $filter
-		 * @param boolean $limit
-		 * @param string $name
-		 * 
-		 * @return void
-		 */
-		public function pa_get_analytics_dashboard_via_rest( $metrics, $start_date, $end_date, $dimensions = false, $sort = false, $filter = false, $limit = false, $name = '' ) {
-
-			if ( $this->is_reporting_in_ga4 ) {
-				return null;
-			}
-
-			try {
-				$params = array();
-
-				if ( $dimensions ) {
-					$params['dimensions'] = $dimensions;
-				}
-				if ( $sort ) {
-					$params['sort'] = $sort;
-				}
-				if ( $filter ) {
-					$params['filters'] = $filter;
-				}
-				if ( $limit ) {
-					$params['max-results'] = $limit;
-				}
-
-				$profile_id = $this->settings->get_option( 'profile_for_dashboard', 'wp-analytify-profile' );
-
-				if ( ! $profile_id ) {
-					return false;
-				}
-
-				$is_custom_api = $this->settings->get_option( 'user_advanced_keys', 'wp-analytify-advanced' );
-				$cache_result = get_transient( md5( $name . $profile_id . $start_date . $end_date . $filter ) );
-
-				if ( 'on' !== $is_custom_api ) {
-					// If exception, return if the cache result else return the error.
-					if ( $exception = get_transient( 'analytify_quota_exception' ) ) {
-						if ( $cache_result ) {
-							return $cache_result;
-						}
-						// return array( 'api_error' => $this->show_error_box( $exception ) );
-					}
-				}
-
-				// If custom keys set. Fetch fresh result always.
-				if ( 'on' === $is_custom_api || $cache_result === false ) {
-					$result = $this->service->data_ga->get( 'ga:' . $profile_id, $start_date, $end_date, $metrics, $params );
-					
-					set_transient( md5( $name . $profile_id . $start_date . $end_date . $filter ) , $result, $this->get_cache_time() );
-					
-					return $result;
-				} else {
-					return $cache_result;
-				}
-			} catch ( Analytify_Google_Service_Exception $e ) {
-				set_transient( 'analytify_quota_exception', $e->getMessage(), HOUR_IN_SECONDS );
-
-				$logger = analytify_get_logger();
-				$logger->warning( $e->getMessage(), array( 'source' => 'analytify_fetch_data' ) );
-
-				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
-					$error_code = $e->getErrors();
-					$error = "<div class=\"analytify-stats-error-msg\">
-					<div class=\"wpb-error-box\">
-					<span class=\"blk\">
-					<span class=\"line\"></span>
-					<span class=\"dot\"></span>
-					</span>
-					<span class=\"information-txt\">";
-					
-					if ( $error_code[0]['reason'] == 'userRateLimitExceeded'  ) {
-						$error .= 'API error: User Rate Limit Exceeded <a href="https://analytify.io/user-rate-limit-exceeded-guide" target="_blank" class="error_help">help</a>';
-					} elseif ( $error_code[0]['reason'] == 'dailyLimitExceeded' ) {
-						$error .= 'API error: Daily Limit Exceeded <a href="https://analytify.io/daily-limit-exceeded" target="_blank" class="error_help">help?</a>';
-					} else {
-						$error .= $e->getMessage();
-					}
-
-					$error .= "</span>
-					</div>
-					</div>";
-
-					return array( 'api_error' => $error ) ;
-				}
-			} catch ( Analytify_Google_Auth_Exception $e ) {
-				$logger = analytify_get_logger();
-				$logger->warning( $e->getMessage(), array( 'source' => 'analytify_fetch_data' ) );
-				
-				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
-					$error = sprintf( esc_html__( '%1$s Oops, Try to %3$s Reset %4$s Authentication. %2$s %7$s %2$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . ' title="Reset">', '</a>', '<i>', '</i>', esc_html( $e->getMessage() ) );
-					
-					return array( 'api_error' => $error ) ;
-				}
-			} catch ( Analytify_Google_IO_Exception $e ) {
-				$logger = analytify_get_logger();
-				$logger->warning( $e->getMessage(), array( 'source' => 'analytify_fetch_data' ) );
-				
-				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
-					$error = sprintf( esc_html__( '%1$s Oops! %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
-					return array( 'api_error' => $error ) ;
-				}
-			}
 		}
 
 		/**

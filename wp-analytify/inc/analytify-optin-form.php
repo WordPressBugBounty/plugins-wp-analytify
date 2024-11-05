@@ -471,7 +471,7 @@ jQuery(document).ready(function(s) {
     <div class="changelog">
     <br />
       <div class="feature-section">
-        <img width="414" src="<?php echo plugins_url( 'assets/img/authenticate2-new.png',dirname( __FILE__ ) );?>" alt="" class="wp-analytify-welcome-screenshots">
+        <img width="414" src="<?php echo plugins_url( 'assets/img/authenticate2-new.png',dirname( __FILE__ ) );?>" alt="authenticate2" class="wp-analytify-welcome-screenshots">
         <div class="analytify-text-settings">
 
           <h4><?php esc_html_e( 'Step 1: Authentication', 'wp-analytify' );?></h4>
@@ -487,7 +487,7 @@ jQuery(document).ready(function(s) {
       <h3><?php esc_html_e( 'Step 2: Setting up profiles', 'wp-analytify' );?></h3>
 
       <div class="feature-section">
-        <img src="<?php echo plugins_url( 'assets/img/profile-data-new.png', dirname( __FILE__ ) );?>" alt="" class="wp-analytify-welcome-screenshots wp-analytify-left-screenshot">
+        <img src="<?php echo plugins_url( 'assets/img/profile-data-new.png', dirname( __FILE__ ) );?>" alt="welcome" class="wp-analytify-welcome-screenshots wp-analytify-left-screenshot">
         <div class="analytify-text-settings">
           <h4><?php esc_html_e( 'Profile Tab', 'wp-analytify' );?></h4>
           <p><?php esc_html_e( 'This tab section consists of many important settings. After Authentication, Setup your profiles here. All of the options are easy to understand.', 'wp-analytify' );?></p>
@@ -516,7 +516,7 @@ jQuery(document).ready(function(s) {
 
       <div class="feature-section col three-col">
 
-        <img src="<?php echo plugins_url( 'assets/img/front-end-new.png', dirname( __FILE__ ) );?>" alt="" class="wp-analytify-welcome-screenshots">
+        <img src="<?php echo plugins_url( 'assets/img/front-end-new.png', dirname( __FILE__ ) );?>" alt="welcome" class="wp-analytify-welcome-screenshots">
 
         <h4><?php esc_html_e( 'Front Tab', 'wp-analytify' );?></h4>
         <p><?php echo sprintf( esc_html__( 'In version %4$s, We have introduced the %1$s New Front-end Analytics%2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development since 1.0 but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s Below are it\'s important options: ', 'wp-analytify' ), '<em>', '</em>', '<br /><br />', ANALYTIFY_VERSION);?></p>
@@ -550,7 +550,7 @@ jQuery(document).ready(function(s) {
 
         <div class="feature-section col three-col">
 
-          <img src="<?php echo plugins_url( 'assets/img/admin-end-new.png', dirname( __FILE__ ) );?>" alt="" class="wp-analytify-welcome-screenshots wp-analytify-left-screenshot">
+          <img src="<?php echo plugins_url( 'assets/img/admin-end-new.png', dirname( __FILE__ ) );?>" alt="welcome" class="wp-analytify-welcome-screenshots wp-analytify-left-screenshot">
           <div class="analytify-text-settings">
             <h4><?php esc_html_e( 'Admin Tab', 'wp-analytify' );?></h4>
             <p><?php esc_html_e( 'Admin tab section is to manage the Analytics panels under EDIT screen of post/pages in wp-admin.', 'wp-analytify' );?></p>

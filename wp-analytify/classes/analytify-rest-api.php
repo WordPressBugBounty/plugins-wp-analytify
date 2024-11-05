@@ -305,7 +305,7 @@ class Analytify_Rest_API {
 		// Container numbers (or string) for the different stats.
 		$boxes_stats = array();
 
-		if ( 'ga4' === $this->ga_mode ) {
+
 
 			unset( $boxes_description['new_sessions'] );
 
@@ -424,93 +424,8 @@ class Analytify_Rest_API {
 			if ( isset( $general_stats['userEngagementDuration'] ) ) {
 				$footer_description = apply_filters( 'analytify_general_stats_footer', $general_stats['userEngagementDuration'], array( $this->start_date, $this->end_date ) );
 			}
-		} else {
 
-			unset( $boxes_description['engaged_sessions'] );
 
-			$general_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions,ga:users,ga:pageviews,ga:avgSessionDuration,ga:bounceRate,ga:pageviewsPerSession,ga:percentNewSessions,ga:newUsers,ga:sessionDuration', $this->start_date, $this->end_date, false, false, false, false, 'show-default-overall-dashboard' );
-
-			// New vs returning users.
-			$new_returning_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:users', $this->start_date, $this->end_date, 'ga:userType', false, false, false, 'show-default-new-returning-dashboard' );
-
-			// Device category.
-			$device_category_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:deviceCategory', '-ga:sessions', false, false, 'show-default-overall-device-dashboard' );
-
-			// Get prev stats.
-			if ( $this->compare_start_date && $this->compare_end_date ) {
-				$compare_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions,ga:users,ga:pageviews,ga:avgSessionDuration,ga:bounceRate,ga:pageviewsPerSession,ga:percentNewSessions,ga:newUsers', $this->compare_start_date, $this->compare_end_date, false, false, false, false, 'show-default-overall-dashboard-compare' );
-			}
-
-			if ( isset( $general_stats_raw['totalsForAllResults'] ) && $general_stats_raw['totalsForAllResults'] ) {
-				$general_stats = $general_stats_raw['totalsForAllResults'];
-				$boxes_stats   = array(
-					'sessions'         => array(
-						'raw'    => $general_stats['ga:sessions'],
-						'number' => $general_stats['ga:sessions'] ? WPANALYTIFY_Utils::pretty_numbers( $general_stats['ga:sessions'] ) : 0,
-					),
-
-					'visitors'         => array(
-						'raw'    => $general_stats['ga:users'],
-						'number' => $general_stats['ga:users'] ? WPANALYTIFY_Utils::pretty_numbers( $general_stats['ga:users'] ) : 0,
-					),
-
-					'pageviews'        => array(
-						'raw'    => $general_stats['ga:pageviews'],
-						'number' => $general_stats['ga:pageviews'] ? WPANALYTIFY_Utils::pretty_numbers( $general_stats['ga:pageviews'] ) : 0,
-					),
-
-					'avg_time_on_site' => array(
-						'raw'    => $general_stats['ga:avgSessionDuration'],
-						'number' => $general_stats['ga:avgSessionDuration'] ? WPANALYTIFY_Utils::pretty_time( $general_stats['ga:avgSessionDuration'] ) : 0,
-					),
-
-					'bounce_rate'      => array(
-						'raw'    => $general_stats['ga:bounceRate'],
-						'number' => $general_stats['ga:bounceRate'] ? WPANALYTIFY_Utils::pretty_numbers( $general_stats['ga:bounceRate'] ) : 0,
-					),
-
-					'pages_session'    => array(
-						'raw'    => $general_stats['ga:pageviewsPerSession'],
-						'number' => $general_stats['ga:pageviewsPerSession'] ? round( $general_stats['ga:pageviewsPerSession'], 2 ) : 0,
-					),
-
-					'new_sessions'     => array(
-						'raw'    => $general_stats['ga:percentNewSessions'],
-						'number' => $general_stats['ga:percentNewSessions'] ? WPANALYTIFY_Utils::pretty_numbers( $general_stats['ga:percentNewSessions'] ) : 0,
-					),
-				);
-			}
-
-			if ( isset( $compare_stats_raw['totalsForAllResults'] ) ) {
-				$compare_stats = array(
-					'sessions'         => $compare_stats_raw['totalsForAllResults']['ga:sessions'],
-					'visitors'         => $compare_stats_raw['totalsForAllResults']['ga:users'],
-					'pageviews'        => $compare_stats_raw['totalsForAllResults']['ga:pageviews'],
-					'avg_time_on_site' => $compare_stats_raw['totalsForAllResults']['ga:avgSessionDuration'],
-					'bounce_rate'      => $compare_stats_raw['totalsForAllResults']['ga:bounceRate'],
-					'pages_session'    => $compare_stats_raw['totalsForAllResults']['ga:pageviewsPerSession'],
-					'new_sessions'     => $compare_stats_raw['totalsForAllResults']['ga:percentNewSessions'],
-				);
-			}
-
-			if ( isset( $new_returning_stats_raw['rows'][0][1] ) ) {
-				$chart_description['new_vs_returning_visitors']['stats']['new']['number'] = $new_returning_stats_raw['rows'][0][1];
-			}
-
-			if ( isset( $new_returning_stats_raw['rows'][1][1] ) ) {
-				$chart_description['new_vs_returning_visitors']['stats']['returning']['number'] = $new_returning_stats_raw['rows'][1][1];
-			}
-
-			if ( isset( $device_category_stats_raw['rows'] ) && $device_category_stats_raw['rows'] ) {
-				foreach ( $device_category_stats_raw['rows'] as $device ) {
-					$chart_description['visitor_devices']['stats'][ $device[0] ]['number'] = $device[1];
-				}
-			}
-
-			if ( isset( $general_stats_raw['totalsForAllResults']['ga:sessionDuration'] ) ) {
-				$footer_description = apply_filters( 'analytify_general_stats_footer', $general_stats_raw['totalsForAllResults']['ga:sessionDuration'], array( $this->start_date, $this->end_date ) );
-			}
-		}
 
 		foreach ( $boxes_description as $key => $box ) {
 			if ( isset( $boxes_stats[ $key ] ) ) {
@@ -544,7 +459,6 @@ class Analytify_Rest_API {
 
 		$stats = array();
 
-		if ( 'ga4' === $this->ga_mode ) {
 			$stats_raw = $this->wp_analytify->get_reports('show-default-top-pages-dashboard', array(
 					'screenPageViews',
 					'averageSessionDuration',
@@ -591,21 +505,7 @@ class Analytify_Rest_API {
 					);
 				}
 			}
-		} else {
-			$stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:pageviews,ga:avgTimeOnPage,ga:bounceRate', $this->start_date, $this->end_date, 'ga:PageTitle,ga:pagePath', '-ga:pageviews', false, $api_limit, 'show-default-top-pages-dashboard' );
-			if ( isset( $stats_raw['rows'] ) && $stats_raw['rows'] ) {
-				$no = 1;
-				foreach ( $stats_raw['rows'] as $row ) {
-					$stats[] = array(
-						'no'                     => null,
-						'pageTitle'              => '<a href="' . $site_url . $row[1] . '" target="_blank">' . $row[0] . '</a>',
-						'screenPageViews'        => $row[2] ? WPANALYTIFY_Utils::pretty_numbers( $row[2] ) : 0,
-						'userEngagementDuration' => $row[3] ? WPANALYTIFY_Utils::pretty_time( $row[3] ) : 0,
-						'bounceRate'             => ( $row[4] ? WPANALYTIFY_Utils::pretty_numbers( $row[4] ) : 0 ) . '%',
-					);
-				}
-			}
-		}
+
 
 		return array(
 			'success'    => true,
@@ -677,7 +577,7 @@ class Analytify_Rest_API {
 		do_action( 'analytify_after_top_city_text' );
 		$after_top_city_text .= ob_get_clean();
 
-		if ( 'ga4' === $this->ga_mode ) {
+
 
 			$dashboard_profile_id = WPANALYTIFY_Utils::get_reporting_property();
 			$report_url           = WP_ANALYTIFY_FUNCTIONS::get_ga_report_url( $dashboard_profile_id );
@@ -776,40 +676,7 @@ class Analytify_Rest_API {
 					);
 				}
 			}
-		} else {
 
-			$country_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:country', '-ga:sessions', 'ga:country!=(not set)', false, 'show-geographic-countries-dashboard' );
-
-			$city_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:city,ga:country', '-ga:sessions', 'ga:city!=(not set);ga:country!=(not set)', $cities_limit, 'show-geographic-cities-dashboard' );
-
-			// Add keys to the array, to match GA4.
-			if ( isset( $country_stats_raw['rows'] ) && $country_stats_raw['rows'] ) {
-				$country_count = 0;
-				foreach ( $country_stats_raw['rows'] as $row ) {
-					if ( $country_count < $country_limit ) {
-						$country_stats[] = array(
-							'country'  => '<span  role="img" aria-label="' . $row[0] . '" class="analytify_' . str_replace( ' ', '_', strtolower( $row[0] ) ) . ' analytify_flages"></span> ' . $row[0],
-							'sessions' => $row[1],
-						);
-					}
-					$geo_map_data[] = array(
-						'sessions' => $row[1],
-						'country'  => 'United States' === $row[0] ? 'United States of America' : $row[0],
-					);
-					$country_count++;
-				}
-			}
-
-			// Add keys to the array, to match GA4.
-			if ( isset( $city_stats_raw['rows'] ) && $city_stats_raw['rows'] ) {
-				foreach ( $city_stats_raw['rows'] as $row ) {
-					$city_stats[] = array(
-						'city'     => '<span  role="img" aria-label="' . $row[1] . '" class="analytify_' . str_replace( ' ', '_', strtolower( $row[1] ) ) . ' analytify_flages"></span> ' . $row[0],
-						'sessions' => $row[2],
-					);
-				}
-			}
-		}
 
 		$country = array(
 			'headers' => array(
@@ -877,7 +744,6 @@ class Analytify_Rest_API {
 		$os_stats      = array();
 		$mobile_stats  = array();
 
-		if ( 'ga4' === $this->ga_mode ) {
 
 			$browser_stats_raw = $this->wp_analytify->get_reports('show-default-browser-dashboard', array(
 					'sessions',
@@ -978,41 +844,7 @@ class Analytify_Rest_API {
 					);
 				}
 			}
-		} else {
 
-			$browser_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:browser,ga:operatingSystem', '-ga:sessions', 'ga:browser!=(not set);ga:operatingSystem!=(not set)', $browser_stats_limit, 'show-default-browser-dashboard' );
-
-			$os_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:operatingSystem,ga:operatingSystemVersion', '-ga:sessions', 'ga:operatingSystemVersion!=(not set)', $os_stats_limit, 'show-default-os-dashboard' );
-
-			$mobile_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:mobileDeviceBranding,ga:mobileDeviceModel', '-ga:sessions', 'ga:mobileDeviceModel!=(not set);ga:mobileDeviceBranding!=(not set)', $mobile_stats_limit, 'show-default-mobile-dashboard' );
-
-			if ( isset( $browser_stats_raw['rows'] ) && $browser_stats_raw['rows'] ) {
-				foreach ( $browser_stats_raw['rows'] as $row ) {
-					$browser_stats[] = array(
-						'browser'  => '<span  role="img" aria-label="'. $row[0] .'" class="' . pretty_class( $row[0] ) . ' analytify_social_icons"></span>' . '<span class="' . pretty_class( $row[1] ) . ' analytify_social_icons"></span>' . $row[0] . ' ' . $row[1],
-						'sessions' => $row[2],
-					);
-				}
-			}
-
-			if ( isset( $os_stats_raw['rows'] ) && $os_stats_raw['rows'] ) {
-				foreach ( $os_stats_raw['rows'] as $row ) {
-					$os_stats[] = array(
-						'os'       => '<span  role="img" aria-label="'. $row[0] .'" class="' . pretty_class( $row[0] ) . ' analytify_social_icons"></span> ' . $row[0] . ' ' . $row[1],
-						'sessions' => WPANALYTIFY_Utils::pretty_numbers( $row[2] ),
-					);
-				}
-			}
-
-			if ( isset( $mobile_stats_raw['rows'] ) && $mobile_stats_raw['rows'] ) {
-				foreach ( $mobile_stats_raw['rows'] as $row ) {
-					$mobile_stats[] = array(
-						'mobile'   => '<span  role="img" aria-label="'. $row[0] .'" class="' . pretty_class( $row[0] ) . ' analytify_social_icons"></span> ' . $row[0] . ' ' . $row[1],
-						'sessions' => WPANALYTIFY_Utils::pretty_numbers( $row[2] ),
-					);
-				}
-			}
-		}
 
 		/**
 		 * For Pro legacy support.
@@ -1108,7 +940,6 @@ class Analytify_Rest_API {
 		$success        = true;
 		$error_message  = false;
 
-		if ( 'ga4' === $this->ga_mode ) {
 
 			$keyword_stats_raw = $this->wp_analytify->get_search_console_stats(
 				'show-default-keyword-dashboard',
@@ -1153,43 +984,7 @@ class Analytify_Rest_API {
 					),
 				);
 			}
-		} else {
 
-			$keyword_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:keyword', '-ga:sessions', false, $api_stats_limit, 'show-default-keyword-dashboard' );
-
-			if ( isset( $keyword_stats_raw['totalsForAllResults']['ga:sessions'] ) ) {
-				$total_sessions = $keyword_stats_raw['totalsForAllResults']['ga:sessions'];
-			}
-
-			if ( isset( $keyword_stats_raw['rows'] ) && $keyword_stats_raw['rows'] ) {
-				foreach ( $keyword_stats_raw['rows'] as $row ) {
-					$bar = '';
-					if ( $total_sessions && $total_sessions > 0 ) {
-						$bar = ' <span class="analytify_bar_graph"><span style="width:' . ( $row[1] / $total_sessions ) * 100 . '%"></span></span>';
-					}
-					$keywords_stats[] = array(
-						'keyword'  => $row[0] . $bar,
-						'sessions' => $row[1],
-					);
-				}
-			}
-
-			if ( isset( $keyword_stats_raw['rows'] ) || isset( $keyword_stats_raw['totalsForAllResults']['ga:sessions'] ) ) {
-				$success = true;
-				$headers = array(
-					'keyword'  => array(
-						'label'    => false,
-						'th_class' => 'analytify_txt_left analytify_link_title',
-						'td_class' => '',
-					),
-					'sessions' => array(
-						'label'    => false,
-						'th_class' => 'analytify_value_row',
-						'td_class' => 'analytify_txt_center analytify_value_row',
-					),
-				);
-			}
-		}
 
 		return array(
 			'success'       => $success,
@@ -1214,7 +1009,6 @@ class Analytify_Rest_API {
 		$social_stats   = array();
 		$total_sessions = false;
 
-		if ( 'ga4' === $this->ga_mode ) {
 
 			$social_stats_raw = $this->wp_analytify->get_reports('show-default-social-dashboard', array(
 					'sessions',
@@ -1256,23 +1050,7 @@ class Analytify_Rest_API {
 			// 	),
 			// );
 
-		} else {
 
-			$social_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:socialNetwork', '-ga:sessions', 'ga:socialNetwork!=(not set)', $api_stats_limit, 'show-default-social-dashboard' );
-
-			if ( isset( $social_stats_raw['totalsForAllResults']['ga:sessions'] ) ) {
-				$total_sessions = $social_stats_raw['totalsForAllResults']['ga:sessions'];
-			}
-
-			if ( isset( $social_stats_raw['rows'] ) && $social_stats_raw['rows'] ) {
-				foreach ( $social_stats_raw['rows'] as $row ) {
-					$social_stats[] = array(
-						'network'  => '<span  role="img" aria-label="'. $row[0] .'" class="' . pretty_class( $row[0] ) . ' analytify_social_icons"></span> ' . $row[0],
-						'sessions' => WPANALYTIFY_Utils::pretty_numbers( $row[1] ),
-					);
-				}
-			}
-		}
 
 		return array(
 			'success'       => true,
@@ -1308,7 +1086,6 @@ class Analytify_Rest_API {
 		$referer_stats  = array();
 		$total_sessions = false;
 
-		if ( 'ga4' === $this->ga_mode ) {
 
 			$referer_stats_raw = $this->wp_analytify->get_reports(
 				'show-default-refers-dashboard',
@@ -1345,27 +1122,7 @@ class Analytify_Rest_API {
 					);
 				}
 			}
-		} else {
 
-			$referer_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard_via_rest( 'ga:sessions', $this->start_date, $this->end_date, 'ga:source,ga:medium', '-ga:sessions', false, $api_stats_limit, 'show-default-refferer' );
-
-			if ( isset( $referer_stats_raw['totalsForAllResults']['ga:sessions'] ) ) {
-				$total_sessions = $referer_stats_raw['totalsForAllResults']['ga:sessions'];
-			}
-
-			if ( isset( $referer_stats_raw['rows'] ) && $referer_stats_raw['rows'] ) {
-				foreach ( $referer_stats_raw['rows'] as $row ) {
-					$bar = '';
-					if ( $total_sessions && $total_sessions > 0 ) {
-						$bar = ' <span class="analytify_bar_graph"><span style="width:' . ( $row[2] / $total_sessions ) * 100 . '%"></span></span>';
-					}
-					$referer_stats[] = array(
-						'referer'  => $row[0] . '/' . $row[1] . $bar,
-						'sessions' => $row[2],
-					);
-				}
-			}
-		}
 
 		return array(
 			'success'     => true,
@@ -1402,7 +1159,6 @@ class Analytify_Rest_API {
 		$headers           = false;
 		$footer            = false;
 
-		if ( 'ga4' === $this->ga_mode ) {
 
 			$page_stats_raw = $this->wp_analytify->get_reports(
 				'show-default-what-happen',
@@ -1460,62 +1216,7 @@ class Analytify_Rest_API {
 					),
 				);
 			}
-		} else {
 
-			$what_happen_stats_raw = $this->wp_analytify->pa_get_analytics_dashboard_via_rest( 'ga:entrances,ga:exits,ga:entranceRate,ga:exitRate', $this->start_date, $this->end_date, 'ga:pageTitle,ga:pagePath', '-ga:entrances', false, $api_stats_limit, 'show-default-what-happen' );
-
-			if ( isset( $what_happen_stats_raw['api_error'] ) ) {
-				return array(
-					'success'       => false,
-					'error_message' => $what_happen_stats_raw['api_error'],
-				);
-			}
-
-			if ( isset( $what_happen_stats_raw['rows'] ) && $what_happen_stats_raw['rows'] ) {
-				$site_url = $this->get_profile_info( 'website_url' );
-				$num      = 1;
-				foreach ( $what_happen_stats_raw['rows'] as $row ) {
-
-					$entrance_num = round( $row[4], 2 );
-					$exit_num     = round( $row[5], 2 );
-
-					$what_happen_stats[] = array(
-						'title_link'    => '<span class="analytify_page_name analytify_bullet_' . $num . '">' . $row[0] . '</span><a target="_blank" href="' . $site_url . $row[1] . '">' . $row[1] . '</a>',
-						'entrance'      => WPANALYTIFY_Utils::pretty_numbers( $row[2] ),
-						'exits'         => WPANALYTIFY_Utils::pretty_numbers( $row[3] ),
-						'entrance_exit' => '<div class="analytify_enter_exit_bars analytify_enter">' . $entrance_num . '<span class="analytify_persantage_sign">%</span><span class="analytify_bar_graph"><span style="width:' . $entrance_num . '%"></span></span></div><div class="analytify_enter_exit_bars">' . $exit_num . '<span class="analytify_persantage_sign">%</span><span class="analytify_bar_graph"><span style="width:' . $exit_num . '%"></span></span></div>',
-					);
-					$num++;
-				}
-
-				$headers = array(
-					'title_link'    => array(
-						'label'    => esc_html__( 'Title / Link', 'wp-analytify' ),
-						'th_class' => 'analytify_txt_left analytify_link_title',
-						'td_class' => 'analytify_page_url_detials',
-					),
-					'entrance'      => array(
-						'label'    => esc_html__( 'Entrance', 'wp-analytify' ),
-						'th_class' => 'analytify_compair_value_row',
-						'td_class' => 'analytify_txt_center analytify_w_300 analytify_l_f',
-					),
-					'exits'         => array(
-						'label'    => esc_html__( 'Exits', 'wp-analytify' ),
-						'th_class' => 'analytify_compair_value_row',
-						'td_class' => 'analytify_txt_center analytify_w_300 analytify_l_f',
-					),
-					'entrance_exit' => array(
-						'label'    => esc_html__( 'Entrance% Exits%', 'wp-analytify' ),
-						'th_class' => 'analytify_compair_row',
-						'td_class' => 'analytify_txt_center analytify_w_300 analytify_l_f',
-					),
-				);
-
-				$footer_text = sprintf( __( 'Did you know that %1$s people landed directly to your site at %2$s?', 'wp-analytify' ), WPANALYTIFY_Utils::pretty_numbers( $what_happen_stats_raw['rows'][0][2] ), $what_happen_stats_raw['rows'][0][1] );
-
-				$footer = apply_filters( 'analytify_what_is_happening_footer', $footer_text, array( $this->start_date, $this->end_date ) );
-			}
-		}
 
 		return array(
 			'success' => true,

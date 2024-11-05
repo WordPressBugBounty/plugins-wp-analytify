@@ -46,7 +46,7 @@ function get_compare_email_stats( $results, $compare_results, $date_different, $
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tbody>
 				<tr>
-					<td valign="bottom" style="padding: 10px 10px 3px; font: 700 16px "Roboto", Arial, Helvetica, sans-serif;" align="center"><font color=" ' . $color . ' "><img src="' . ANALYTIFY_IMAGES_PATH  . $image_name. '" alt="" style="padding-right:10px; width:10px">' . $compare . '</font></td>
+					<td valign="bottom" style="padding: 10px 10px 3px; font: 700 16px "Roboto", Arial, Helvetica, sans-serif;" align="center"><font color=" ' . $color . ' "><img src="' . ANALYTIFY_IMAGES_PATH  . $image_name. '" alt="'. $image_name.'" style="padding-right:10px; width:10px">' . $compare . '</font></td>
 				</tr>
 				<tr>
 					<td style="padding: 3px 10px 10px; font: 700 10px "Roboto", Arial, Helvetica, sans-serif;text-transform:uppercase;" align="center"><font color="#909090">' . $date_different . ' ago</font></td>
@@ -445,7 +445,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 		<td>
 			<table cellpadding="0" cellspacing="16" border="0" width="100%" bgcolor="#f9fafa">
 				<tr>
-					<td width="32" style="text-align: right;"><img src="<?php echo ANALYTIFY_IMAGES_PATH . 'anlytify_about_icon.png'; ?>" alt=""></td>
+					<td width="32" style="text-align: right;"><img src="<?php echo ANALYTIFY_IMAGES_PATH . 'anlytify_about_icon.png'; ?>" alt="About icon"></td>
 					<td style="font: normal 13px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444"><?php analytify_e( 'Total time visitors spent on your site: ', 'wp-analytify' ) ?> <?php echo WPANALYTIFY_Utils::pretty_time( $__total_time_on_site_current ); ?></font></td>
 				</tr>
 			</table>

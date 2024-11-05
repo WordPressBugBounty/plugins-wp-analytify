@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 5.4.3
+ * Version: 5.5.0
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -1021,7 +1021,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		 * Loading admin scripts JS for the plugin.
 		 */
 		public function admin_scripts( $page ) {
-
+			
 			wp_enqueue_script( 'wp-analytify-script-js', plugins_url( 'assets/js/wp-analytify.js', __FILE__ ), array( 'jquery' ), ANALYTIFY_VERSION );
 
 			wp_localize_script('wp-analytify-script-js', 'wp_analytify_script', array(
@@ -1109,7 +1109,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			// for dashboard only
 			$analytify_chart_pages = array( 'toplevel_page_analytify-dashboard', 'analytify_page_analytify-woocommerce', 'analytify_page_edd-dashboard', 'analytify_page_analytify-campaigns' );
 			if ( in_array( $page, $analytify_chart_pages, true ) ) {
-				wp_enqueue_script( 'echarts-js', plugins_url( 'assets/js/dist/echarts.js', __FILE__ ), false, ANALYTIFY_VERSION, true );
+				wp_enqueue_script( 'echarts-js', plugins_url( 'assets/js/dist/echarts.js', __FILE__ ), array('jquery', 'jquery-ui-tabs', 'underscore'), ANALYTIFY_VERSION, true );
 				wp_enqueue_script( 'echarts-pie-js', plugins_url( 'assets/js/dist/chart/pie.js', __FILE__ ), false, ANALYTIFY_VERSION, true );
 				wp_enqueue_script( 'echarts-map-js', plugins_url( 'assets/js/dist/chart/map.js', __FILE__ ), false, ANALYTIFY_VERSION, true );
 				wp_enqueue_script( 'echarts-line-js', plugins_url( 'assets/js/dist/chart/line.js', __FILE__ ), false, ANALYTIFY_VERSION, true );
@@ -1674,19 +1674,6 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					// Change the page pAth filter for site that use domain mapping.
 					$filter = apply_filters( 'analytify_ga_page_path_filter', $filter, $u_post );
 				}
-			} else {
-				if ( 'localhost' == $u_post['host'] ) {
-					$filter = 'ga:pagePath==/'; // .$u_post['path'];
-				} else {
-					$filter = 'ga:pagePath==' . $u_post['path'] . '';
-					// Change the page path filter for site that use domain mapping.
-					$filter = apply_filters( 'analytify_page_path_filter', $filter, $u_post );
-
-					// Url have query string incase of WPML.
-					if ( isset( $u_post['query'] ) ) {
-						$filter .= '?' . $u_post['query'];
-					}
-				}
 			}
 
 			if ( '' == $start_date ) {
@@ -1748,15 +1735,6 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 						include_once ANALYTIFY_ROOT_PATH . '/views/default/admin/single-general-stats.php';
 						ga_single_general( $stats );
-					} else {
-						// Set dimension if amp addon is installed.
-						$_general_stats_filter = WPANALYTIFY_Utils::is_module_active( 'amp' ) ? 'ga:pagePath' : false;
-						$stats                 = $this->pa_get_analytics( 'ga:sessions,ga:users,ga:pageviews,ga:avgSessionDuration,ga:bounceRate,ga:percentNewSessions,ga:newUsers,ga:avgTimeOnPage', $s_date, $e_date, $_general_stats_filter, false, $filter, false, 'analytify-single-general-stats' );
-
-						if ( isset( $stats->totalsForAllResults ) ) {
-							include_once ANALYTIFY_ROOT_PATH . '/views/default/admin/single-general-stats-deprecated.php';
-							wpa_include_single_general( $this, $stats );
-						}
 					}
 				}
 
@@ -1797,14 +1775,6 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 						include_once ANALYTIFY_ROOT_PATH . '/views/default/admin/single-depth-stats.php';
 						wpa_include_ga_single_depth( $this, $depth_stats );
-					} else {
-						$title_filter = 'ga:eventLabel==' . $permalink;
-						$depth_stats  = $this->pa_get_analytics( 'ga:totalEvents,ga:eventValue', $s_date, $e_date, 'ga:eventCategory,ga:eventAction,ga:eventLabel', false, $title_filter, false, 'analytify-single-general-scrolldepth' );
-
-						if ( isset( $depth_stats->totalsForAllResults ) ) {
-							include_once ANALYTIFY_ROOT_PATH . '/views/default/admin/single-depth-stats-deprecated.php';
-							wpa_include_single_depth( $this, $depth_stats );
-						}
 					}
 				}
 			}
@@ -2114,7 +2084,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			<div class="wp-analytify-notification wp-analytify-danger">
 				<a class="" href="#" aria-label="Dismiss the welcome panel"></a>
 				<div class="wp-analytify-notice-logo">
-					<img src="<?php echo plugins_url( 'assets/img/notice-logo.svg', __FILE__ ); ?>" alt="">
+					<img src="<?php echo plugins_url( 'assets/img/notice-logo.svg', __FILE__ ); ?>" alt="notice">
 				</div>
 				<div class="wp-analytify-notice-discription">
 					<p><?php _e( 'Analytify introduced the new gtag.js tracking mode. Switch it now from plugin Advanced settings to use recommended Google Analytics gtag.js tracking method. <br />', 'wp-analytify' ); ?><br /></p>
@@ -2279,7 +2249,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			<div class="analytify-review-notice">
 				<div class="analytify-review-thumbnail">
-					<img src="<?php echo plugins_url( 'assets/img/notice-logo.svg', __FILE__ ); ?>" alt="">
+					<img src="<?php echo plugins_url( 'assets/img/notice-logo.svg', __FILE__ ); ?>" alt="notice">
 				</div>
 				<div class="analytify-review-text">
 					<h3><?php _e( 'How\'s Analytify going, impressed?', 'wp-analytify' ); ?></h3>
@@ -2501,7 +2471,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			// if user change the stream update the ua code and mp secret
 			if ( isset( $new_value['ga4_web_data_stream'] ) && isset( $old_value['ga4_web_data_stream'] ) && $new_value['ga4_web_data_stream'] != $old_value['ga4_web_data_stream'] ) {
-
+                // TODO: legacy code with wrong naming
 				$ua_code = get_option('analytify_ua_code');
 				// check if the ua code is same if it's then return.
 				if( $ua_code == $new_value['ga4_web_data_stream'] ) {

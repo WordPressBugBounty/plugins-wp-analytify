@@ -225,7 +225,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'    => 'profile_for_posts',
 						'label'   => __( 'Profile for posts (Backend/Front-end)', 'wp-analytify' ),
-						'desc'    => __( 'Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics. <br /><strong>Note:</strong> Choose UA or GA4 properties from the above list.', 'wp-analytify' ),
+                        'desc'    => __( 'Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics. <br /><strong>Note:</strong> GA4 properties from the above list.', 'wp-analytify' ),
 						'type'    => 'select_profile',
 						'default' => 'Choose profile for posts',
 						'options' => $ga_properties_and_profiles,
@@ -305,27 +305,6 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					),
 				),
 				'wp-analytify-advanced'       => array(
-					array(
-						'name'  => 'google_analytics_version',
-						'label' => __( 'Google Analytics Version', 'wp-analytify' ),
-						'desc'  => apply_filters( 'analytify_google_analytics_version_text', __( 'Select either Google Analytics 4(GA4) or Universal Analytics(UA)', 'wp-analytify' ) ),
-						'type'  => 'select',
-						'options' => array(
-							'ga4'	=> 'GA4 - Google Analytics 4',
-							'ga3'	=> 'UA - Universal Analytics (legacy)'
-						),
-						'default' => WPANALYTIFY_Utils::get_ga_mode(),
-					),
-					array(
-						'name'  => 'gtag_tracking_mode',
-						'label' => __( 'Tracking Mode', 'wp-analytify' ),
-						'desc'  => apply_filters( 'analytify_gtag_tracking_mode_text', __( 'Recommended: Upgrade to the gtag.js tracking mode for the latest Google Analytics tracking features.', 'wp-analytify' ) ),
-						'type'  => 'select',
-						'options' => array(
-							'ga'	=> 'analytics.js (legacy)',
-							'gtag'	=> 'gtag.js'
-						),
-					),
 					array(
 						'name'  => 'ga4_web_data_stream',
 						'label' => __( 'Data Streams', 'wp-analytify' ),
@@ -775,19 +754,21 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 			$html = '';
 			foreach ( $args['options']['main'] as $key => $label ) {
 				$html .= '<div class="analytify-multiselect-container">';
-				$html .= sprintf( '<select class="%1$s" name="%2$s[%3$s]['. $key .']" id="%2$s[%3$s][value]">', $size, $args['section'], $args['id'] );
-				foreach ( $args['options']['value'][$key] as $k => $v ) {
-				$html .= sprintf(
-					'<option value="%s"%s>%s</option>',
-					$k,
-					selected($k, isset($value) && is_array($value) && isset($value[$key]) ? $value[$key] : '', false),
-					$v
-				 );					
+				$html .= sprintf( '<select class="%1$s" name="%2$s[%3$s]['. $key .']" id="%2$s[%3$s][value]">', esc_attr($size), esc_attr($args['section']), esc_attr($args['id']) );
+				
+				// Ensure $args['options']['value'][$key] exists
+				if ( isset( $args['options']['value'][$key] ) && is_array( $args['options']['value'][$key] ) ) {
+					foreach ( $args['options']['value'][$key] as $k => $v ) {
+						$selected_value = isset( $value[$key] ) ? $value[$key] : ''; // Safe fallback if $value[$key] is not set
+						$html .= sprintf( '<option value="%s"%s>%s</option>', esc_attr( $k ), selected( $k, $selected_value, false ), esc_html( $v ) );
+					}
 				}
-				$html .= sprintf( '</select>' );
-				$html .= '<span class="analytify-multiselect-label">' . $label . '</span>';
+				
+				$html .= '</select>';
+				$html .= '<span class="analytify-multiselect-label">' . esc_html( $label ) . '</span>';
 				$html .= '</div>';
 			}
+			
 
 			$html .= $this->get_field_description( $args );
 
@@ -1158,20 +1139,6 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 							}
 						$html .= '</optgroup>';
 					}
-				} elseif ( isset( $args['options']['UA'] ) && ! empty( $args['options']['UA'] ) ) {
-					foreach ( $args['options']['UA'] as $account => $properties ) {
-						$html .= '<optgroup label=" ' . $account . ' ">';
-							foreach ( $properties as $property_id => $property ) {
-								$html .= sprintf( '<option value="%1$s" %2$s>%3$s (%4$s)</option>', $property_id, selected( $value, $property_id, false ), $property['name'], $property['code'] );
-								// Update the UA code in option on setting save for proile_for_posts.
-								if ( $value == $property_id && 'profile_for_posts' === $args['id'] ) {
-									update_option( 'analytify_ua_code', $property['code'] );
-									new Analytify_Host_Analytics( 'gtag', false , true ); // update the locally host analytics file.
-								}
-							}
-						$html .= '</optgroup>';
-					}
-				
 				}
 			}
 
@@ -1490,7 +1457,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 			?>
 			
 			<div class="analytify-email-promo-contianer">
-				<img src="<?php echo ANALYTIFY_PLUGIN_URL . 'assets/img/email-promo.png'; ?>" alt="">
+				<img src="<?php echo ANALYTIFY_PLUGIN_URL . 'assets/img/email-promo.png'; ?>" alt="promo">
 				<div class="analytify-email-premium-overlay">
 					<div class="analytify-email-premium-popup">
 						<h3 class="analytify-promo-popup-heading"><?php _e( 'Unlock weekly and monthly reports', 'wp-analytify' ); ?></h3>
@@ -1767,7 +1734,19 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 								if ( ! $is_authenticate && ( $form['id'] === 'wp-analytify-profile' || $form['id'] === 'wp-analytify-front' || $form['id'] === 'wp-analytify-admin' || $form['id'] === 'wp-analytify-dashboard' || $form['id'] === 'wp-analytify-email' ) ) {
 									echo "<span class='analytify_need_authenticate_first'><a href='#'>You have to Authenticate the Google Analytics first.</a></span>";
-								} ?>
+								} else if($form['id'] === 'wp-analytify-front'){
+                                    echo '
+									<div class="analytify-email-premium-overlay">
+										<div class="analytify-email-premium-popup">
+											<h3 class="analytify-promo-popup-heading" style="text-align:left;">Unable To Fetch Front-end Settings</h3>
+											<p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph">This is deprecated and not supported in GA4</p>
+										</div>
+									</div>
+								';
+
+                                }
+                                if ($form['id'] !== 'wp-analytify-front') {
+                                    ?>
 
 								<form method="post" action="options.php">
 
@@ -1786,7 +1765,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 										</div>
 									</div>
 								</form>
-
+                                <?php }?>
 								<?php
 								if ( $form['id'] === 'wp-analytify-email' ) {
 									$this->callback_email_form();

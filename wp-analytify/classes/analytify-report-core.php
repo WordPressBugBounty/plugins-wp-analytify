@@ -25,11 +25,8 @@ class Analytify_Report extends Analytify_Report_Abstract {
 
 		$cache_key = $this->cache_key( 'general-stats' );
 		$device_cache_key = $this->cache_key( 'device-stats' );
-		if ( $this->is_ga4 ) {
-			return $this->general_stats_ga4( $cache_key , $device_cache_key );
-		} else {
-			return $this->general_stats_ua( $cache_key );
-		}
+
+        return $this->general_stats_ga4( $cache_key , $device_cache_key );
 
 	}
 
@@ -135,48 +132,6 @@ class Analytify_Report extends Analytify_Report_Abstract {
 	}
 
 	/**
-	 * Generates browser stats - UA.
-	 *
-	 * @param string $cache_key Cache key.
-	 * @return array
-	 */
-	protected function general_stats_ua( $cache_key ) {
-		$boxes = $this->general_stats_boxes();
-		unset( $boxes['view_per_session'] );
-
-		$raw = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions,ga:users,ga:pageviews,ga:avgSessionDuration,ga:bounceRate,ga:pageviewsPerSession,ga:percentNewSessions,ga:newUsers,ga:sessionDuration', $this->start_date, $this->end_date, false, false, $this->attach_ua_filter(), false, $cache_key );
-
-		if ( isset( $raw['totalsForAllResults']['ga:sessions'] ) ) {
-			$boxes['sessions']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['totalsForAllResults']['ga:sessions'] );
-			$general_stats_num['sessions'] = $raw['totalsForAllResults']['ga:sessions'];
-		}
-		if ( isset( $raw['totalsForAllResults']['ga:users'] ) ) {
-			$boxes['visitors']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['totalsForAllResults']['ga:users'] );
-			$general_stats_num['visitors'] = $raw['totalsForAllResults']['ga:users'];
-		}
-		if ( isset( $raw['totalsForAllResults']['ga:pageviews'] ) ) {
-			$boxes['page_views']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['totalsForAllResults']['ga:pageviews'] );
-			$general_stats_num['page_views'] = $raw['totalsForAllResults']['ga:pageviews'];
-		}
-		if ( isset( $raw['totalsForAllResults']['ga:avgSessionDuration'] ) ) {
-			$boxes['avg_time_on_page']['value']    = WPANALYTIFY_Utils::pretty_time( $raw['totalsForAllResults']['ga:avgSessionDuration'] );
-			$general_stats_num['avg_time_on_page'] = $raw['totalsForAllResults']['ga:avgSessionDuration'];
-		}
-		if ( isset( $raw['totalsForAllResults']['ga:bounceRate'] ) ) {
-			$boxes['bounce_rate']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['totalsForAllResults']['ga:bounceRate'] );
-			$general_stats_num['bounce_rate'] = $raw['totalsForAllResults']['ga:bounceRate'];
-		}
-		if ( isset( $raw['totalsForAllResults']['ga:percentNewSessions'] ) ) {
-			$boxes['new_sessions']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['totalsForAllResults']['ga:percentNewSessions'] );
-			$general_stats_num['new_sessions'] = $raw['totalsForAllResults']['ga:percentNewSessions'];
-		}
-
-		return array(
-			'boxes' => $boxes,
-		);
-	}
-
-	/**
 	 * Returns the simple stats for general stats.
 	 * This is intended to be used for the footer or in some calculation.
 	 *
@@ -197,8 +152,6 @@ class Analytify_Report extends Analytify_Report_Abstract {
 
 		if ( $this->is_ga4 ) {
 			return $this->scroll_depth_ga4( $cache_key );
-		} else {
-			return $this->scroll_depth_ua( $cache_key );
 		}
 	}
 
@@ -272,55 +225,4 @@ class Analytify_Report extends Analytify_Report_Abstract {
 		);
 	}
 
-	/**
-	 * Generates scroll depth stats - UA.
-	 *
-	 * @param string $cache_key Cache key.
-	 * @return array
-	 */
-	protected function scroll_depth_ua( $cache_key ) {
-
-		$stats  = array();
-		$filter = false;
-		if ( 'single_post' === $this->dashboard_type ) {
-			$filter = 'ga:eventLabel==' . $this->post_url;
-		}
-
-		$raw = $this->wp_analytify->pa_get_analytics( 'ga:totalEvents,ga:eventValue', $this->start_date, $this->end_date, 'ga:eventCategory,ga:eventAction,ga:eventLabel', false, $filter, false, $cache_key );
-
-		$total = 1;
-		if ( isset( $raw['totalsForAllResults']['ga:totalEvents'] ) && $raw['totalsForAllResults']['ga:totalEvents'] > 0 ) {
-			$total = $raw['totalsForAllResults']['ga:totalEvents'];
-		}
-
-		$scroll_stats = isset( $stats['rows'] ) && $stats['rows'] ? $stats['rows'] : array();
-
-		// Sort array in ascending order of depth threshold.
-		usort(
-			$scroll_stats,
-			function( $a, $b ) {
-				return $a[1] - $b[1];
-			}
-		);
-
-		if ( $scroll_stats ) {
-			foreach ( $scroll_stats as $row ) {
-				if ( 'csv' === $this->dashboard_type ) {
-					$single_stat['percentage'] = $row[1] . esc_html__( '%', 'wp-analytify' );
-				} else {
-					$bar = is_numeric( $row[3] ) ? round( ( $row[3] / $total ) * 100 ) : 0;
-
-					$single_stat['percentage']  = esc_html( $row[1] ) . esc_html__( '%', 'wp-analytify' );
-					$single_stat['percentage'] .= '<span class="analytify_bar_graph"><span style="width:' . $bar . '%"></span></span>';
-				}
-				$single_stat['events'] = esc_html( $row[3] );
-
-				$stats[] = $single_stat;
-			}
-		}
-
-		return array(
-			'stats' => $stats,
-		);
-	}
 }

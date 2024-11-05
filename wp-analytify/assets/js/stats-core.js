@@ -554,7 +554,6 @@ jQuery(function ($) {
 		const date_parameter = calc_compare_date(__start_date, __end_date, true);
 
 		$('[data-ga-dashboard-link]').each(function (index, __element) {
-			if (analytify_stats_core.ga_mode === "ga4") {
 			const link = generate_ga4_report_link(
 				analytify_stats_core.ga4_report_url,
 				$(__element).attr("data-ga-dashboard-link"),
@@ -562,10 +561,6 @@ jQuery(function ($) {
 			);
 
 			$(__element).attr('href', link);
-			} else {
-				const link = $(__element).attr("data-ga-dashboard-link") + date_parameter;
-        		$(__element).attr("href", link);
-			}
 		});
 	}
 

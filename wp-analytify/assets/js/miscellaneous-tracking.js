@@ -37,8 +37,6 @@ jQuery(document).ready(function ($) {
 
   // track javascript errors.
   if ("on" === miscellaneous_tracking_options.track_js_error) {
-    if ("gtag" === miscellaneous_tracking_options.tracking_mode) {
-      if ("ga4" === miscellaneous_tracking_options.ga_mode) {
         function trackJavaScriptError(e) {
           const errMsg = e.message;
           const errSrc = e.filename + ": " + e.lineno;
@@ -52,38 +50,10 @@ jQuery(document).ready(function ($) {
         if (typeof gtag !== "undefined") {
           window.addEventListener("error", trackJavaScriptError, false);
         }
-      } else {
-        function trackJavaScriptError(e) {
-          const errMsg = e.message;
-          const errSrc = e.filename + ": " + e.lineno;
-          gtag("event", errMsg, {
-            event_category: "JavaScript Error",
-            event_label: errSrc,
-            non_interaction: true,
-          });
-        }
-        if (typeof gtag !== "undefined") {
-          window.addEventListener("error", trackJavaScriptError, false);
-        }
-      }
-    } else {
-      function trackJavaScriptError(e) {
-        const errMsg = e.message;
-        const errSrc = e.filename + ": " + e.lineno;
-        ga("send", "event", "JavaScript Error", errMsg, errSrc, {
-          nonInteraction: 1,
-        });
-      }
-      if (typeof ga !== "undefined") {
-        window.addEventListener("error", trackJavaScriptError, false);
-      }
-    }
   }
 
   // Track ajax errors.
   if ("on" === miscellaneous_tracking_options.track_ajax_error) {
-    if ("gtag" === miscellaneous_tracking_options.tracking_mode) {
-      if ("ga4" === miscellaneous_tracking_options.ga_mode) {
         if (typeof gtag !== "undefined") {
           jQuery(document).ajaxError(function (e, request, settings) {
             gtag("event", "ajax_error", {
@@ -94,26 +64,5 @@ jQuery(document).ready(function ($) {
             });
           });
         }
-      } else {
-        if (typeof gtag !== "undefined") {
-          jQuery(document).ajaxError(function (e, request, settings) {
-            gtag("event", "ajax_error", {
-              event_category: "Ajax Error",
-              event_action: request.statusText,
-              event_label: settings.url,
-              non_interaction: true,
-            });
-          });
-        }
-      }
-    } else {
-      if (typeof ga !== "undefined") {
-        jQuery(document).ajaxError(function (e, request, settings) {
-          ga("send", "event", "Ajax Error", request.statusText, settings.url, {
-            nonInteraction: 1,
-          });
-        });
-      }
-    }
   }
 });

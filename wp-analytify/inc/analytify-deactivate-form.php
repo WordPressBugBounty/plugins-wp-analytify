@@ -172,7 +172,7 @@
       <label class="wp-analytify-anonymous"><input type="checkbox" /><?php _e( 'Anonymous feedback', 'wp-analytify' ); ?></label>
         <input type="button" class="button button-secondary button-skip wp-analytify-popup-skip-feedback" value="Skip &amp; Deactivate" >
       <div class="action-btns">
-        <span class="wp-analytify-spinner"><img src="<?php echo admin_url( '/images/spinner.gif' ); ?>" alt=""></span>
+        <span class="wp-analytify-spinner"><img src="<?php echo admin_url( '/images/spinner.gif' ); ?>" alt="spinner"></span>
         <input type="submit" class="button button-secondary button-deactivate wp-analytify-popup-allow-deactivate" value="Submit &amp; Deactivate" disabled="disabled">
         <a href="#" class="button button-primary wp-analytify-popup-button-close"><?php _e( 'Cancel', 'wp-analytify' ); ?></a>
 

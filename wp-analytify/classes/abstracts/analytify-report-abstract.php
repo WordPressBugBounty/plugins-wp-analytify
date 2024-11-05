@@ -247,30 +247,6 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		}
 
 		/**
-		 * Attaches post URL filter to be used with UA reports.
-		 *
-		 * @return string
-		 */
-		protected function attach_ua_filter() {
-			$filter = false;
-			if ( 'single_post' === $this->dashboard_type ) {
-				$link = apply_filters( 'analytify_sinlge_stats_permalink', $this->post_url );
-				$u_post = parse_url( urldecode( $link ) );
-				$filter = 'ga:pagePath==' . $u_post['path'] . '';
-				// change the page poth filter for site that use domain mapping.
-				$filter = apply_filters( 'analytify_page_path_filter', $filter, $u_post );
-
-				// Url have query string incase of WPML.
-				if ( isset( $u_post['query'] )  ) {
-					$filter .= '?' . $u_post['query'];
-				}
-	
-				
-			}
-			return $filter;
-		}
-
-		/**
 		 * Generates the cache key based on what type of dashboard is being displayed.
 		 *
 		 * @param string $key Cache Key.

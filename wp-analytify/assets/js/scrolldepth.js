@@ -35,21 +35,13 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 
 			function sendEvent( page_link, percentage, scrollDistance, timing ) {
 				if ( 'gtag' === scrollTrackingMode ) {
-					if ( isTrackingModeGA4 ) {
+
 						gtag('event', 'scroll_depth', {
 							'wpa_category': 'Analytify Scroll Depth',
 							'wpa_percentage': percentage,
 							'non_interaction': true
 						});
-					} else {
-						gtag('event', percentage, {
-							'event_category': 'Analytify Scroll Depth',
-							'event_label': page_link,
-							'value': 1,
-							'non_interaction': true
-						});
-					}
-			
+
 					if ( arguments.length > 3 ) {
 						gtag('event', 'timing_complete', {
 							'event_category': 'Analytify Scroll Depth',
@@ -57,34 +49,6 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 							'value': timing,
 							'non_interaction': true
 						});
-					}
-				} else {
-					let fieldsArray = {
-						hitType: 'event',
-						eventCategory: 'Analytify Scroll Depth',
-						eventAction: percentage,
-						eventLabel: page_link,
-						eventValue: 1,
-						nonInteraction: 1
-					};
-			
-					if ( 'function' === typeof ga ) {
-						ga('send', fieldsArray);
-					}
-			
-					if ( arguments.length > 3 ) {
-						fieldsArray = {
-							hitType: 'timing',
-							timingCategory: 'Analytify Scroll Depth',
-							timingVar: percentage,
-							timingValue: timing,
-							timingLabel: page_link,
-							nonInteraction: 1
-						};
-			
-						if ( 'function' === typeof ga ) {
-							ga('send', fieldsArray);
-						}
 					}
 				}
 			}

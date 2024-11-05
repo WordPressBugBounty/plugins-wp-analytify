@@ -3,8 +3,8 @@ Contributors: hiddenpearls
 Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 3.6
-Tested up to: 6.6
-Stable tag: 5.4.3
+Tested up to: 6.7
+Stable tag: 5.5.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,16 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 5.5.0 - 2024-11-06 =
+* Enhancement: Removing Google Analytics V3 Library from the plugin completely.
+* Enhancement: Disable Front end Stats Option for GA4 and will remove in next releases. ShortCodes will work though.
+* Enhancement: Divi Theme Conflict Issue.
+* Enhancement: Fetch_log Security issue.
+* Enhancement: GA3 removal from core, pro and all addons.
+* Enhancement: Email Reports style improved for Dark Mode.
+* Bug Fix: Resolved the error occurring on activating the Email Notifications add-on.
+* Compatibility: Compatible to WordPress 6.7
 
 = 5.4.3 - 2024-09-11 =
 * Enhancement: UI improvement in Opt-out form.
@@ -1023,8 +1033,8 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 5.4.3 =
-* Update This Google Analytics Plugin Now.
+= 5.5.0 =
+* BeCareful, This update could break few things. Update Free, Pro and all addons altogether.
 
 == Notes ==
 

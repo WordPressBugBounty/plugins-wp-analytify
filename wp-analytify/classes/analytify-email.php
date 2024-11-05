@@ -267,6 +267,8 @@ class Analytify_Email_Core
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
 					<meta name="x-apple-disable-message-reformatting" />
 					<title>Analytify</title>
+					<meta name="color-scheme" content="light dark">
+					<meta name="supported-color-schemes" content="light dark"> 
 					<link href="http://fonts.googleapis.com/css?family=Roboto%7cRoboto+Slab:400,500" rel="stylesheet" />
 					<style type="text/css">
 						@media screen and (max-width: 620px) {
@@ -327,6 +329,24 @@ class Analytify_Email_Core
 								margin-left: 0 !important;
 							}
 						}
+						@media (prefers-color-scheme: dark ) {
+							body, [bgcolor="#ffffff"],[bgcolor="#f5f9ff"],[bgcolor="#f9fafa"], [bgcolor="#f3f7fa"], .session-table, .session-table tr td{
+								background-color: #000 !important;
+							}
+							.session-table tr td{
+								border-color: #fff !important;
+								color: #fff !important;
+							}
+							table tbody td [color="#444"],
+							table tbody td [color="#444444"],
+							table tbody td [color="#848484"],
+							table tbody td [color="#909090"]{
+								color: #fff !important;
+							}
+							table tbody td hr{
+								border-top:1px solid #fff !important;
+							}
+						} 
 					</style>
 				</head>
 
@@ -341,7 +361,7 @@ class Analytify_Email_Core
 									<td style="padding: 22px 35px;">
 										<table width="100%" cellpadding="0" cellspacing="0" align="center">
 											<tr>
-												<td align="left"><a href="' . $site_url . '"><img src="' . $logo_link . '" alt=""/></a></td>
+												<td align="left"><a href="' . $site_url . '"><img src="' . $logo_link . '" alt="analytify"/></a></td>
 												<td align="right" style="font: normal 15px \'Roboto\', Arial, Helvetica, sans-serif; line-height: 1.5;">
 												<font color="#444444">' . $report_of . __(' Report', 'wp-analytify') . '</font><br>
 												<font color="#848484">' . date('M d Y', $start_date_val) . ' - ' . date('M d Y', $end_date_val) . '</font><br />
@@ -426,16 +446,8 @@ class Analytify_Email_Core
 						}
 
 						$message .= pa_email_include_general($wp_analytify, $stats, $old_stats, $different);
-					} else {
-
-						$stats = $wp_analytify->pa_get_analytics_dashboard('ga:sessions,ga:users,ga:bounceRate,ga:avgTimeOnPage,ga:pageviewsPerSession,ga:pageviews,ga:percentNewSessions,ga:newUsers,ga:avgSessionDuration,ga:sessionDuration', $start_date, $end_date, false, false, false, false, 'analytify-email-general-stats');
-						$old_stats = $wp_analytify->pa_get_analytics_dashboard('ga:sessions,ga:users,ga:bounceRate,ga:avgTimeOnPage,ga:pageviewsPerSession,ga:pageviews,ga:percentNewSessions,ga:newUsers,ga:avgSessionDuration', $compare_start_date, $compare_end_date, false, false, false, false, 'analytify-email-general-compare-stats');
-						if (!function_exists('pa_email_include_general')) {
-							include ANALYTIFY_ROOT_PATH . '/views/email/general-stats-deprecated.php';
-						}
-
-						$message .= pa_email_include_general($wp_analytify, $stats, $old_stats, $different);
 					}
+
 				}
 
 				$dates = array('start_date' => $start_date, 'end_date' => $end_date);
@@ -719,7 +731,7 @@ class Analytify_Email_Core
 								<td style="padding: 22px 35px;">
 									<table width="100%" cellpadding="0" cellspacing="0" align="center">
 										<tr>
-											<td align="left"><a href="' . $site_url . '"><img src="' . $logo_link . '" alt=""/></a></td>
+											<td align="left"><a href="' . $site_url . '"><img src="' . $logo_link . '" alt="analytify"/></a></td>
 											<td align="right" style="font: normal 15px \'Roboto\', Arial, Helvetica, sans-serif; line-height: 1.5;">
 											<font color="#444444">' . __('Analytics Report', 'wp-analytify') . '</font><br>
 											<font color="#848484">' . $s_date . ' - ' . $e_date . '</font><br />
