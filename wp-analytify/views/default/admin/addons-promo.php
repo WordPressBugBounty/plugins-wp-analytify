@@ -99,18 +99,18 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 															<li>Real-Time Dashboard</li>
 															<li>Demographics Dashboard</li>
 															<li>Search Terms Dashboard</li>
+															<li>Search Console Dashboard</li>
 															<li>Google AMP</li>
 															<li>Events Tracking</li>
 															<li>Links Tracking</li>
 															<li>Affiliate Links</li>
 															<li>Form Conversions</li>
 															<li>Authors Tracking</li>
-															<li>Google Optimize</li>
 															<li>UTM Campaigns Tracking</li>
 															<li>Weekly & Monthly Emails</li>
 															<li>WooCommerce & EDD Tracking</li>
 														</ul>
-														<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
+														<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
 														<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Campaigns" class="analytify-promo-popup-btn" target="_blank">Explore Analytify Pro + Campaigns bundle</a>
 
 													</div>
@@ -134,18 +134,18 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																<li>Real-Time Dashboard</li>
 																<li>Demographics Dashboard</li>
 																<li>Search Terms Dashboard</li>
+																<li>Search Console Dashboard</li>
 																<li>Google AMP</li>
 																<li>Events Tracking</li>
 																<li>Links Tracking</li>
 																<li>Affiliate Links</li>
 																<li>Form Conversions</li>
 																<li>Authors Tracking</li>
-																<li>Google Optimize</li>
 																<li>UTM Campaigns Tracking</li>
 																<li>Weekly & Monthly Emails</li>
 																<li>WooCommerce & EDD Tracking</li>
 															</ul>
-															<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
+															<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
 															<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Goals" class="analytify-promo-popup-btn" target="_blank">Explore Analytify Pro + Goals bundle</a>
 
 														</div>
@@ -169,18 +169,18 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																	<li>Real-Time Dashboard</li>
 																	<li>Demographics Dashboard</li>
 																	<li>Search Terms Dashboard</li>
+																	<li>Search Console Dashboard</li>
 																	<li>Google AMP</li>
 																	<li>Events Tracking</li>
 																	<li>Links Tracking</li>
 																	<li>Affiliate Links</li>
 																	<li>Form Conversions</li>
 																	<li>Authors Tracking</li>
-																	<li>Google Optimize</li>
 																	<li>UTM Campaigns Tracking</li>
 																	<li>Weekly & Monthly Emails</li>
 																	<li>WooCommerce & EDD Tracking</li>
 																</ul>
-																<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
+																<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
 																<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=WooCommerce" class="analytify-promo-popup-btn" target="_blank">Explore Analytify Pro + WooCommerce Tracking bundle</a>
 
 															</div>
@@ -205,18 +205,18 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																		<li>Real-Time Dashboard</li>
 																		<li>Demographics Dashboard</li>
 																		<li>Search Terms Dashboard</li>
+																		<li>Search Console Dashboard</li>
 																		<li>Google AMP</li>
 																		<li>Events Tracking</li>
 																		<li>Links Tracking</li>
 																		<li>Affiliate Links</li>
 																		<li>Form Conversions</li>
 																		<li>Authors Tracking</li>
-																		<li>Google Optimize</li>
 																		<li>UTM Campaigns Tracking</li>
 																		<li>Weekly & Monthly Emails</li>
 																		<li>WooCommerce & EDD Tracking</li>
 																	</ul>
-																	<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
+																	<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
 																	<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=EDD" class="analytify-promo-popup-btn" target="_blank">Explore Analytify Pro + EDD Tracking bundle</a>
 
 																</div>
@@ -267,18 +267,18 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																				<li>Real-Time Dashboard</li>
 																				<li>Demographics Dashboard</li>
 																				<li>Search Terms Dashboard</li>
+																				<li>Search Console Dashboard</li>
 																				<li>Google AMP</li>
 																				<li>Events Tracking</li>
 																				<li>Links Tracking</li>
 																				<li>Affiliate Links</li>
 																				<li>Form Conversions</li>
 																				<li>Authors Tracking</li>
-																				<li>Google Optimize</li>
 																				<li>UTM Campaigns Tracking</li>
 																				<li>Weekly & Monthly Emails</li>
 																				<li>WooCommerce & EDD Tracking</li>
 																			</ul>
-																			<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
+																			<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
 																			<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Demographics" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
 
 																		</div>
@@ -304,90 +304,128 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																					<li>Real-Time Dashboard</li>
 																					<li>Demographics Dashboard</li>
 																					<li>Search Terms Dashboard</li>
+																					<li>Search Console Dashboard</li>
 																					<li>Google AMP</li>
 																					<li>Events Tracking</li>
 																					<li>Links Tracking</li>
 																					<li>Affiliate Links</li>
 																					<li>Form Conversions</li>
 																					<li>Authors Tracking</li>
-																					<li>Google Optimize</li>
 																					<li>UTM Campaigns Tracking</li>
 																					<li>Weekly & Monthly Emails</li>
 																					<li>WooCommerce & EDD Tracking</li>
 																				</ul>
-																				<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
+																				<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
 																				<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Search+Terms" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
 
 																			</div>
 																		</div>
 																	</div>
 
+																<?php } elseif ('search-console-report' === $addon) { ?>
 
-																<?php } elseif ('custom-dimensions' === $addon) { ?>
 
-																	<div class="analytify-email-dashboard-wrapper">
-
-																		<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
-
-																		<div class="analytify-email-promo-contianer">
-																			<div class="analytify-email-premium-overlay">
-																				<div class="analytify-email-premium-popup">
-
-																					<h3 class="analytify-promo-popup-heading">Unlock Google Custom Dimensions Tracking</h3>
-																					<p class="analytify-promo-popup-paragraph">Custom Dimensions helps you to track Categories, Tags, Post Types, and logged in activities within Google Analytics. Remember, you have to setup Custom Dimensions in Google Analytics as well.</p>
-																					<ul class="analytify-promo-popup-list">
-																						<li>Custom Post Type Tracking</li>
-																						<li>Category Tracking</li>
-																						<li>Tags Tracking</li>
-																						<li>Authors Tracking</li>
-																						<li>User-ID Tracking</li>
-																						<li>Track logged in activity</li>
-																					</ul>
-																					<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Dimensions" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
-
-																				</div>
-																			</div>
-																		</div>
-
-																	<?php } elseif ('detail-realtime' === $addon) { ?>
 
 																		<div class="analytify-email-dashboard-wrapper">
 
-																			<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-realtime-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
+																			<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-search-console-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
 
 																			<div class="analytify-email-promo-contianer">
 																				<div class="analytify-email-premium-overlay">
 																					<div class="analytify-email-premium-popup">
 
 
-
-																						<h3 class="analytify-promo-popup-heading">Unlock Real-Time Dashboard</h3>
+																						<h3 class="analytify-promo-popup-heading">Unlock Search Console Report Tracking</h3>
 																						<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																						<ul class="analytify-promo-popup-list">
 																							<li>Real-Time Dashboard</li>
 																							<li>Demographics Dashboard</li>
 																							<li>Search Terms Dashboard</li>
+																							<li>Search Console Dashboard</li>
 																							<li>Google AMP</li>
 																							<li>Events Tracking</li>
 																							<li>Links Tracking</li>
 																							<li>Affiliate Links</li>
 																							<li>Form Conversions</li>
 																							<li>Authors Tracking</li>
-																							<li>Google Optimize</li>
 																							<li>UTM Campaigns Tracking</li>
 																							<li>Weekly & Monthly Emails</li>
 																							<li>WooCommerce & EDD Tracking</li>
 																						</ul>
-																						<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "GOPRO10" to get 10% discount.</p>
-																						<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Real+Time" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
+																						<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
+																						<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Search+Terms" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
 
 																					</div>
 																				</div>
 																			</div>
-																		<?php } ?>
+																
+
+																	<?php } elseif ('custom-dimensions' === $addon) { ?>
+
+																		<div class="analytify-email-dashboard-wrapper">
+
+																			<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+
+																			<div class="analytify-email-promo-contianer">
+																				<div class="analytify-email-premium-overlay">
+																					<div class="analytify-email-premium-popup">
+
+																						<h3 class="analytify-promo-popup-heading">Unlock Google Custom Dimensions Tracking</h3>
+																						<p class="analytify-promo-popup-paragraph">Custom Dimensions helps you to track Categories, Tags, Post Types, and logged in activities within Google Analytics. Remember, you have to setup Custom Dimensions in Google Analytics as well.</p>
+																						<ul class="analytify-promo-popup-list">
+																							<li>Custom Post Type Tracking</li>
+																							<li>Category Tracking</li>
+																							<li>Tags Tracking</li>
+																							<li>Authors Tracking</li>
+																							<li>User-ID Tracking</li>
+																							<li>Track logged in activity</li>
+																						</ul>
+																						<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Dimensions" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
+
+																					</div>
+																				</div>
+																			</div>
+
+																		<?php } elseif ('detail-realtime' === $addon) { ?>
+
+																			<div class="analytify-email-dashboard-wrapper">
+
+																				<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-realtime-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
+
+																				<div class="analytify-email-promo-contianer">
+																					<div class="analytify-email-premium-overlay">
+																						<div class="analytify-email-premium-popup">
 
 
-																		</div>
+
+																							<h3 class="analytify-promo-popup-heading">Unlock Real-Time Dashboard</h3>
+																							<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
+																							<ul class="analytify-promo-popup-list">
+																								<li>Real-Time Dashboard</li>
+																								<li>Demographics Dashboard</li>
+																								<li>Search Terms Dashboard</li>
+																								<li>Search Console Dashboard</li>
+																								<li>Google AMP</li>
+																								<li>Events Tracking</li>
+																								<li>Links Tracking</li>
+																								<li>Affiliate Links</li>
+																								<li>Form Conversions</li>
+																								<li>Authors Tracking</li>
+																								<li>Google Optimize</li>
+																								<li>UTM Campaigns Tracking</li>
+																								<li>Weekly & Monthly Emails</li>
+																								<li>WooCommerce & EDD Tracking</li>
+																							</ul>
+																							<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
+																							<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Real+Time" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
+
+																						</div>
+																					</div>
+																				</div>
+																			<?php } ?>
+
+
+																			</div>
 
 																	</div>
 																</div>

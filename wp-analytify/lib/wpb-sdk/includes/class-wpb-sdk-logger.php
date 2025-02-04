@@ -6,6 +6,7 @@ class WPBRIGADE_Logger
     private static $product_data = array();
     private static $_module_id;
 
+    private $skip = false;
     private static $current_uninstall_slug = null;
 
     // Constructor for the Logger class
@@ -35,6 +36,7 @@ class WPBRIGADE_Logger
         return self::$_instances[$slug];
     }
 
+
     // Method to initialize the Logger with module data
     public function wpb_init(array $module)
     {
@@ -43,6 +45,7 @@ class WPBRIGADE_Logger
         self::$product_data[$key]['module'] = $module;
         $this->hooks($module['slug']);
     }
+
 
     // Method to attach hooks for scheduled events and AJAX
     public function hooks($slug)
@@ -77,28 +80,28 @@ class WPBRIGADE_Logger
             $this->product_deactivation($slug);
         });
 
-        // Plugin uninstallation hook
-        register_uninstall_hook(wpb_get_plugin_path($slug), array(__CLASS__, 'log_uninstallation'));
+         // Plugin uninstallation hook
+         register_uninstall_hook(wpb_get_plugin_path($slug), array(__CLASS__, 'log_uninstallation')); 
+
     }
 
     // Method to set scheduled events for logging
     public function set_logs_schedule($slug)
     {
-
-        //Clean Old Cron jobs
         wp_clear_scheduled_hook('wpb_logger_cron_' . $slug);
         wp_clear_scheduled_hook('wpb_daily_sync_cron_' . $slug);
 
         // Calculate future timestamps for scheduling
         $daily_start_time = strtotime('+1 day');
+
         // Schedule daily cron event if not already scheduled
         if (!wp_next_scheduled('wpb_data_sync_' . $slug)) {
             wp_schedule_event($daily_start_time, 'daily', 'wpb_data_sync_' . $slug);
         }
-
     }
 
-    public static function reset_logs_schedule($slug)
+    // Method to reset scheduled events for logging (converted from static)
+    public static  function reset_logs_schedule($slug)
     {
         // Calculate future timestamps for scheduling
         $daily_start_time = strtotime('+1 day');
@@ -109,10 +112,12 @@ class WPBRIGADE_Logger
         }
     }
 
+    // Method to remove scheduled events for logging (converted from static)
     public static function remove_logs_schedule($slug)
     {
         wp_clear_scheduled_hook('wpb_data_sync_' . $slug);
     }
+
 
     // Method to log plugin activity on daily scheduled events
     public function daily_log_plugin($slug)
@@ -120,6 +125,7 @@ class WPBRIGADE_Logger
         $sdk_data = json_decode(get_option('wpb_sdk_' . $slug), true);
         $user_skip = isset($sdk_data['user_skip']) ? $sdk_data['user_skip'] : false;
         $user_skip = $user_skip === "1" ? true : false;
+
         if ($user_skip) {
             $logs_data = self::get_logs_data($slug, 'user_skip');
             $sdk_data['user_skip'] = '0';
@@ -140,9 +146,8 @@ class WPBRIGADE_Logger
             );
             self::send($slug, $logs_to_send);
         }
-
-
     }
+
 
     // Method to log plugin activation
     public function log_activation($slug)
@@ -161,6 +166,7 @@ class WPBRIGADE_Logger
         }
     }
 
+
     // Method to add deactivation model HTML to admin footer
     public function deactivation_model($slug)
     {
@@ -175,6 +181,7 @@ class WPBRIGADE_Logger
             }
         }
     }
+
 
     // Method to handle AJAX request for plugin deactivation
     public function ajax_deactivation($slug)
@@ -197,11 +204,13 @@ class WPBRIGADE_Logger
         wp_die();
     }
 
+
     // Method to handle plugin deactivation
     public function product_deactivation($slug)
     {
         wp_clear_scheduled_hook('wpb_data_sync_' . $slug);
     }
+
 
     // Method to log plugin deactivation
     public function log_deactivation($slug)
@@ -224,11 +233,13 @@ class WPBRIGADE_Logger
         }
     }
 
+
     // Method to log plugin uninstallation
     public static function log_uninstallation()
     {
         $slug = self::$current_uninstall_slug;
         $logs_data = self::get_logs_data($slug, 'uninstall');
+
         if (!empty($logs_data)) {
             $logs_to_send = array_merge(
                 $logs_data,
@@ -238,21 +249,26 @@ class WPBRIGADE_Logger
                     ),
                 )
             );
+
             self::send($slug, $logs_to_send);
         }
-        // Call Plugin uninstall hook
+
+        // Trigger any additional actions after uninstall
         do_action('wp_wpb_sdk_after_uninstall');
     }
+
 
     /**
      * Collect all data for logging.
      *
+     * @param string $slug The slug of the product.
+     * @param string $action The action being performed.
      * @return array
      */
     public static function get_logs_data($slug, $action = '')
     {
+       
         global $wpdb;
-
         // Get product data
         $module = self::$product_data[$slug]['module'];
         // Initialize variables
@@ -267,12 +283,9 @@ class WPBRIGADE_Logger
         $sdk_communication = isset($sdk_data['communication']) ? $sdk_data['communication'] : '0';
         $sdk_diagnostic_info = isset($sdk_data['diagnostic_info']) ? $sdk_data['diagnostic_info'] : '0';
         $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0';
-
         $send_wpb_sdk_communication = $sdk_communication === "1" ? true : false;
         $send_wpb_sdk_diagnostic_info = $sdk_diagnostic_info === "1" ? true : false;
         $send_wpb_sdk_extensions = $sdk_extensions === "1" ? true : false;
-
-
         if ($action != "user_skip") {
             if (!$send_wpb_sdk_communication && !$send_wpb_sdk_diagnostic_info && !$send_wpb_sdk_extensions) {
                 WPBRIGADE_Logger::remove_logs_schedule($slug);
@@ -281,15 +294,16 @@ class WPBRIGADE_Logger
                 WPBRIGADE_Logger::reset_logs_schedule($slug);
             }
         }
+    
         // Get admin user data
         $admin_users = get_users(array('role' => 'Administrator'));
         $admin = isset($admin_users[0]) ? $admin_users[0]->data : '';
         $admin_meta = !empty($admin) ? get_user_meta($admin->ID) : '';
-
-
-        // Collect data
+    
+        // Authentication data
         $data['authentication']['public_key'] = $module['public_key'];
-
+    
+        // User info (if applicable)
         if ($action == "user_skip"||$send_wpb_sdk_communication) {
             // USER INFO
             $data['user_info'] = array(
@@ -299,25 +313,25 @@ class WPBRIGADE_Logger
                 'user_lastname' => isset($admin_meta['last_name'][0]) ? sanitize_text_field($admin_meta['last_name'][0]) : '',
             );
         }
-
-        // PRODUCT INFO MUST HAVE
+    
+        // Product info
         $data['product_info'] = self::get_product_data($slug);
         $data['product_info']['sdk_version'] = WP_WPBRIGADE_SDK_VERSION;
-
-        if ($action == "user_skip"||$send_wpb_sdk_diagnostic_info) {
+    
+        // Product settings (if applicable)
+        if ($action == "user_skip" || $send_wpb_sdk_diagnostic_info) {
             $data['product_info']['product_settings'] = self::get_product_settings($slug);
         }
-
+    
         // SITE INFO MUST HAVE
         $data['site_info'] = array(
             'site_url' => site_url(),
             'home_url' => home_url(),
         );
 
-        if ($action == "user_skip"||$send_wpb_sdk_diagnostic_info) {
+        if ($action == "user_skip" || $send_wpb_sdk_diagnostic_info) {
             $ip = self::get_ip();
             $location = self::get_location_details($ip);
-
             // Check if get_plugins function exists
             if (!function_exists('get_plugins')) {
                 include ABSPATH . '/wp-admin/includes/plugin.php';
@@ -328,7 +342,7 @@ class WPBRIGADE_Logger
                 $users_count = count_users();
                 $users_count = isset($users_count['total_users']) ? intval($users_count['total_users']) : '';
             }
-
+    
             // Check external http request blocking
             if (!defined('WP_HTTP_BLOCK_EXTERNAL') || !WP_HTTP_BLOCK_EXTERNAL) {
                 $external_http_blocked = 'none';
@@ -341,8 +355,7 @@ class WPBRIGADE_Logger
                 $curl = curl_version();
                 $curl_version = '(' . $curl['version'] . ' ' . $curl['ssl_version'] . ')';
             }
-
-
+    
             $data['site_info']['site_meta_info'] = array(
                 'is_multisite' => is_multisite(),
                 'multisites' => self::get_multisites(),
@@ -371,19 +384,20 @@ class WPBRIGADE_Logger
             );
             $data['site_info']['location_details'] = $location !== null ? $location : '';
         }
-
+    
         // SITE PLUGINS
         if ($action == "user_skip"||$send_wpb_sdk_extensions) {
             $data['site_plugins'] = self::get_all_plugins();
         }
-
         return $data;
     }
+
 
 
     /**
      * Retrieve plugin settings related to the product.
      *
+     * @param string $slug The slug of the product.
      * @return array
      */
     private static function get_product_settings($slug)
@@ -402,6 +416,7 @@ class WPBRIGADE_Logger
 
         return $plugin_options;
     }
+
 
     /**
      * Collect multisite data.
@@ -427,6 +442,7 @@ class WPBRIGADE_Logger
 
         return $sites_info;
     }
+
 
     /**
      * Get user IP information.
@@ -464,7 +480,6 @@ class WPBRIGADE_Logger
         $all_plugins = array_keys(get_plugins());
         $active_plugins = get_option('active_plugins', array());
         $in_active_plugins = [];
-
         foreach ($all_plugins as $plugin) {
             if (!in_array($plugin, $active_plugins)) {
                 // add in-active plugins in list.
@@ -487,15 +502,18 @@ class WPBRIGADE_Logger
     private static function get_location_details($ip)
     {
         $location_details = array();
+        if (!$ip) {
+            return [
+                'response_code' => '400',
+                'message' => 'Error: IP address is required.',
+            ];
+        }
+
         try {
             $ch = curl_init();
-
             curl_setopt($ch, CURLOPT_URL, "https://api.iplocation.net/?ip={$ip}");
-
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
             $execute = curl_exec($ch);
-
             curl_close($ch);
 
             $result = json_decode($execute);
@@ -549,10 +567,10 @@ class WPBRIGADE_Logger
         return $data;
     }
 
-
     /**
      * Send log data to the API.
      *
+     * @param string $slug The product slug.
      * @param array $payload The log data payload.
      */
     private static function send($slug, $payload)
@@ -565,19 +583,20 @@ class WPBRIGADE_Logger
         $payload['log_status'] = $logStatus;
 
         self::sendDataToAPI($slug, $payload);
-
     }
 
 
     /**
      * Send data to the API endpoint.
      *
+     * @param string $slug The product slug.
      * @param array $data The data to be sent.
      */
     private static function sendDataToAPI($slug, $data)
     {
         $token = self::$product_data[$slug]['module']['public_key'];
 
+        // Send the request to the API
         $response = wp_remote_post(
             WPBRIGADE_SDK_API_ENDPOINT . '/logger',
             array(
@@ -589,5 +608,20 @@ class WPBRIGADE_Logger
             )
         );
 
+        // Check for errors in the response
+        if (is_wp_error($response)) {
+            // Log the error message
+            //error_log('Error sending data to API: ' . $response->get_error_message());
+            return;
+        }
+
+        // Optionally, you can log the response for debugging purposes
+        $response_body = wp_remote_retrieve_body($response);
+        if (empty($response_body)) {
+            //error_log("No response body received for slug '{$slug}'.");
+        } else {
+            // Log the successful response
+            //error_log("Data sent successfully for slug '{$slug}': " . $response_body);
+        }
     }
 }

@@ -333,8 +333,11 @@ class Analytify_Email_Core
 							body, [bgcolor="#ffffff"],[bgcolor="#f5f9ff"],[bgcolor="#f9fafa"], [bgcolor="#f3f7fa"], .session-table, .session-table tr td{
 								background-color: #000 !important;
 							}
+							table[bgcolor="#f9fafa"]>tbody>tr>td, .os-table td,.geographic-table{
+								background-color: #000000 !important;
+							}
 							.session-table tr td{
-								border-color: #fff !important;
+								border-color: #fff !important; 
 								color: #fff !important;
 							}
 							table tbody td [color="#444"],
@@ -717,6 +720,28 @@ class Analytify_Email_Core
 							margin-left: 0 !important;
 						}
 					}
+						
+						@media (prefers-color-scheme: dark ) {
+							body, [bgcolor="#ffffff"],[bgcolor="#f5f9ff"],[bgcolor="#f9fafa"], [bgcolor="#f3f7fa"], .session-table, .session-table tr td{
+								background-color: #000 !important;
+							}
+							table[bgcolor="#f9fafa"]>tbody>tr>td, .os-table td,.geographic-table{
+								background-color: #000000 !important;
+							}
+							.session-table tr td{
+								border-color: #fff !important; 
+								color: #fff !important;
+							}
+							table tbody td [color="#444"],
+							table tbody td [color="#444444"],
+							table tbody td [color="#848484"],
+							table tbody td [color="#909090"]{
+								color: #fff !important;
+							}
+							table tbody td hr{
+								border-top:1px solid #fff !important;
+							}
+						} 
 				</style>
 			</head>
 

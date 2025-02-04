@@ -11,44 +11,34 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.2.4
  * @class WPANALYTIFY_AJAX
  */
-
- add_action( 'wp_ajax_analytify_opt_out_option',  'analytify_opt_out_option' );
-
- // This Method is used as ajax call action to update partial opt-out options.
- function analytify_opt_out_option() {
-     if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optout_page_nonce', 'optout_nonce' ) ){
-         wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
-     }
-     // Get the current option and decode it as an associative array
-     $sdk_data = json_decode(get_option('wpb_sdk_wp-analytify'), true);
-
-     // If there is no current option, initialize an empty array
-     if (!$sdk_data) {
-         $sdk_data = array();
-     }
-
-     $setting_name = $_POST['setting_name'];  // e.g., communication, diagnostic_info, extensions
-     $setting_value = $_POST['setting_value'];  // The new value to be updated
-
-     // Update the specific setting in the array
-     $sdk_data[$setting_name] = $setting_value;
-
-     // Encode the array back into a JSON string and update the option
-     update_option('wpb_sdk_wp-analytify', json_encode($sdk_data));
-
-     die( 'analytify_opt_out_option' );
+add_action( 'wp_ajax_analytify_opt_out_option',  'analytify_opt_out_option' );
+// This Method is used as ajax call action to update partial opt-out options.
+function analytify_opt_out_option() {
+	if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optout_page_nonce', 'optout_nonce' ) ){
+		wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+	}
+	// Get the current option and decode it as an associative array
+	$sdk_data = json_decode(get_option('wpb_sdk_wp-analytify'), true);
+	// If there is no current option, initialize an empty array
+	if (!$sdk_data) {
+		$sdk_data = array();
+	}
+	$setting_name = $_POST['setting_name'];  // e.g., communication, diagnostic_info, extensions
+	$setting_value = $_POST['setting_value'];  // The new value to be updated
+	// Update the specific setting in the array
+	$sdk_data[$setting_name] = $setting_value;
+	// Encode the array back into a JSON string and update the option
+	update_option('wpb_sdk_wp-analytify', json_encode($sdk_data));
+	die( 'analytify_opt_out_option' );
 }
-
 
 class WPANALYTIFY_AJAX {
 
 	protected static $show_settings = array();
 
-	public static function init() {
-
-
+	public static function init() {	
 		$_analytify_dashboard = get_option( 'wp-analytify-dashboard' );
-		if (  $_analytify_dashboard &&	 array_key_exists( 'show_analytics_panels_dashboard', $_analytify_dashboard ) ) {
+		if ( $_analytify_dashboard && array_key_exists( 'show_analytics_panels_dashboard', $_analytify_dashboard ) ) {
 			self::$show_settings = $_analytify_dashboard['show_analytics_panels_dashboard'];
 		}
 
@@ -78,16 +68,16 @@ class WPANALYTIFY_AJAX {
 			'import_settings' => false,
 			);
 
-		foreach ( $ajax_calls as $ajax_call => $no_priv ) {
-			// code...
-			add_action( 'wp_ajax_analytify_' . $ajax_call, array( __CLASS__, $ajax_call ) );
+			foreach ( $ajax_calls as $ajax_call => $no_priv ) {
+				// code...
+				add_action( 'wp_ajax_analytify_' . $ajax_call, array( __CLASS__, $ajax_call ) );
 
-			if ( $no_priv ) {
-				add_action( 'wp_ajax_nopriv_analytify_' . $ajax_call, array( __CLASS__, $ajax_call ) );
+				if ( $no_priv ) {
+					add_action( 'wp_ajax_nopriv_analytify_' . $ajax_call, array( __CLASS__, $ajax_call ) );
+				}
 			}
-		}
 
-	}
+		}
 
 
 
@@ -675,11 +665,21 @@ class WPANALYTIFY_AJAX {
 		wp_die( );
 	}
 
+	/**
+	 * Fetches and outputs diagnostic log information via an AJAX request.
+	 * 
+	 * This function checks for a valid nonce and user permissions before 
+	 * generating and returning the diagnostic log data. Only users with 
+	 * the `manage_options` capability can access this functionality.
+	 * 
+	 * @return void
+	 */
 
 	static function fetch_log() {
+		
 		// Verify nonce for security
 		check_ajax_referer('fetch-log', 'nonce');
-	
+		
 		// Check if the current user has sufficient permissions
 		if (!current_user_can('manage_options')) {
 			wp_send_json_error('Unauthorized access', 403);
@@ -689,10 +689,8 @@ class WPANALYTIFY_AJAX {
 
 			self::output_diagnostic_info();
 	
-			$log_output = ob_get_clean();
-	
-			wp_send_json_success($log_output);
-	
+			echo ob_get_clean();
+
 			wp_die();
 		}
 	}
@@ -928,10 +926,6 @@ class WPANALYTIFY_AJAX {
 
 		echo "-- Analytify Front Setting --\r\n \r\n";
 
-		//$analytify_front = get_option( 'wp-analytify-front' );
-
-		//WPANALYTIFY_Utils::print_settings_array( $analytify_front );
-
 		echo "\r\n";
 
 		echo "-- Analytify Admin Setting --\r\n \r\n";
@@ -1073,13 +1067,10 @@ class WPANALYTIFY_AJAX {
 
 	// delete opt-in beacon
 	public static function optout_yes() {
-
-        if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optout_page_nonce', 'optout_yes_nonce' ) ){
-            wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
-        }
-
+		if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optout_page_nonce', 'optout_yes_nonce' ) ){
+			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+		}
 		update_site_option('_analytify_optin','no');
-
 		wp_die();
 	}
 
@@ -1108,10 +1099,14 @@ class WPANALYTIFY_AJAX {
 	 */
 	public static function export_settings() {
 
+		// Check if the user has the required capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+		    wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-analytify' ), 403 );
+		}
+
 		check_ajax_referer( 'import-export', 'nonce' );
 
 		$profile_settings = get_option( 'wp-analytify-profile' );
-
 		// Remove authentication values.
 		unset($profile_settings['profile_for_posts']);
 		unset($profile_settings['profile_for_dashboard']);
@@ -1125,22 +1120,18 @@ class WPANALYTIFY_AJAX {
 		);
 
 		if ( class_exists( 'WP_Analytify_Pro_Base' ) ) {
-			//$settings['wp-analytify-front'] = get_option( 'wp-analytify-front' );
 			$settings['wp-analytify-dashboard'] = get_option( 'wp-analytify-dashboard' );
 			$settings['wp-analytify-events-tracking'] = get_option( 'wp-analytify-events-tracking' );
 			$settings['wp-analytify-custom-dimensions'] = get_option( 'wp-analytify-custom-dimensions' );
-			$settings['wp-analytify-google-optimize'] = get_option( 'wp-analytify-google-optimize' );
 		}
 
 		if ( class_exists( 'Analytify_Forms' ) ) {
 			$settings['wp-analytify-forms'] = get_option( 'wp-analytify-forms' );
 		}
-
+		// JSON encode the sanitized settings.
 		$settings = json_encode( $settings );
 
 		echo $settings;
-
-		wp_die();
 	}
 
 

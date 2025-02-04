@@ -304,109 +304,94 @@ jQuery(function ($) {
 	* Builds charts for the 'General Stats' section.
 	*/
 	const es_chart_stats_general = () => {
-		require.config({
-			paths: {
-				echarts: analytify_stats_core.dist_js_url
-			}
-		});
+		if ($('#analytify_chart_new_vs_returning_visitors').length) {
 
-		require(
-			[
-				'echarts',
-				'echarts/chart/pie',
-			],
-			function (ec) {
+			const setting_title = $('#analytify_chart_new_vs_returning_visitors').attr('data-chart-title');
+			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-stats')));
+			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-colors')));
 
-				if ($('#analytify_chart_new_vs_returning_visitors').length) {
+			if (setting_stats.new.number > 0 && setting_stats.returning.number > 0) {
 
-					const setting_title = $('#analytify_chart_new_vs_returning_visitors').attr('data-chart-title');
-					const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-stats')));
-					const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-colors')));
-
-					if (setting_stats.new.number > 0 && setting_stats.returning.number > 0) {
-
-						const new_returning_graph_options = {
-							tooltip: { trigger: 'item', formatter: "{b} {a} : {c} ({d}%)" },
-							color: setting_colors,
-							legend: { orient: 'horizontal', y: 'bottom', data: [setting_stats.new.label, setting_stats.returning.label] },
-							series: [
-								{
-									name: setting_title,
-									type: 'pie',
-									smooth: true,
-									roseType: 'radius',
-									radius: [20, 60],
-									center: ['50%', '42%'],
-									data: [
-										{ name: setting_stats.new.label, value: setting_stats.new.number },
-										{ name: setting_stats.returning.label, value: setting_stats.returning.number }
-									]
-								}
+				const new_returning_graph_options = {
+					tooltip: { trigger: 'item', formatter: "{b} {a} : {c} ({d}%)" },
+					color: setting_colors,
+					legend: { orient: 'horizontal', y: 'bottom', data: [setting_stats.new.label, setting_stats.returning.label] },
+					series: [
+						{
+							name: setting_title,
+							type: 'pie',
+							smooth: true,
+							roseType: 'radius',
+							radius: [20, 60],
+							center: ['50%', '42%'],
+							data: [
+								{ name: setting_stats.new.label, value: setting_stats.new.number },
+								{ name: setting_stats.returning.label, value: setting_stats.returning.number }
 							]
-						};
-
-						const new_returning_graph = ec.init(document.getElementById('analytify_chart_new_vs_returning_visitors'));
-						new_returning_graph.setOption(new_returning_graph_options);
-
-						window.onresize = function () {
-							try {
-								new_returning_graph.resize();
-							} catch (err) {
-								console.log(err);
-							}
 						}
-					} else {
-						$('#analytify_chart_new_vs_returning_visitors').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
+					]
+				};
+
+				const new_returning_graph = echarts.init(document.getElementById('analytify_chart_new_vs_returning_visitors'));
+				new_returning_graph.setOption(new_returning_graph_options);
+
+				window.onresize = function () {
+					try {
+						new_returning_graph.resize();
+					} catch (err) {
+						console.log(err);
 					}
 				}
+			} else {
+				$('#analytify_chart_new_vs_returning_visitors').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
+			}
+		}
 
-				if ($('#analytify_chart_visitor_devices').length) {
+		if ($('#analytify_chart_visitor_devices').length) {
 
-					const setting_title = $('#analytify_chart_visitor_devices').attr('data-chart-title');
-					const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-stats')));
-					const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-colors')));
+			const setting_title = $('#analytify_chart_visitor_devices').attr('data-chart-title');
+			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-stats')));
+			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-colors')));
 
-					if (setting_stats.desktop.number > 0 || setting_stats.mobile.number > 0 || setting_stats.tablet.number > 0) {
+			if (setting_stats.desktop.number > 0 || setting_stats.mobile.number > 0 || setting_stats.tablet.number > 0) {
 
-						const user_device_graph_options = {
-							tooltip: { trigger: 'item', formatter: "{a} <br/>{b} : {c} ({d}%)" },
-							color: setting_colors,
-							legend: { x: 'center', y: 'bottom', data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label] },
-							series: [
-								{
-									name: setting_title,
-									type: 'pie',
-									smooth: true,
-									radius: [20, 60],
-									center: ['55%', '42%'],
-									roseType: 'radius',
-									label: { normal: { show: false }, emphasis: { show: false } },
-									lableLine: { normal: { show: false }, emphasis: { show: false } },
-									data: [
-										{ name: setting_stats.mobile.label, value: setting_stats.mobile.number },
-										{ name: setting_stats.tablet.label, value: setting_stats.tablet.number },
-										{ name: setting_stats.desktop.label, value: setting_stats.desktop.number },
-									]
-								}
+				const user_device_graph_options = {
+					tooltip: { trigger: 'item', formatter: "{a} <br/>{b} : {c} ({d}%)" },
+					color: setting_colors,
+					legend: { x: 'center', y: 'bottom', data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label] },
+					series: [
+						{
+							name: setting_title,
+							type: 'pie',
+							smooth: true,
+							radius: [20, 60],
+							center: ['55%', '42%'],
+							roseType: 'radius',
+							label: { normal: { show: false }, emphasis: { show: false } },
+							lableLine: { normal: { show: false }, emphasis: { show: false } },
+							data: [
+								{ name: setting_stats.mobile.label, value: setting_stats.mobile.number },
+								{ name: setting_stats.tablet.label, value: setting_stats.tablet.number },
+								{ name: setting_stats.desktop.label, value: setting_stats.desktop.number },
 							]
-						};
-
-						const user_device_graph = ec.init(document.getElementById('analytify_chart_visitor_devices'));
-						user_device_graph.setOption(user_device_graph_options);
-
-						window.onresize = function () {
-							try {
-								user_device_graph.resize();
-							} catch (err) {
-								console.log(err);
-							}
 						}
-					} else {
-						$('#analytify_chart_visitor_devices').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
+					]
+				};
+
+				const user_device_graph = echarts.init(document.getElementById('analytify_chart_visitor_devices'));
+				user_device_graph.setOption(user_device_graph_options);
+
+				window.onresize = function () {
+					try {
+						user_device_graph.resize();
+					} catch (err) {
+						console.log(err);
 					}
 				}
+			} else {
+				$('#analytify_chart_visitor_devices').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
 			}
-		);
+		}
 	}
 
 	/**
@@ -414,70 +399,73 @@ jQuery(function ($) {
 	* 
 	* @param {object} data Stats data for the map.
 	*/
-	const es_chart_map = (data) => {
+	function es_chart_map(data) {
+		const map_data = [];
+		for (const key in data.stats) {
 
-		require.config({
-			paths: {
-				echarts: analytify_stats_core.dist_js_url
+			let single_country = {};
+
+			single_country.name = data.stats[key].country;
+			single_country.value = data.stats[key].sessions;
+
+			if (single_country.name === 'United States') {
+				single_country.name = 'United States of America';
 			}
-		});
 
-		require(
-			[
-				'echarts',
-				'echarts/chart/map',
-			],
-			function (ec) {
+			map_data.push(single_country);
+		}
 
-				// Change the keys of the data to match the map.
-				const map_data = [];
-				for (const key in data.stats) {
+		// Check if the CDN data loads successfully & Ensure the `world` map is available
+		if (typeof echarts.getMap('world') === 'undefined') {
+			fallbackToLocal();
+		}
+		else{
+			loadMapAndRender();
+		}
 
-					let single_country = {};
+		function fallbackToLocal() {
+            fetch(geoJsonData.geoJsonUrl)
+                .then(response => response.json())
+                .then(geoJson => {
+                    echarts.registerMap('world', geoJson);
+                    loadMapAndRender();
+                })
+                .catch(error => console.error('Error loading local GeoJSON:', error));
+        }
 
-					single_country.name = data.stats[key].country;
-					single_country.value = data.stats[key].sessions;
-
-					if (single_country.name === 'United States') {
-						single_country.name = 'United States of America';
-					}
-
-					map_data.push(single_country);
-				}
-
-				const geographic_stats_graph = ec.init(document.getElementById('analytify_geographic_stats_graph'));
-				const geographic_stats_graph_option = {
-					tooltip: {
-						trigger: 'item',
-						formatter: function (params) {
-							let value = (params.value + '').split('.');
-							if (value[0] != '-') {
-								value = value[0];
-							} else {
-								value = 0;
-							}
-							return data.title + '<br />' + params.name + ' : ' + value;
+		function loadMapAndRender() {
+			const geographic_stats_graph = echarts.init(document.getElementById('analytify_geographic_stats_graph'));
+			const geographic_stats_graph_option = {
+				tooltip: {
+					trigger: 'item',
+					formatter: function (params) {
+						let value = params.value;
+						// Check if value is undefined, null, or NaN and handle it
+						if (value == null || isNaN(value)) {
+							value = 0;
+						} else {
+							value = Math.floor(value);
 						}
-					},
-					toolbox: { show: false, orient: 'horizontal', x: 'right', y: '10', feature: { restore: { show: true }, saveAsImage: { show: true } } },
-					roamController: { show: true, mapTypeControl: { 'world': true }, x: 'right', y: 'bottom' },
-					dataRange: { min: "1", max: data.highest, text: [data.label.high, data.label.low], realtime: true, calculable: true, color: data.colors },
-					series: [
-						{ name: data.title, type: 'map', mapType: 'world', roam: false, scaleLimit: { min: 1, max: 10 }, mapLocation: { y: 60 }, itemStyle: { emphasis: { label: { show: true } } }, data: map_data }
-					]
-				};
-
-				// Load data into the ECharts instance.
-				geographic_stats_graph.setOption(geographic_stats_graph_option);
-				window.onresize = function () {
-					try {
-						geographic_stats_graph.resize();
-					} catch (err) {
-						console.log(err);
+						return data.title + '<br />' + params.name + ' : ' + value;
 					}
+				},
+				toolbox: { show: false, orient: 'horizontal', x: 'right', y: '10', feature: { restore: { show: true }, saveAsImage: { show: true } } },
+				dataRange: { min: 1, max: parseInt(data.highest), text: [data.label.high, data.label.low], realtime: true, calculable: true, color: data.colors },
+				series: [
+					{ name: data.title, type: 'map', map: 'world', roam: 'move', scaleLimit: { min: 1, max: 10 }, mapLocation: { y: 60 }, itemStyle: { emphasis: { label: { show: true } } }, data: map_data }
+				]
+			};
+
+			// Load data into the ECharts instance.
+			geographic_stats_graph.setOption(geographic_stats_graph_option);
+			window.onresize = function () {
+				try {
+					geographic_stats_graph.resize();
+				} catch (err) {
+					console.log(err);
 				}
 			}
-		);
+		}
 	}
 
 	/**

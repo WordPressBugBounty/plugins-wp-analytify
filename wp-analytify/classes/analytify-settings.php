@@ -30,6 +30,21 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 			add_action( 'admin_post_analytify_delete_cache', array( $this, 'analytify_delete_cache' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'analytify_email_enqueue_media' ) );
+
+		}
+
+		/**
+		 * Enqueue media scripts only on the Analytify settings page.
+		 */
+		public function analytify_email_enqueue_media() {
+			
+			if ( isset( $_GET['page'] ) && strpos( sanitize_text_field( $_GET['page'] ), 'analytify-settings' ) === 0 ) {
+
+				// Enqueue WordPress media uploader.
+				wp_enqueue_media();
+			
+			}
 		}
 
 		/**
@@ -120,7 +135,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 				array(
 					'id'       => 'wp-analytify-tracking',
 					'title'    => __( 'Tracking', 'wp-analytify' ),
-					'desc'     => 'This section has options to Track forms, events, conversions, Setup Google Optimize and Custom Dimensions.',
+					'desc'     => 'This section has options to Track forms, events, conversions, Setup and Custom Dimensions.',
 					'accordion'=> array(
 										array(
 											'id'       => 'wp-analytify-events-tracking',
@@ -130,11 +145,6 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 										array(
 											'id'       => 'wp-analytify-custom-dimensions',
 											'title'    => __( 'Custom Dimensions', 'wp-analytify' ),
-											// 'priority' => '20',
-										),
-										array(
-											'id'       => 'wp-analytify-google-optimize',
-											'title'    => __( 'Google Optimize', 'wp-analytify' ),
 											// 'priority' => '20',
 										),
 										array(
@@ -1582,8 +1592,6 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 												$html .='<span>Track Links, Clicks, Affiliates and files.</span>';
 											} else if ( "wp-analytify-custom-dimensions" === $accordion["id"] ) {
 												$html .='<span>Setup custom dimensions tracking in Google Analytics.</span>';
-											} else if ( "wp-analytify-google-optimize" === $accordion["id"] ) {
-												$html .='<span>Setup Google Optimize to track A/B Split testing.</span>';
 											} else if ( "wp-analytify-forms-dashboard" === $accordion["id"] ) {
 												$html .='<span>Track Forms submissions, impressions and conversions in Google Analytics.</span>';
 											} elseif ( "analytify-google-ads-tracking" === $accordion["id"] ) {
@@ -1666,7 +1674,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 				<?php foreach ( $this->settings_sections as $form ) {
 					if ( $form['priority'] != 0 ) { ?>
 						<?php
-						if ( ! $is_authenticate && ( $form['id'] === 'wp-analytify-profile' || $form['id'] === 'wp-analytify-front' || $form['id'] === 'wp-analytify-admin' || $form['id'] === 'wp-analytify-dashboard' || $form['id'] === 'wp-analytify-email' ) ) {
+						if ( ! $is_authenticate && ( $form['id'] === 'wp-analytify-profile' || $form['id'] === 'wp-analytify-admin' || $form['id'] === 'wp-analytify-dashboard' || $form['id'] === 'wp-analytify-email' ) ) {
 							$class = 'analytify_not_authenticate';
 						} else {
 							$class = '';
@@ -1732,7 +1740,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 							} else {
 
-								if ( ! $is_authenticate && ( $form['id'] === 'wp-analytify-profile' || $form['id'] === 'wp-analytify-front' || $form['id'] === 'wp-analytify-admin' || $form['id'] === 'wp-analytify-dashboard' || $form['id'] === 'wp-analytify-email' ) ) {
+								if ( ! $is_authenticate && ( $form['id'] === 'wp-analytify-profile' || $form['id'] === 'wp-analytify-admin' || $form['id'] === 'wp-analytify-dashboard' || $form['id'] === 'wp-analytify-email' ) ) {
 									echo "<span class='analytify_need_authenticate_first'><a href='#'>You have to Authenticate the Google Analytics first.</a></span>";
 								} else if($form['id'] === 'wp-analytify-front'){
                                     echo '
@@ -1745,7 +1753,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 								';
 
                                 }
-                                if ($form['id'] !== 'wp-analytify-front') {
+								if ($form['id'] !== 'wp-analytify-front') {
                                     ?>
 
 								<form method="post" action="options.php">
@@ -1765,7 +1773,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 										</div>
 									</div>
 								</form>
-                                <?php }?>
+								<?php }?>
 								<?php
 								if ( $form['id'] === 'wp-analytify-email' ) {
 									$this->callback_email_form();
@@ -2014,20 +2022,6 @@ function wp_analytify_tracking_accordion_promo( $accordions ) {
 				</div>
 			</div>';
 
-			} else if ( $accordion['id'] == 'wp-analytify-google-optimize' ) {
-			
-			$accordion['is_active'] = false;
-			$accordion['promo_text'] = '<div class="analytify-email-promo-contianer">
-				
-				<div class="analytify-email-premium-overlay">
-					<div class="analytify-email-premium-popup">
-						<h3 class="analytify-promo-popup-heading">Unlock Google Optimize Module</h3>
-						<p class="analytify-promo-popup-paragraph">Google Optimize will help you to conduct A/B testing and different experiments on your Website to check what content works on your website. Analytify Google Optimize addon helps you to easily integrate Google Optimize with Google Analytics for A/B testing ot your WordPress website.</p>
-						'. activate_module_anchor( "https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=tracking-tab&utm_content=google-optimize&utm_campaign=pro-upgrade" ) .'
-					</div>
-				</div>
-			</div>';
-
 			} else if ( $accordion['id'] == 'wp-analytify-forms' ) {
 				
 				$accordion['is_active'] = false;
@@ -2124,20 +2118,6 @@ function wp_analytify_tracking_accordion_pro( $accordions ) {
 						<li>Track logged in activity</li>
 					</ul>
 					'. activate_module_anchor( "https://analytify.io/pricing?utm_source=analytify-pro&utm_medium=tracking-tab&utm_content=custom-dimensions&utm_campaign=pro-upgrade" ) .'
-					</div>
-				</div>
-			</div>';
-
-		} else if ( $accordion['id'] == 'wp-analytify-google-optimize' ) {
-			
-			$accordion['is_active'] = ( $analytify_modules['google-optimize']['status'] === 'active' ) ? true : false;
-			$accordion['promo_text'] = '<div class="analytify-email-promo-contianer">
-				
-				<div class="analytify-email-premium-overlay">
-					<div class="analytify-email-premium-popup">
-					<h3 class="analytify-promo-popup-heading">Unlock Google Optimize Module</h3>
-					<p class="analytify-promo-popup-paragraph">Google Optimize will help you to conduct A/B testing and different experiments on your Website to check what content works on your website. Analytify Google Optimize addon helps you to easily integrate Google Optimize with Google Analytics for A/B testing ot your WordPress website.</p>
-					'. activate_module_anchor( "https://analytify.io/pricing?utm_source=analytify-pro&utm_medium=tracking-tab&utm_content=google-optimize&utm_campaign=pro-upgrade" ) .'
 					</div>
 				</div>
 			</div>';

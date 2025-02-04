@@ -64,14 +64,17 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 
 			if ( ! $this->host_analytics_locally && $this->file_already_exist() ) {
 
-				if ( file_exists( ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ) ) {
+				$file_alias_path = ANALYTIFY_LOCAL_DIR . $this->get_file_alias();
+				$gtag_path = ANALYTIFY_LOCAL_DIR . 'gtag.js';
+
+				if ( file_exists( $file_alias_path) && is_file( $file_alias_path ) ) {
 
 					unlink( ANALYTIFY_LOCAL_DIR . $this->get_file_alias() );
 
-				} elseif ( file_exists( ANALYTIFY_LOCAL_DIR . 'gtag.js' ) ) {
+				}  elseif ( file_exists( $gtag_path ) && is_file( $gtag_path ) ) {
 
-					unlink( ANALYTIFY_LOCAL_DIR . 'gtag.js' );
-
+    				unlink( $gtag_path );
+				
 				}
 
 				return;

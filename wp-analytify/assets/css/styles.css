@@ -432,9 +432,7 @@ text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
 .wpanalytify .form-table th:first-child{
     width: 200px;
 }
-#wp-analytify-front .form-table th:first-child {
-    width: 230px;
-}
+
 #wp-analytify-profile .form-table th, 
 #wp-analytify-advanced .form-table th, 
 #wp-analytify-tracking .wp-analytify-google-optimize .form-table th, 
@@ -1544,7 +1542,7 @@ transition: all .25s ease-in;
 .analytify_social_icons {
     background-image:url(../img/social_browser_mobile_icons.png);
     background-repeat:no-repeat;
-    background-size: 180px 425px;
+    background-size: 180px 495px;
     width:34px;
     height:34px;
     position:relative;
@@ -1613,7 +1611,7 @@ transition: all .25s ease-in;
 }
 .analytify_oppo{
     background-position: -2px -377px;
-    height: 16px;
+    height: 14px;
     width: 42px;
     margin-top: 9px;
     margin-bottom: 9px
@@ -1708,6 +1706,33 @@ transition: all .25s ease-in;
 }
 .analytify_infinix {
     background-position: -146px -381px;
+}
+.analytify_oppo{
+    background-position: -2px -377px;
+    height: 14px;
+    width: 42px;
+    margin-top: 9px;
+    margin-bottom: 9px
+}
+.analytify_lenovo {
+    background-position: -110px -417px;
+}
+.analytify_oneplus {
+    background-position: -1px -428px;
+	height: 35px;
+}
+.analytify_realme {
+    background-position:-147px -416px;
+}
+.analytify_walton {
+    background-position: -74px -400px;
+}
+.analytify_alcatel {
+    background-position: -3px -466px;
+    /* width: 14px; */
+    height: 16px;
+    margin-top: 7px;
+    margin-bottom: 8px;
 }
 .analytify_bar_tables {
     border-collapse:collapse;

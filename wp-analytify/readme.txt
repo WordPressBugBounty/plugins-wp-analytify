@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 3.6
 Tested up to: 6.7
-Stable tag: 5.5.0
+Stable tag: 5.5.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,16 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 5.5.1 - 2025-02-04 =
+* Bug Fix: Mobile logos missing in System Stats section on Overview Dashboard. 
+* Bug Fix: Translation loading too early issue in WP 6.7.0
+* Security Fix: Missing Authorization to Authenticated (Subscriber) export_settings.
+* Enhancement: Updated ECharts library to the latest version 5.5.1
+* Enhancement: Email Reports Dark Mode style fixes.
+* Enhancement: Removed deprecated Google Optimize add-on.
+* Enhancement: CSS improvements for charts.
+* Enhancement: Minor bug fixes and code improvements.
 
 = 5.5.0 - 2024-11-06 =
 * Enhancement: Removing Google Analytics V3 Library from the plugin completely.
@@ -1033,8 +1043,8 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 5.5.0 =
-* BeCareful, This update could break few things. Update Free, Pro and all addons altogether.
+= 5.5.1 =
+* Update Free, Pro and all addons altogether.
 
 == Notes ==
 

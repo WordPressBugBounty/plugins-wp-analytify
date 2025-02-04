@@ -81,7 +81,6 @@ class Analytify_Factory_Reset {
 			'analytify_pro_upgrade_routine',
 			'analytify_pro_current_version',
 			'WP_ANALYTIFY_PRO_PLUGIN_VERSION',
-			'wp-analytify-google-optimize',
 			'wp-analytify-license',
 			'analytify_authentication_date',
 			'WP_ANALYTIFY_PLUGIN_VERSION_OLD',

@@ -123,7 +123,6 @@
 				<li><?php _e( 'Analytics under Custom Post Types (front/admin)', 'wp-analytify' ) ?></li>
 				<li><?php _e( '404 Page, Ajax & JS Error Stats', 'wp-analytify' ) ?></li>
 				<li><?php _e( 'Events Tracking', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Google Optimize Support', 'wp-analytify' ) ?></li>
 				<li><?php _e( 'Google AMP Support', 'wp-analytify' ) ?></li>
 				<li><?php _e( 'Custom Dimensions', 'wp-analytify' ) ?></li>
 				<li><?php _e( 'Authors Tracking (addon)', 'wp-analytify' ) ?></li>
@@ -173,7 +172,7 @@
 			</ul>
 		</div>
 		<div class="analytify_discount_code">
-			<?php printf( __( '%1$sUpgrade Now%2$s use %3$s discount code for 10&#37; OFF ' ) , '<a target="_blank" href="https://analytify.io/free-vs-pro/?utm_source=analytify-lite&utm_medium=pro-vs-free-page&utm_campaign=pro-upgrade&utm_content=Upgrade+Now+CTA" class="analytify_btn_buy">', '</a>' , '<span>GOPRO10</span>' ); ?>
+			<?php printf( __( '%1$sUpgrade Now%2$s use %3$s discount code for 60&#37; OFF ' ) , '<a target="_blank" href="https://analytify.io/free-vs-pro/?utm_source=analytify-lite&utm_medium=pro-vs-free-page&utm_campaign=pro-upgrade&utm_content=Upgrade+Now+CTA" class="analytify_btn_buy">', '</a>' , '<span>BFCM60</span>' ); ?>
 		</div>
 
 	</div>

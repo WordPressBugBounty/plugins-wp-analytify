@@ -212,8 +212,9 @@
 
 <?php
 
-$slug = get_option('wpb_sdk_module_slug');
-$id = get_option('wpb_sdk_module_id');
+
+$slug = '';
+$id = '';
 
 $wpb = WPBRIGADE_Logger::instance($id, $slug, true);
 $Data = $wpb->get_logs_data($slug);

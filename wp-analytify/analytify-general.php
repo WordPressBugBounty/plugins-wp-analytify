@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '5.5.0' );
+define( 'ANALYTIFY_VERSION', '5.5.1' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -97,20 +97,30 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			$this->transient_timeout    = 60 * 60 * 12;
 			$this->plugin_base          = 'admin.php?page=analytify-dashboard';
 			$this->plugin_settings_base = 'admin.php?page=analytify-settings';
+			if (isset($_GET['page']) && strpos($_GET['page'], 'analytify-settings') === 0) {
 			$this->exception            = get_option( 'analytify_profile_exception' );
 			$this->ga4_exception        = get_option( 'analytify_ga4_exceptions' );
+			}
 			$this->modules				= WPANALYTIFY_Utils::get_pro_modules();
 			// Setup Settings.
 			$this->settings = new WP_Analytify_Settings();
 			
 			$this->is_reporting_in_ga4  = 'ga4' === WPANALYTIFY_Utils::get_ga_mode() ? true : false;
 
+			if ( $this->is_reporting_in_ga4 === true ) {
 				// Rankmath Instant Indexing addon Compatibility.
 				if( ( isset( $_GET['page'] ) && $_GET['page'] == 'instant-indexing' ) || strpos( wp_get_referer(), 'instant-indexing' ) !== false ){
 					return;
 				}
 				require_once ANALYTIFY_LIB_PATH . '/Google-GA4/vendor/autoload.php';
 				$this->client = new Google\Client();
+			} else {
+				if ( ! class_exists( 'Analytify_Google_Client' ) ) {
+					require_once ANALYTIFY_LIB_PATH . 'Google/Client.php';
+					require_once ANALYTIFY_LIB_PATH . 'Google/Service/Analytics.php';
+				}
+				$this->client = new Analytify_Google_Client();
+			}
 
 			$this->client->setApprovalPrompt( 'force' );
 			$this->client->setAccessType( 'offline' );
@@ -129,6 +139,8 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 
 			$this->client->setScopes( ANALYTIFY_SCOPE );
 
+			if ( $this->is_reporting_in_ga4 === true ) {
+
 				try {
 					$this->service = new Google\Service\Analytics( $this->client );
 					$this->pa_connect();
@@ -144,6 +156,24 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					}
 				}
 
+			} else {
+
+				try {
+					$this->service = new Analytify_Google_Service_Analytics( $this->client );
+					$this->pa_connect();
+				} catch ( Exception $e ) {
+					// Show error message only for logged in users.
+					if ( current_user_can( 'manage_options' ) ) {
+						echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
+					}
+				} catch ( Exception $e ) {
+					// Show error message only for logged in users.
+					if ( current_user_can( 'manage_options' ) ) {
+						echo sprintf( esc_html__( '%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %4$s', 'wp-analytify' ), '<br /><br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . 'title="Reset">', '</a>', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
+					}
+				}
+
+			}
 
 			add_action( 'after_setup_theme', array( $this, 'set_cache_time' ) );
 
@@ -158,7 +188,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 */
 		public function set_tracking_mode() {
 			if ( ! defined( 'ANALYTIFY_TRACKING_MODE' ) ) {
-                define( 'ANALYTIFY_TRACKING_MODE', $this->settings->get_option( 'gtag_tracking_mode', 'wp-analytify-advanced', 'gtag' ) );
+				define( 'ANALYTIFY_TRACKING_MODE', $this->settings->get_option( 'gtag_tracking_mode', 'wp-analytify-advanced', 'gtag' ) );
 			}
 		}
 		/**
@@ -202,9 +232,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				}
 			}
 
+			if ( $this->is_reporting_in_ga4 === true ) {
 				$access_token = $this->client->getAccessToken();	
 				$access_token = $access_token['access_token'];
 				$this->token = json_decode( $access_token );
+			} else {
+				$this->token = json_decode( $this->client->getAccessToken() );
+			}
 
 			return true;
 		}
@@ -644,6 +678,8 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			}
 
 			$reports = array();
+			$dimension_filters = array();
+
 
 			// Default response array.
 			$default_response = array(
@@ -1591,7 +1627,8 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			$pro_inner = [
 				'detail-realtime',
 				'detail-demographic',
-				'search-terms'
+				'search-terms',
+				'search-console-report'
 			];
 			$pro_addon = [
 				'wp-analytify-woocommerce',
@@ -1854,6 +1891,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					'module_type'	=> 'pro_addon',
 					'children'		=> array(
 						array(
+							'name'			=> 'Search Console',
+							'sub_name'		=> 'Google Search Console',
+							'page_slug'		=> 'analytify-dashboard',
+							'addon_slug'	=> 'search-console-report',
+							'module_type'	=> 'pro_inner',
+						),
+						array(
 							'name'			=> 'Campaigns',
 							'sub_name'		=> 'UTM Overview',
 							'page_slug'		=> 'analytify-campaigns',
@@ -1862,7 +1906,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 						),
 						array(
 							'name'			=> 'Goals',
-							'sub_name'		=> 'Overview',
+							'sub_name'		=> 'Key Events',
 							'page_slug'		=> 'analytify-goals',
 							'addon_slug'	=> 'wp-analytify-goals',
 							'module_type'	=> 'pro_addon',
@@ -1929,7 +1973,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 							'page_slug'		=> 'analytify-dimensions',
 							'addon_slug'	=> 'custom-dimensions',
 							'module_type'	=> 'pro_feature',
-						)
+						),
 					)
 				),
 

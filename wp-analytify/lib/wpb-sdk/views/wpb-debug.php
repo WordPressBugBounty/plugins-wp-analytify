@@ -8,8 +8,8 @@ function enqueue_custom_styles()
 add_action('wp_enqueue_scripts', 'enqueue_custom_styles');
 
 
-$slug = get_option('wpb_sdk_module_slug');
-$id = get_option('wpb_sdk_module_id');
+$slug = '';
+$id = '';
 
 // Initialize an array to store all plugins
 $all_plugins = [];

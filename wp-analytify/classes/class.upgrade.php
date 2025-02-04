@@ -185,15 +185,6 @@ if ( ! get_option( 'wp_analytify_modules' ) ) {
 			'image' => 'https://analytify.io/wp-content/uploads/2021/02/analytify-custom-dimensions.svg',
 			'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Custom+Dimensions',
 		],
-		'google-optimize' => [
-			'status' => 'active',
-			'slug' => 'google-optimize',
-			'page_slug' => 'analytify-optimize',
-			'title' => __( 'Google Optimize', 'wp-analytify' ),
-			'description' => __( 'Google Optimize addon will easily track the results from different Google Ads campaigns and display within your WordPress dashboard.', 'wp-analytify' ),
-			'image' => 'https://analytify.io/wp-content/uploads/2021/02/analytify-google-optimize.svg',
-			'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Google+Optimize',
-		],
 		'amp' => [
 			'status' => false,
 			'slug' => 'amp',
