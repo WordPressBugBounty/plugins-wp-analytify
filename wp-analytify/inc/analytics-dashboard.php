@@ -100,6 +100,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 														<a href="#" class="analytify-export-data analytify_tooltip" data-stats-type="general-stats">
 															<span class="analytify_tooltiptext"><?php esc_html_e( 'Export General Stats', 'wp-analytify-pro' ); ?></span>
 														</a>
+														<img src="<?php echo admin_url( 'images/spinner.gif' ); ?>" class='analytify-export-loader' style="display:none">
 													<?php } ?>
 													</h3>
 												</div>

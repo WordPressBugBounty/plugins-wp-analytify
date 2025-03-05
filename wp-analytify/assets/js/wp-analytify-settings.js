@@ -2,9 +2,9 @@
 jQuery(document).ready(function ($) {
 
     // hide this checkbox for hiding profiles.
-    if (analytify_settings.is_hide_profile != 'off') {
-        $('#wp-analytify-profile\\[hide_profiles_list\\]').closest('tr').hide();
-    }
+    // if (analytify_settings.is_hide_profile != 'off') {
+    //     $('#wp-analytify-profile\\[hide_profiles_list\\]').closest('tr').hide();
+    // }
     /*if (pagenow == 'analytify_page_analytify-settings' && analytify_settings.is_authenticate == '') {
         localStorage.setItem('activetab', '#wp-analytify-authentication');
     }*/
@@ -19,7 +19,7 @@ jQuery(document).ready(function ($) {
     }
 
     // Apply Chosen Style on Select DropDowns
-    $(".analytify-chosen").chosen();
+    $(".analytify-chosen").chosen(); 
 
     function mobilecheck() {
         var check = false;

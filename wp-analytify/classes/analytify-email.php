@@ -1,5 +1,6 @@
 <?php
 
+ob_start();
 class Analytify_Email_Core
 {
 
@@ -105,8 +106,16 @@ class Analytify_Email_Core
 
 	function  analytify_email_notics()
 	{
-		$class   = 'wp-analytify-success';
-		$message = esc_html('Analytify detailed report sent!', 'wp-analytify-email');
+		$email_options= get_option('wp-analytify-email');
+
+		if($email_options['disable_email_reports'] == 'on'){
+			$class   = 'wp-analytify-danger';
+			$message = esc_html('Analytify email reports and test emails disabled.');
+		}else{
+			$class   = 'wp-analytify-success';
+			$message = esc_html('Analytify detailed report sent!', 'wp-analytify-email');
+		}
+
 
 		analytify_notice($message, $class);
 	}
@@ -129,7 +138,7 @@ class Analytify_Email_Core
 				array(
 					'name'  => 'disable_email_reports',
 					'label' => __('Disable Email Reporting', 'wp-analytify'),
-					'desc'  => __('This will stop sending your website stats email reports.', 'wp-analytify'),
+					'desc'  => __('This option will stop sending all email reports, including test emails.', 'wp-analytify'),
 					'type'  => 'checkbox',
 				),
 				array(
@@ -388,7 +397,7 @@ class Analytify_Email_Core
 														</tr>
 														<tr>
 															<td	style="font: normal 14px \'Roboto\', Arial, Helvetica, sans-serif; padding: 0px 20px 0px 20px;">
-																<font color="#848484">' . analytify__('Please find below your Google Analytics report for the noted period.') . '</font>
+																<font color="#848484">' . apply_filters('analytify_custom_email_message',analytify__('Please find below your Google Analytics report for the noted period.')) . '</font>
 															</td>
 														</tr>
 													</table>
@@ -936,3 +945,5 @@ function init_analytify_email()
 }
 
 add_action('init', 'init_analytify_email');
+
+ob_end_flush();

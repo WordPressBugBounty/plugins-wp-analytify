@@ -121,12 +121,22 @@ class Analytify_Dashboard_Addon_Install {
    *
    */
   function activate_free() {
-    $plugin = 'analytify-analytics-dashboard-widget/wp-analytify-dashboard.php';
-    if( ! is_plugin_active( $plugin ) ) {
-      activate_plugin( $plugin );
+    // Ensure the user has the capability to manage plugins.
+    if ( ! current_user_can( 'activate_plugins' ) ) {
+        wp_die( __( 'You do not have permission to activate plugins.', 'wp-analytify' ), 403 );
     }
-    wp_die();
-  }
+
+    // Verify nonce for extra security.
+    check_ajax_referer( 'activate-analytify-dashboard', 'security' );
+
+    $plugin = 'analytify-analytics-dashboard-widget/wp-analytify-dashboard.php';
+    
+    if ( ! is_plugin_active( $plugin ) ) {
+        activate_plugin( $plugin );
+    }
+
+    wp_send_json_success( __( 'Plugin activated successfully.', 'wp-analytify' ) );
+}
 
 }
 

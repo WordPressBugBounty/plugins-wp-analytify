@@ -138,6 +138,7 @@ class WP_Analytify_Compatibility_Upgrade{
 
 		$this->dashboard_settings['show_analytics_panels_dashboard'] = array(
 			'show-real-time',
+			'show-page-speed',
 			'show-compare-stats',
 			'show-overall-dashboard',
 			'show-top-pages-dashboard',

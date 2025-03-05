@@ -62,6 +62,7 @@ class Analytify_GDPR_Compliance {
 					'www.google-analytics.com/analytics.js',
 					'www.googletagmanager.com/gtag/js',
 					'wp-analytify/assets/js/scrolldepth.js',
+					'wp-analytify/assets/js/video_tracking.js',
 					'wp-analytify-forms/assets/js/tracking.js',
 					'wp-analytify-pro/assets/js/script.js'
 				);

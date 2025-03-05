@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 5.5.1
+ * Version: 6.0.0
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -227,7 +227,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			//Dismiss rank math notice 
 			add_action('wp_ajax_analytify_dismiss_rank_math_notice', array($this, 'analytify_dismiss_rank_math_notice'));
-
+			add_action( 'admin_notices', array( $this, 'pro_update_notice' ) );
 			add_action( 'admin_notices', array( $this, 'analytify_admin_notice' ) );
 			add_action( 'admin_notices', array( $this, 'addons_ga4_update_notice' ) ); // Ask users to update plugins to work with version 5.0.0!
 			add_action( 'admin_notices', array( $this, 'analytify_cache_clear_notice' ) );
@@ -243,6 +243,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			add_action( 'add_meta_boxes', array( $this, 'show_admin_single_analytics_add_metabox' ) );
 
 			add_action( 'admin_head', array( $this, 'add_dashboard_inline_styles' ) );
+			add_action( 'admin_head', array( $this, 'add_dashboard_inline_scripts' ) );
 
 			add_filter( 'admin_footer_text', 'wpa_admin_rate_footer_text', 1 );
 			add_action( 'admin_footer', 'wpa_print_js', 25 );
@@ -285,6 +286,20 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			add_action( 'add_meta_boxes', array( $this, 'add_exclusion_meta_box' ) );
 
 		}
+
+		public function pro_update_notice() {
+			if( defined( 'ANALYTIFY_PRO_VERSION' ) && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '<' )){
+			?>
+			<div class="notice notice-error is-dismissible">
+				<p>
+					<strong><?php echo esc_html__('Note:', 'wp-analytify'); ?></strong>
+					<?php echo esc_html__('Please update to the latest Analytify Pro version 6.0.0 to manage these modules (WooCommerce, EDD, Campaigns, and Authors) from', 'wp-analytify'); ?> <a href="<?php echo esc_url(admin_url('admin.php?page=analytify-addons')); ?>" aria-label="addons page"><?php echo esc_html__('here', 'wp-analytify'); ?></a>.
+				</p>
+			</div>
+			<?php
+			}
+		}
+		
 		/**
 		 * Redirect to Welcome page.
 		 *
@@ -355,6 +370,36 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			}
 		}
 
+		/**
+		 * Add inline js script added by user in settings.
+		 *
+		 * @return void
+		 */
+		public function add_dashboard_inline_scripts() {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
+
+			$current_screen  = get_current_screen();
+			$allowed_screens = array( 
+				'toplevel_page_analytify-dashboard',
+				'analytify_page_analytify-woocommerce',
+				'analytify_page_analytify-campaigns',
+				'analytify_page_analytify-goals',
+				'analytify_page_analytify-authors',
+				'analytify_page_analytify-forms',
+				'analytify_page_analytify-events',
+				'analytify_page_analytify-dimensions',
+			);
+
+			if ( isset( $current_screen->base ) && in_array( $current_screen->base, $allowed_screens ) ) {
+				$custom_js = $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' );
+
+				if ( ! empty( $custom_js ) ) {
+					echo '<script type="text/javascript">' . $custom_js . '</script>';
+				}
+			}
+		}
 		/**
 		 * Show metabox under each Post type to display Analytics of single post/page in wp-admin.
 		 */
@@ -482,7 +527,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			if ( $this->pa_check_roles( $is_access_level ) ) {  ?>
 
-				<div class="analytify_setting">
+				<div class="analytify_setting analytify_wraper">
 					<div class="analytify_select_date analytify_select_date_single_page">
 						
 						<?php WPANALYTIFY_Utils::date_form( $start_date, $end_date, array( 'input_submit_id' => 'view_analytics' ) ); ?>
@@ -665,7 +710,11 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			<?php
 			if ( $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' ) ) {
-				echo $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' );
+				$custom_js = $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' );
+				var_dump($custom_js);
+				if ( ! empty( $custom_js ) ) {
+					echo '<script type="text/javascript">' . $custom_js . '</script>';
+				}
 			}
 
 			do_action( 'ga_ecommerce_js' );
@@ -734,7 +783,12 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				}
 
 				if ( $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' ) ) {
-					echo $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' );
+					
+					$custom_js = $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' );
+
+					if ( ! empty( $custom_js ) ) {
+						echo '<script type="text/javascript">' . $custom_js . '</script>';
+					}
 				}
 
 				// Add enhanced eccomerce extension
@@ -1042,7 +1096,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				wp_localize_script( 'moment', 'moment_analytify', array( 'timezone' => $timezone ) );
 				*/
 
-				wp_enqueue_script( 'pikaday-js', plugins_url( 'assets/js/pikaday.js', __FILE__ ), array( 'moment' ), '1.8.2' );
+				wp_enqueue_script( 'pikaday-js', plugins_url( 'assets/js/pikaday.js', __FILE__ ), array( 'moment' ), ANALYTIFY_VERSION );
 
 				wp_enqueue_script( 'analytify-dashboard-js', plugins_url( 'assets/js/wp-analytify-dashboard.js', __FILE__ ), array( 'pikaday-js' ), ANALYTIFY_VERSION );
 
@@ -1139,7 +1193,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			}
 
 			// for Settings only
-			if ( 'analytify_page_analytify-settings' === $page ) {
+			if ( 'analytify_page_analytify-settings' === $page ) { 
 				wp_enqueue_script( 'analytify-settings-js', plugins_url( 'assets/js/wp-analytify-settings.js', __FILE__ ), array( 'jquery-ui-tooltip', 'jquery' ), ANALYTIFY_VERSION );
 				wp_localize_script(
 					'analytify-settings-js',
@@ -1167,7 +1221,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			// for Single Page/Post Stats.
 			if ( $page == 'analytify_page_analytify-settings' || $page == 'post.php' || $page == 'post-new.php' ) {
-				wp_enqueue_script( 'chosen-js', plugins_url( 'assets/js/chosen.jquery.min.js', __FILE__ ), false, '1.8.7' );
+				wp_enqueue_script( 'chosen-js', plugins_url( 'assets/js/chosen.jquery.min.js', __FILE__ ), false, ANALYTIFY_VERSION );
 			}
 
 			if ( get_option( 'show_tracking_pointer_1' ) != 1 ) {
@@ -1193,6 +1247,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					'clear_log'          	 => wp_create_nonce( 'clear-log' ),
 					'fetch_log'          	 => wp_create_nonce( 'fetch-log' ),
 					'import_export'      	 => wp_create_nonce( 'import-export' ),
+					'analytify_rated'      	 => wp_create_nonce( 'analytify-rated' ),
 					'reactivate_license' 	 => wp_create_nonce( 'reactivate-license' ),
 					'single_post_stats'      => wp_create_nonce( 'analytify-get-single-stats' ),
 					'send_single_post_email' => wp_create_nonce( 'analytify-single-post-email' )
@@ -1250,6 +1305,20 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				);
 				wp_enqueue_script( 'scrolldepth-js', plugins_url( 'assets/js/scrolldepth.js', __FILE__ ), array( 'jquery' ), ANALYTIFY_VERSION, true );
 				wp_localize_script( 'scrolldepth-js', 'analytifyScroll', $localize_data );
+			}
+
+			if ( $is_tracking_available && 'on' == $this->settings->get_option( 'video_tracking', 'wp-analytify-advanced' ) ) {
+				
+				$permalink     = get_the_permalink( $post->ID );
+				$permalink     = str_replace( array( 'http://', 'https://' ), '', $permalink );
+				$localize_data = array(
+					'permalink'     => $permalink,
+					'tracking_mode' => defined('ANALYTIFY_TRACKING_MODE') ? ANALYTIFY_TRACKING_MODE : '',
+					'ga4_tracking'  => (bool) method_exists( 'WPANALYTIFY_Utils', 'get_ga_mode' ) && 'ga4' === WPANALYTIFY_Utils::get_ga_mode(),
+				);
+				// Enqueue video tracking script
+				wp_enqueue_script( 'video-tracking-js', plugins_url( 'assets/js/video_tracking.js', __FILE__ ), array( 'jquery' ), ANALYTIFY_VERSION, true );
+				wp_localize_script( 'video-tracking-js', 'analytifyVideo', $localize_data );
 			}
 		}
 
@@ -2040,8 +2109,12 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				if ( class_exists( 'WP_Analytify_Woocommerce' ) && 1 === version_compare( '4.1.0', ANALTYIFY_WOOCOMMERCE_VERSION ) ) {
 					array_push( $update_gtag_plugins, 'Analytify - WooCommerce Tracking' );
 				}
-				if ( class_exists( 'Analytify_Forms' ) && 1 === version_compare( '2.0.0', ANALYTIFY_FORMS_VERSION ) ) {
+				if ( class_exists( 'Analytify_Forms' ) && defined( 'ANALYTIFY_FORMS_VERSION' ) && 1 === version_compare( '2.0.0', ANALYTIFY_FORMS_VERSION ) ) {
 					array_push( $update_gtag_plugins, 'Analytify - Forms Tracking' );
+				} else {
+					if ( ! defined( 'ANALYTIFY_FORMS_VERSION' ) ) {
+						//error_log( 'ANALYTIFY_FORMS_VERSION is not defined.' ); // Log if the constant is missing
+					}
 				}
 				if ( class_exists( 'WP_Analytify_Pro_Base' ) && 1 === version_compare( '4.1.0', ANALYTIFY_PRO_VERSION ) ) {
 					array_push( $update_gtag_plugins, 'Analytify Pro' );

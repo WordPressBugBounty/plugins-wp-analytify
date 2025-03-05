@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '5.5.1' );
+define( 'ANALYTIFY_VERSION', '6.0.0' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -1628,7 +1628,9 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				'detail-realtime',
 				'detail-demographic',
 				'search-terms',
-				'search-console-report'
+        'page-speed',
+				'search-console-report',
+				'video-tracking'
 			];
 			$pro_addon = [
 				'wp-analytify-woocommerce',
@@ -1703,13 +1705,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					break;
 
 				case 'wp-analytify-authors':
-					if ( class_exists( 'Analytify_Authors' ) ) {
+					if ( class_exists( 'Analytify_Authors' ) || class_exists( 'Analytify_Addon_Authors' ) ) {
 						$addon_active = true;
 					}
 					break;
 
 				case 'wp-analytify-edd':
-					if ( class_exists( 'WP_Analytify_Edd' ) ) {
+					if ( class_exists( 'WP_Analytify_Edd' ) || class_exists( 'WP_Analytify_Edd_Addon' ) ) {
 						$addon_active = true;
 					}
 					break;
@@ -1849,7 +1851,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 */
 		public function dashboard_navigation() {
 
-			$nav_items = array(
+			$nav_items = apply_filters('analytify_filter_navigation_items', array(
 
 				array(
 					'name'			=> 'Audience',
@@ -1875,10 +1877,17 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 						),
 						array(
 							'name'			=> 'Events Tracking',
-							'sub_name'		=> 'Affiliates, clicks and links tracking',
+							'sub_name'		=> 'Affiliates, clicks & links tracking',
 							'page_slug'		=> 'analytify-events',
 							'addon_slug'	=> 'events-tracking',
 							'module_type'	=> 'pro_feature',
+						),
+						array(
+							'name'			=> 'Videos Tracking',
+							'sub_name'		=> 'Track actions, duration & events',
+							'page_slug'		=> 'analytify-dashboard',
+							'addon_slug'	=> 'video-tracking',
+							'module_type'	=> 'pro_inner',
 						)
 					)
 				),
@@ -1910,7 +1919,14 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 							'page_slug'		=> 'analytify-goals',
 							'addon_slug'	=> 'wp-analytify-goals',
 							'module_type'	=> 'pro_addon',
-						)
+						),
+						array(
+							'name'			=> 'PageSpeed Insights',
+							'sub_name'		=> 'Google Web Performance',
+							'page_slug'		=> 'analytify-dashboard',
+							'addon_slug'	=> 'page-speed',
+							'module_type'	=> 'pro_inner',
+						),
 					)
 				),
 
@@ -1955,7 +1971,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 						),
 						array(
 							'name'			=> 'Demographics',
-							'sub_name'		=> 'Age & Gender Overview',
+							'sub_name'		=> 'Age, Gender & Interests',
 							'page_slug'		=> 'analytify-dashboard',
 							'addon_slug'	=> 'detail-demographic',
 							'module_type'	=> 'pro_inner',
@@ -1984,7 +2000,8 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					'addon_slug'	=> 'detail-realtime',
 					'module_type'	=> 'pro_inner',
 				)
-			);
+			));
+
 
 			$this->navigation_markup( $nav_items );
 		}

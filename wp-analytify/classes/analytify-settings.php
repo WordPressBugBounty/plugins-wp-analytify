@@ -303,6 +303,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 							'show-social-dashboard'     => __( 'Social Media Stats', 'wp-analytify' ),
 							'show-referrer-dashboard'   => __( 'Referrers Stats', 'wp-analytify' ),
 							'show-scroll-depth-stats'    => __( 'Scroll Depth', 'wp-analytify' ),
+							'show-video-tracking-stats'    => __('Video Tracking', 'wp-analytify'),
 							'show-what-happen-stats'    => __( 'Entrance Exits Stats', 'wp-analytify' ),
 						),
 					),
@@ -401,6 +402,12 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 						'name'  => 'depth_percentage',
 						'label' => __( 'Scroll Depth', 'wp-analytify' ),
 						'desc'  => __( 'Track page scroll depth percentage. This will help you figure out the most highlighted area of the page. Percentage events are fired at the 25%, 50%, 75%, and 100% scrolling points', 'wp-analytify' ),
+						'type'  => 'checkbox',
+					),
+					array(
+						'name'  => 'video_tracking',
+						'label' => __('Videos Tracking', 'wp-analytify'),
+						'desc'  => __('Track embedded video interactions such as play, pause, and completion. This will help you understand user engagement with video content.', 'wp-analytify'),
 						'type'  => 'checkbox',
 					),
 					array(

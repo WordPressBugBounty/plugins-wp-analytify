@@ -122,7 +122,8 @@ class Analytify_Report extends Analytify_Report_Abstract {
     if (isset($raw['aggregations']['userEngagementDuration'])) {
 			$send_email_total_time['total_time']['value']    = WPANALYTIFY_Utils::pretty_time($raw['aggregations']['userEngagementDuration']);
 		}
-    
+
+
 		return array(
 			'boxes' => $boxes,
 			'new_vs_returning_boxes' => $new_vs_returning_boxes,

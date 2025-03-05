@@ -969,143 +969,148 @@ class WPANALYTIFY_Utils {
 	 */
 	public static function required_dimensions() {
 
-		return array(
-			array(
+		return [
+			[
 				'parameter_name' => 'wpa_author',
 				'display_name'   => 'WPA Author',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_post_type',
 				'display_name'   => 'WPA Post Type',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_published_at',
 				'display_name'   => 'WPA Published At',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_category',
 				'display_name'   => 'WPA Category',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_tags',
 				'display_name'   => 'WPA Tags',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_user_id',
 				'display_name'   => 'WPA WP User ID',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_logged_in',
 				'display_name'   => 'WPA Logged In',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_seo_score',
 				'display_name'   => 'WPA SEO Score',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_focus_keyword',
 				'display_name'   => 'WPA Focus Keyword',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_link_action',
 				'display_name'   => 'WPA Link Action',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_label',
 				'display_name'   => 'WPA Label',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_category',
 				'display_name'   => 'WPA Category',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_affiliate_label',
 				'display_name'   => 'WPA Affiliate Label',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_email_address',
 				'display_name'   => 'WPA Email Address',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_form_id',
 				'display_name'   => 'WPA Form Id',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_is_affiliate_link',
 				'display_name'   => 'WPA Is Affiliate Link',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_link_label',
 				'display_name'   => 'WPA Link Label',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_link_text',
 				'display_name'   => 'WPA Link Text',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_outbound',
 				'display_name'   => 'WPA Outbound',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_tel_number',
 				'display_name'   => 'WPA Tel Number',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_scroll_depth',
 				'display_name'   => 'WPA Scroll Depth',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_seo_score',
 				'display_name'   => 'WPA Seo Score',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_percentage',
 				'display_name'   => 'WPA Percentage',
 				'scope'          => 1,
-			),
-			array(
+			],
+			[
 				'parameter_name' => 'wpa_post_category',
 				'display_name'   => 'WPA Post Category',
 				'scope'          => 1,
-			),
-			// array(
-			// 	'parameter_name' => 'wpa_video_provider',
-			// 	'display_name'   => 'WPA Video Provider',
-			// 	'scope'          => 1,
-			// ),
-			// array(
-			// 	'parameter_name' => 'wpa_video_title',
-			// 	'display_name'   => 'WPA Video Title',
-			// 	'scope'          => 1,
-			// ),
-			// array(
-			// 	'parameter_name' => 'wpa_video_url',
-			// 	'display_name'   => 'WPA Video Url',
-			// 	'scope'          => 1,
-			// ),
-		);
+			],
+			[
+				'parameter_name' => 'wpa_video_provider',
+				'display_name'   => 'WPA Video Provider',
+				'scope'          => 1, 
+			],
+			[
+				'parameter_name' => 'wpa_video_action',
+				'display_name'   => 'WPA Video Action',
+				'scope'          => 1, 
+			],
+			[
+				'parameter_name' => 'wpa_video_duration',
+				'display_name'   => 'WPA Video Duration',
+				'scope'          => 1, 
+			],
+			[
+				'parameter_name' => 'wpa_video_title',
+				'display_name'   => 'WPA Video Title',
+				'scope'          => 1, 
+			],
+		];
 	}
 
 	/**
@@ -1118,6 +1123,9 @@ class WPANALYTIFY_Utils {
 	 * @return string
 	 */
 	public static function get_all_stats_link( $report_url, $report, $date_range = false ) {
+		$report_link = 'https://analytics.google.com/analytics/web/#/'.$report_url.'/reports/explorer/?';
+	
+		$link = "";
 
 			switch ( $report ) {
 				case 'top_pages':
@@ -1135,11 +1143,11 @@ class WPANALYTIFY_Utils {
 				case 'top_products':
 					$link = 'top_products';
 					break;
-				case 'source_medium':
-					$link = 'source_medium';
+				case "source_medium":
+					$link = $report_link.'params=_u..nav%3Dmaui${date_parameter}&r=lifecycle-traffic-acquisition-v2&ruid=lifecycle-traffic-acquisition-v2,3078873331,acquisition';
 					break;
-				case 'top_countries_sales':
-					$link = 'top_countries_sales';
+				case "top_countries_sales":
+					$link = $report_link.'params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22country%22%5D&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user';
 					break;
 				default:
 					$link = '';

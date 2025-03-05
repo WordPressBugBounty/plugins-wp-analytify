@@ -304,7 +304,7 @@ jQuery(document).ready(function ($) {
                           <strong>${new_vs_returning_box.stats.new.label} = ${
                   (new_vs_returning_box.stats.new.number / total_visitors) * 100 >
                   0
-                    ? Math.round(
+                    ? Math.round( 
                         (new_vs_returning_box.stats.new.number / total_visitors) *
                         100
                       )

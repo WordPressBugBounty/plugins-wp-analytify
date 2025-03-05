@@ -2,9 +2,9 @@
 Contributors: hiddenpearls
 Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
-Requires at least: 3.6
+Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 5.5.1
+Stable tag: 6.0.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,21 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 6.0.0 - 2025-03-05 =
+* New Feature: Analytify Paid add-ons (Campaigns, Authors, Easy Digital Downloads, and WooCommerce) are now merged into Analytify Pro as modules. You can directly activate/deactivate these from the Add-ons page.
+* New Feature: Introducing a new dashboard for Videos Tracking in the Conversions tab. 
+* New Feature: Introducing the Google PageSpeed Insights Dashboard in Acquisitions tab to analyze your website's performance.
+* New Feature: Added a User Interests Stats in the Demographics Dashboard for deeper audience insights.
+* New Feature: Added Conversion Rate stat in WooCommerce and EDD dashboards.  
+* New Feature: Added First Purchasers stat in WooCommerce and EDD dashboards. 
+* Bug Fix: CSV Export options not working for WooCommerce dashboards. 
+* New Feature: Introducing a new filter to hide specific navigation tabs from Analytify dashboard: [analytify_filter_navigation_items](https://analytify.io/doc/analytify-filters/#hide-specific-navigation-tabs-from-the-analytify-dashboard)
+* New Feature: Introducing a new filter to customize the Introduction message in Analytify Email Reports: [analytify_custom_email_message](https://analytify.io/doc/analytify-filters/#customizing-the-introduction-message-in-analytify-email-reports) 
+* Bug Fix: Fixed the "View All" links in the Woocommerce Dashboard. 
+* Security Fix: Missing Authorization to Authenticated (Subscriber) setting change.
+* Enhancement: Added a notice to inform users that reporting is disabled when "Test Email" is triggered with Email Reporting turned off. 
+* Enhancement: Minor bug fixes and code improvements.
 
 = 5.5.1 - 2025-02-04 =
 * Bug Fix: Mobile logos missing in System Stats section on Overview Dashboard. 
@@ -1043,8 +1058,8 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 5.5.1 =
-* Update Free, Pro and all addons altogether.
+= 6.0.0 =
+* Update Free and Pro together, addons are now merged into Analytify Pro.
 
 == Notes ==
 

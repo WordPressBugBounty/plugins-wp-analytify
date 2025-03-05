@@ -87,7 +87,9 @@ class WPANALYTIFY_AJAX {
 	 * @since 1.2.4
 	 */
 	public static function rated() {
-
+		if ( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify-rated', 'nonce' )  ) {
+		    wp_send_json_error( __( 'You do not have permission to perform this action.', 'wp-analytify' ), 403 );
+		}
 		update_option( 'analytify_admin_footer_text_rated', 1 );
 		die( 'rated' );
 	}

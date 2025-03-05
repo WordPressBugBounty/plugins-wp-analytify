@@ -3,7 +3,7 @@
 function enqueue_custom_styles()
 {
     // Enqueue the debug.css file from your plugin's directory
-    wp_enqueue_style('custom-debug-style', plugins_url('admin/css/debug.css', __FILE__));
+    wp_enqueue_style('custom-debug-style', plugins_url('admin/css/debug.css', __FILE__), array(), ANALYTIFY_VERSION);
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_styles');
 

@@ -436,6 +436,7 @@ class Analytify_Rest_API {
 			}
 		}
 
+
 		return array(
 			'success' => true,
 			'boxes'   => apply_filters( 'analytify_general_stats_boxes', $boxes_description, array( $this->start_date, $this->end_date ) ),
@@ -709,6 +710,7 @@ class Analytify_Rest_API {
 			),
 			'stats'   => $city_stats,
 		);
+
 
 		return array(
 			'success' => true,
@@ -1049,6 +1051,7 @@ class Analytify_Rest_API {
 			// 		'content' => '<p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong>' . esc_html__( 'Status: ' ) . '</strong>' . __( 'Reports are under development.', 'wp-analytify' ) . '</p><p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong>' . esc_html__( 'Message: ', 'wp-analytify' ) . '</strong>' . esc_html__( 'Social media stats will be available in the future.', 'wp-analytify' ) . '</p>',
 			// 	),
 			// );
+
 
 
 

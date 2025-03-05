@@ -97,6 +97,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 														<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 														<ul class="analytify-promo-popup-list">
 															<li>Real-Time Dashboard</li>
+															<li>PageSpeed Insights Dashboard</li>
 															<li>Demographics Dashboard</li>
 															<li>Search Terms Dashboard</li>
 															<li>Search Console Dashboard</li>
@@ -132,6 +133,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 															<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 															<ul class="analytify-promo-popup-list">
 																<li>Real-Time Dashboard</li>
+																<li>PageSpeed Insights Dashboard</li>
 																<li>Demographics Dashboard</li>
 																<li>Search Terms Dashboard</li>
 																<li>Search Console Dashboard</li>
@@ -167,6 +169,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																<ul class="analytify-promo-popup-list">
 																	<li>Real-Time Dashboard</li>
+																	<li>PageSpeed Insights Dashboard</li>
 																	<li>Demographics Dashboard</li>
 																	<li>Search Terms Dashboard</li>
 																	<li>Search Console Dashboard</li>
@@ -203,6 +206,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																	<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																	<ul class="analytify-promo-popup-list">
 																		<li>Real-Time Dashboard</li>
+																		<li>PageSpeed Insights Dashboard</li>
 																		<li>Demographics Dashboard</li>
 																		<li>Search Terms Dashboard</li>
 																		<li>Search Console Dashboard</li>
@@ -265,6 +269,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																			<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																			<ul class="analytify-promo-popup-list">
 																				<li>Real-Time Dashboard</li>
+																				<li>PageSpeed Insights Dashboard</li>
 																				<li>Demographics Dashboard</li>
 																				<li>Search Terms Dashboard</li>
 																				<li>Search Console Dashboard</li>
@@ -302,6 +307,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																				<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																				<ul class="analytify-promo-popup-list">
 																					<li>Real-Time Dashboard</li>
+																					<li>PageSpeed Insights Dashboard</li>
 																					<li>Demographics Dashboard</li>
 																					<li>Search Terms Dashboard</li>
 																					<li>Search Console Dashboard</li>
@@ -339,6 +345,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																						<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																						<ul class="analytify-promo-popup-list">
 																							<li>Real-Time Dashboard</li>
+																							<li>PageSpeed Insights Dashboard</li>
 																							<li>Demographics Dashboard</li>
 																							<li>Search Terms Dashboard</li>
 																							<li>Search Console Dashboard</li>
@@ -402,8 +409,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																							<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																							<ul class="analytify-promo-popup-list">
 																								<li>Real-Time Dashboard</li>
-																								<li>Demographics Dashboard</li>
-																								<li>Search Terms Dashboard</li>
+																								<li>PageSpeed Insights Dashboard</li>
 																								<li>Search Console Dashboard</li>
 																								<li>Google AMP</li>
 																								<li>Events Tracking</li>
@@ -422,11 +428,72 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																						</div>
 																					</div>
 																				</div>
-																			<?php } ?>
+																				<?php }  elseif ('page-speed' === $addon) { ?>
 
+																					<div class="analytify-email-dashboard-wrapper">
 
+																					<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/page-speed.png" alt="Upgrade to Pro" style="width:100%">
+
+																					<div class="analytify-email-promo-contianer">
+																						<div class="analytify-email-premium-overlay">
+																							<div class="analytify-email-premium-popup">
+																								<h3 class="analytify-promo-popup-heading">Unlock PageSpeed Insights Dashboard</h3>
+																								<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
+																								<ul class="analytify-promo-popup-list">
+																									<li>Real-Time Dashboard</li>
+																									<li>PageSpeed Insights Dashboard</li>
+																									<li>Search Console Dashboard</li>
+																									<li>Google AMP</li>
+																									<li>Events Tracking</li>
+																									<li>Links Tracking</li>
+																									<li>Affiliate Links</li>
+																									<li>Form Conversions</li>
+																									<li>Authors Tracking</li>
+																									<li>Google Optimize</li>
+																									<li>UTM Campaigns Tracking</li>
+																									<li>Weekly & Monthly Emails</li>
+																									<li>WooCommerce & EDD Tracking</li>
+																								</ul>
+																								<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
+																								<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Real+Time" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
+
+																							</div>
+																						</div>
+																					</div>	
+																				<?php }  elseif ('video-tracking' === $addon) { ?>
+
+																				<div class="analytify-email-dashboard-wrapper">
+
+																				<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/video-tracking.png" alt="Upgrade to Pro" style="width:100%">
+
+																				<div class="analytify-email-promo-contianer">
+																					<div class="analytify-email-premium-overlay">
+																						<div class="analytify-email-premium-popup">
+																							<h3 class="analytify-promo-popup-heading">Unlock Videos Tracking Dashboard</h3>
+																							<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
+																							<ul class="analytify-promo-popup-list">
+																								<li>Real-Time Dashboard</li>
+																								<li>PageSpeed Insights Dashboard</li>
+																								<li>Search Console Dashboard</li>
+																								<li>Google AMP</li>
+																								<li>Events Tracking</li>
+																								<li>Links Tracking</li>
+																								<li>Affiliate Links</li>
+																								<li>Form Conversions</li>
+																								<li>Authors Tracking</li>
+																								<li>Google Optimize</li>
+																								<li>UTM Campaigns Tracking</li>
+																								<li>Weekly & Monthly Emails</li>
+																								<li>WooCommerce & EDD Tracking</li>
+																							</ul>
+																							<p class="analytify-promo-popup-paragraph" style="padding-top: 10px;">Use the coupon code "BFCM60" to get 60% discount.</p>
+																							<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=dashboard&utm_campaign=pro-upgrade&utm_content=Real+Time" class="analytify-promo-popup-btn" target="_blank">Upgrade to Analytify Pro</a>
+
+																						</div>
+																					</div>
+																				</div>	
+																				<?php } ?>
 																			</div>
-
 																	</div>
 																</div>
 															</div>
