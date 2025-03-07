@@ -234,7 +234,7 @@ class WPANALYTIFY_Utils {
 		$modules = get_option( 'wp_analytify_modules' );
 
 		$google_ads_module = array(
-			'status'      => 'deactive',
+			'status'      => false,
 			'slug'        => 'google-ads-tracking',
 			'page_slug'   => 'analytify-ads-tracking',
 			'title'       => __( 'Google Ads Tracking', 'wp-analytify' ),

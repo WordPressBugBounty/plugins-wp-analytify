@@ -406,7 +406,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					),
 					array(
 						'name'  => 'video_tracking',
-						'label' => __('Videos Tracking', 'wp-analytify'),
+						'label' => __('Video Tracking', 'wp-analytify'),
 						'desc'  => __('Track embedded video interactions such as play, pause, and completion. This will help you understand user engagement with video content.', 'wp-analytify'),
 						'type'  => 'checkbox',
 					),

@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 6.0.0
+Stable tag: 6.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -303,9 +303,14 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Changelog ==
 
+= 6.0.1 - 2025-03-05 =
+* Bug Fix: Google Ads module not activating issue fixed.
+* Compatibility: Compatible to WordPress 6.7
+
+
 = 6.0.0 - 2025-03-05 =
 * New Feature: Analytify Paid add-ons (Campaigns, Authors, Easy Digital Downloads, and WooCommerce) are now merged into Analytify Pro as modules. You can directly activate/deactivate these from the Add-ons page.
-* New Feature: Introducing a new dashboard for Videos Tracking in the Conversions tab. 
+* New Feature: Introducing a new dashboard for Video Tracking in the Conversions tab. 
 * New Feature: Introducing the Google PageSpeed Insights Dashboard in Acquisitions tab to analyze your website's performance.
 * New Feature: Added a User Interests Stats in the Demographics Dashboard for deeper audience insights.
 * New Feature: Added Conversion Rate stat in WooCommerce and EDD dashboards.  
@@ -1058,7 +1063,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 6.0.0 =
+= 6.0.1 =
 * Update Free and Pro together, addons are now merged into Analytify Pro.
 
 == Notes ==

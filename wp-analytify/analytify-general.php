@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '6.0.0' );
+define( 'ANALYTIFY_VERSION', '6.0.1' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -1883,7 +1883,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 							'module_type'	=> 'pro_feature',
 						),
 						array(
-							'name'			=> 'Videos Tracking',
+							'name'			=> 'Video Tracking',
 							'sub_name'		=> 'Track actions, duration & events',
 							'page_slug'		=> 'analytify-dashboard',
 							'addon_slug'	=> 'video-tracking',

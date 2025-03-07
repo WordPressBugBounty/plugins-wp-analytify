@@ -469,7 +469,7 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																				<div class="analytify-email-promo-contianer">
 																					<div class="analytify-email-premium-overlay">
 																						<div class="analytify-email-premium-popup">
-																							<h3 class="analytify-promo-popup-heading">Unlock Videos Tracking Dashboard</h3>
+																							<h3 class="analytify-promo-popup-heading">Unlock Video Tracking Dashboard</h3>
 																							<p class="analytify-promo-popup-paragraph">Upgrading to Analytify Premium plan gives access to a lot of amazing features.</p>
 																							<ul class="analytify-promo-popup-list">
 																								<li>Real-Time Dashboard</li>
