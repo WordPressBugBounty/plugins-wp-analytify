@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 6.0.1
+Stable tag: 6.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,10 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 6.0.2 - 2025-03-10 =
+* Bug Fix: Google Ads module not activating issue when Pro version is active, fixed.
+* Compatibility: Compatible to WordPress 6.7
 
 = 6.0.1 - 2025-03-05 =
 * Bug Fix: Google Ads module not activating issue fixed.
@@ -1063,7 +1067,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 6.0.1 =
+= 6.0.2 =
 * Update Free and Pro together, addons are now merged into Analytify Pro.
 
 == Notes ==

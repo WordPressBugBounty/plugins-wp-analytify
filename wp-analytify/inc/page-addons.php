@@ -207,6 +207,10 @@ if (!class_exists('WP_Analytify_Addons')) {
 				echo sprintf(esc_html__('%1$s Deactivate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-deactivate-module" data-slug="' . $slug . '" data-set-state="deactive" data-internal-module="true" data-nonce="' . $nonce . '" >', '</button>');
 
 			} else if (!$this->modules_list[$slug]['status'] && $this->check_pro_support()) {
+							
+				echo sprintf(esc_html__('%1$s Activate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-activate-module" data-slug="' . $slug . '" data-set-state="active" data-internal-module="true" data-nonce="' . $nonce . '" >', '</button>');
+
+			} else if ($this->modules_list[$slug]['status'] === 'deactive' && $this->check_pro_support()) {
 
 				echo sprintf(esc_html__('%1$s Activate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-activate-module" data-slug="' . $slug . '" data-set-state="active" data-internal-module="true" data-nonce="' . $nonce . '" >', '</button>');
 
