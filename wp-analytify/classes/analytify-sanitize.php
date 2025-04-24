@@ -36,6 +36,7 @@ class WPANALYTIFY_Sanitize {
 		if ( 0 === $recursion_level && is_array( $data ) ) {
 			// We always expect associative arrays.
 			if ( ! is_array( $key_rules ) ) {
+				// translators: Array Error
 				wp_die( sprintf( __( '%1$s was not expecting data to be an array.', 'wp-analytify' ), $context ) );
 
 				return false;
@@ -57,12 +58,14 @@ class WPANALYTIFY_Sanitize {
 			// Neither $data or $key_rules are a first level array so can be analysed.
 			if ( 'array' == $key_rules ) {
 				if ( ! is_array( $data ) ) {
+					// translators: Array Error
 					wp_die( sprintf( __( '%1$s was expecting an array but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
 				}
 			} elseif ( 'string' == $key_rules ) {
 				if ( ! is_string( $data ) ) {
+					// translators: String Error
 					wp_die( sprintf( __( '%1$s was expecting a string but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -70,6 +73,7 @@ class WPANALYTIFY_Sanitize {
 			} elseif ( 'key' == $key_rules ) {
 				$key_name = sanitize_key( $data );
 				if ( $key_name !== $data ) {
+					// translators: Key Error
 					wp_die( sprintf( __( '%1$s was expecting a valid key but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -78,6 +82,7 @@ class WPANALYTIFY_Sanitize {
 			} elseif ( 'text' == $key_rules ) {
 				$text = sanitize_text_field( $data );
 				if ( $text !== $data ) {
+					// translators: Text Error
 					wp_die( sprintf( __( '%1$s was expecting text but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -85,6 +90,7 @@ class WPANALYTIFY_Sanitize {
 				$data = $text;
 			} elseif ( 'serialized' == $key_rules ) {
 				if ( ! is_string( $data ) || ! is_serialized( $data ) ) {
+					// translators: Serialized data error
 					wp_die( sprintf( __( '%1$s was expecting serialized data but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -106,6 +112,7 @@ class WPANALYTIFY_Sanitize {
 			// } 
 			elseif ( 'numeric' == $key_rules ) {
 				if ( ! is_numeric( $data ) ) {
+					// translators: Valid numeric error
 					wp_die( sprintf( __( '%1$s was expecting a valid numeric but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -113,6 +120,7 @@ class WPANALYTIFY_Sanitize {
 			} elseif ( 'int' == $key_rules ) {
 				// As we are sanitizing form data, even integers are within a string.
 				if ( ! is_numeric( $data ) || (int) $data != $data ) {
+					// translators: Integer Error
 					wp_die( sprintf( __( '%1$s was expecting an integer but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -120,6 +128,7 @@ class WPANALYTIFY_Sanitize {
 				$data = (int) $data;
 			} elseif ( 'positive_int' == $key_rules ) {
 				if ( ! is_numeric( $data ) || (int) $data != $data || 0 > $data ) {
+					// translators: Positive Integer Error
 					wp_die( sprintf( __( '%1$s was expecting a positive number (int) but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -127,6 +136,7 @@ class WPANALYTIFY_Sanitize {
 				$data = floor( $data );
 			} elseif ( 'negative_int' == $key_rules ) {
 				if ( ! is_numeric( $data ) || (int) $data != $data || 0 < $data ) {
+					// translators: Negative Integer Error
 					wp_die( sprintf( __( '%1$s was expecting a negative number (int) but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -134,6 +144,7 @@ class WPANALYTIFY_Sanitize {
 				$data = ceil( $data );
 			} elseif ( 'zero_int' == $key_rules ) {
 				if ( ! is_numeric( $data ) || (int) $data != $data || 0 !== $data ) {
+					// translators: Zero Integer Error
 					wp_die( sprintf( __( '%1$s was expecting 0 (int) but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -141,6 +152,7 @@ class WPANALYTIFY_Sanitize {
 				$data = 0;
 			} elseif ( 'empty' == $key_rules ) {
 				if ( ! empty( $data ) ) {
+					// translators: Empty Value Error
 					wp_die( sprintf( __( '%1$s was expecting an empty value but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -148,6 +160,7 @@ class WPANALYTIFY_Sanitize {
 			} elseif ( 'url' == $key_rules ) {
 				$url = esc_url_raw( $data );
 				if ( empty( $url ) ) {
+					// translators: URL Error
 					wp_die( sprintf( __( '%1$s was expecting a URL but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
@@ -156,12 +169,14 @@ class WPANALYTIFY_Sanitize {
 			} elseif ( 'bool' == $key_rules ) {
 				$bool = sanitize_key( $data );
 				if ( empty( $bool ) || ! in_array( $bool, array( 'true', 'false' ) ) ) {
+					// translators: Bool Error
 					wp_die( sprintf( __( '%1$s was expecting a bool but got something else: "%2$s"', 'wp-analytify' ), $context, $data ) );
 
 					return false;
 				}
 				$data = $bool;
 			} else {
+				// translators: Unknown Error
 				wp_die( sprintf( __( 'Unknown sanitization rule "%1$s" supplied by %2$s', 'wp-analytify' ), $key_rules, $context ) );
 
 				return false;

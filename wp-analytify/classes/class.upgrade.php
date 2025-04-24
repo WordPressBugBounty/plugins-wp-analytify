@@ -165,54 +165,66 @@ if ( ! get_option( 'analytify_free_upgrade_routine' ) ) {
 	update_option( 'analytify_free_upgrade_routine', 'done' );
 }
 
-// Add modules options array, if not available.
-if ( ! get_option( 'wp_analytify_modules' ) ) {
-	update_option( 'wp_analytify_modules', [
-		'events-tracking' => [
-			'status' => 'active',
-			'slug' => 'events-tracking',
-			'page_slug' => 'analytify-events',
-			'title' => __( 'Events Tracking', 'wp-analytify' ),
-			'description' => __( 'This Add-on will track custom events in a unique and intiutive way which is very understandable even for non-technical WordPress users.', 'wp-analytify' ),
-			'image' => 'https://analytify.io/wp-content/uploads/2021/02/analytify-events-tracking.svg',
-			'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Events+Tracking',
-		],
-		'custom-dimensions' => [
-			'status' => 'active',
-			'slug' => 'custom-dimensions',
-			'page_slug' => 'analytify-dimensions',
-			'title' => __( 'Custom Dimensions', 'wp-analytify' ),
-			'description' => __( 'With the Custom Dimensions addon you can view data which can be segmented and organized according to your businesses.', 'wp-analytify' ),
-			'image' => 'https://analytify.io/wp-content/uploads/2021/02/analytify-custom-dimensions.svg',
-			'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Custom+Dimensions',
-		],
-		'amp' => [
-			'status' => false,
-			'slug' => 'amp',
-			'page_slug' => 'analytify-amp',
-			'title' => __( 'AMP', 'wp-analytify' ),
-			'description' => __( 'Analytify\'s AMP Addon will enable accurate reporting and tracking of mobile visitors to your AMP pages. ', 'wp-analytify' ),
-			'image' => 'https://analytify.io/wp-content/uploads/2021/02/analytify-google-amp.svg',
-			'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=AMP',
-		],
-		'google-ads-tracking' => [
-			'status'      => false,
-			'slug'        => 'google-ads-tracking',
-			'page_slug'   => 'analytify-ads-tracking',
-			'title'       => __( 'Google Ads Tracking', 'wp-analytify' ),
-			'description' => __( 'This Addon Tracks Google Ads Conversions for Woocommerce and EDD.', 'wp-analytify' ),
-			'image'       => ANALYTIFY_PLUGIN_URL . 'assets/img/google-ads-logo.png',
-			'url'         => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Google+Ads'
-		],
-	] );
+function analytify_register_modules() {
+    $default_modules = [
+        'events-tracking' => [
+            'status' => 'active',
+            'slug' => 'events-tracking',
+            'page_slug' => 'analytify-events',
+            'title' => __( 'Events Tracking', 'wp-analytify' ),
+            'description' => __( 'This Add-on will track custom events in a unique and intuitive way which is very understandable even for non-technical WordPress users.', 'wp-analytify' ),
+            'image' => ANALYTIFY_PLUGIN_URL . 'assets/img/analytify-events-tracking.svg',
+            'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Events+Tracking',
+        ],
+        'custom-dimensions' => [
+            'status' => 'active',
+            'slug' => 'custom-dimensions',
+            'page_slug' => 'analytify-dimensions',
+            'title' => __( 'Custom Dimensions', 'wp-analytify' ),
+            'description' => __( 'With the Custom Dimensions addon you can view data which can be segmented and organized according to your businesses.', 'wp-analytify' ),
+            'image' => ANALYTIFY_PLUGIN_URL . 'assets/img/analytify-custom-dimensions.svg',
+            'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Custom+Dimensions',
+        ],
+        'amp' => [
+            'status' => false,
+            'slug' => 'amp',
+            'page_slug' => 'analytify-amp',
+            'title' => __( 'AMP', 'wp-analytify' ),
+            'description' => __( 'Analytify\'s AMP Addon will enable accurate reporting and tracking of mobile visitors to your AMP pages.', 'wp-analytify' ),
+            'image' => ANALYTIFY_PLUGIN_URL . 'assets/img/analytify-google-amp.svg',
+            'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=AMP',
+        ],
+        'google-ads-tracking' => [
+            'status' => false,
+            'slug' => 'google-ads-tracking',
+            'page_slug' => 'analytify-ads-tracking',
+            'title' => __( 'Google Ads Tracking', 'wp-analytify' ),
+            'description' => __( 'This Addon Tracks Google Ads Conversions for Woocommerce and EDD.', 'wp-analytify' ),
+            'image' => ANALYTIFY_PLUGIN_URL . 'assets/img/google-ads-logo.png',
+            'url' => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Google+Ads'
+        ],
+    ];
+
+    $analytify_modules = get_option( 'wp_analytify_modules', [] );
+
+    // Check if 'google-ads-tracking' is not in the array and the option does not exist.
+    if ( ! array_key_exists( 'google-ads-tracking', $analytify_modules ) ) {
+        $analytify_modules['google-ads-tracking'] = $default_modules['google-ads-tracking'];
+    }
+
+    // Merge default modules with existing ones, preserving existing settings.
+    $analytify_modules = array_merge($default_modules, $analytify_modules);
+
+    update_option( 'wp_analytify_modules', $analytify_modules );
+
+    // Backward compatibility support added.
+    $analytify_admin_options = get_option( 'wp-analytify-admin' );
+
+    if ( $analytify_admin_options && empty( $analytify_admin_options['enable_back_end'] ) ) {
+        $analytify_admin_options['enable_back_end'] = 'on';
+        unset( $analytify_admin_options['disable_back_end'] );
+        update_option( 'wp-analytify-admin', $analytify_admin_options );
+    }
 }
 
-
-// Backward compatibility support added.
-$analytify_admin_options = get_option( 'wp-analytify-admin' );
-
-if ( $analytify_admin_options && empty( $analytify_admin_options['enable_back_end'] ) ) {
-	$analytify_admin_options['enable_back_end'] = 'on';
-	unset( $analytify_admin_options['disable_back_end'] );
-	update_option( 'wp-analytify-admin', $analytify_admin_options );
-}
+add_action('wp_loaded', 'analytify_register_modules');

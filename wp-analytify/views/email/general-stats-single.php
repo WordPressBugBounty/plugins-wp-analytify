@@ -70,7 +70,7 @@ function pa_email_include_single_general( $current, $stats, $old_stats, $date_di
 		</td>
 	</tr>
 
-		<?php if ( ! class_exists( 'WP_Analytify_Email' ) ) : ?>
+		<?php if ( ! class_exists( 'WP_Analytify_Email' ) && ! class_exists('WP_Analytify_Addon_Email') ) : ?>
 		<tr>
 			<td valign="top" class="analytify-promo-inner-table" style="padding: 30px 45px;">
 				<table style="margin: 0 auto;" cellspacing="0" cellpadding="0" width="100%" align="center">

@@ -3,8 +3,8 @@ Contributors: hiddenpearls
 Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 6.0.2
+Tested up to: 6.8
+Stable tag: 6.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,15 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 6.1.0 - 2025-04-24 =
+* New Feature: Analytify Paid add-ons (Forms, Goals, and Email) are now merged into Analytify Pro as modules. You can directly activate/deactivate these from the Add-ons page.
+* New Feature: Download or export dashboard analytics in PDF format.
+* New Feature: Introduces the Pie chart over doughnut chart in Analytify dashboard.
+* New Feature: Introducing a new filter to customize the device Pie chart colors in Analytify dashboard: [analytify_visitor_devices_chart_colors](https://analytify.io/doc/analytify-filters/#changing-colors-of-visitors-devices-pie-chart)
+* New Feature: Introducing a new filter to customize the visitor Pie chart colors in Analytify dashboard: [analytify_new_vs_returning_visitors_chart_colors](https://analytify.io/doc/analytify-filters/#changing-colors-of-new-vs-returning-vistors-pie-chart)
+* Bug Fix: Added missing icon for Email report in mobile device stats.
+* Compatibility: Compatible to WordPress 6.8
 
 = 6.0.2 - 2025-03-10 =
 * Bug Fix: Google Ads module not activating issue when Pro version is active, fixed.
@@ -630,7 +639,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 =  3.1.4 - 2020-08-24 =
 * Bug Fix: Fix rest api permission callback issue.
-* Bug Fix: Fix jQuery deprication.
+* Bug Fix: Fix jQuery deprecation.
 * Compatibility : Compatible to WordPress 5.5
 
 =  3.1.3 - 2020-08-12 =
@@ -1067,8 +1076,8 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 6.0.2 =
-* Update Free and Pro together, addons are now merged into Analytify Pro.
+= 6.1.0 =
+* Update Free and Pro together, all addons are now merged as modules into Analytify Pro.
 
 == Notes ==
 

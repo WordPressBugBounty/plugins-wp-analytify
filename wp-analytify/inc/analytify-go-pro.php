@@ -172,7 +172,8 @@
 			</ul>
 		</div>
 		<div class="analytify_discount_code">
-			<?php printf( __( '%1$sUpgrade Now%2$s use %3$s discount code for 60&#37; OFF ' ) , '<a target="_blank" href="https://analytify.io/free-vs-pro/?utm_source=analytify-lite&utm_medium=pro-vs-free-page&utm_campaign=pro-upgrade&utm_content=Upgrade+Now+CTA" class="analytify_btn_buy">', '</a>' , '<span>BFCM60</span>' ); ?>
+			<?php printf( 	// translators: Discount code
+				__( '%1$sUpgrade Now%2$s use %3$s discount code for 60&#37; OFF ' , 'wp-analytify' ) , '<a target="_blank" href="https://analytify.io/free-vs-pro/?utm_source=analytify-lite&utm_medium=pro-vs-free-page&utm_campaign=pro-upgrade&utm_content=Upgrade+Now+CTA" class="analytify_btn_buy">', '</a>' , '<span>BFCM60</span>' ); ?>
 		</div>
 
 	</div>

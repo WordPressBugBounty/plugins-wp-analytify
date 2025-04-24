@@ -277,7 +277,11 @@ class Analytify_Rest_API {
 						'number' => 0,
 					),
 				),
-				'colors' => apply_filters( 'analytify_new_vs_returning_visitors_chart_colors', array( '#03a1f8', '#00c853' ) ),
+				'colors' => (function() {
+					$default_colors = array('#03a1f8', '#00c853');
+					$filtered_colors = apply_filters( 'analytify_new_vs_returning_visitors_chart_colors', array() );
+					return array_replace( $default_colors, $filtered_colors );
+				})(),
 			),
 			'visitor_devices'           => array(
 				'title'  => esc_html__( 'Devices of Visitors', 'wp-analytify' ),
@@ -296,7 +300,11 @@ class Analytify_Rest_API {
 						'number' => 0,
 					),
 				),
-				'colors' => apply_filters( 'analytify_visitor_devices_chart_colors', array( '#444444', '#ffbc00', '#ff5252' ) ),
+				'colors' => (function() {
+					$default_colors = array( '#444444', '#ffbc00', '#ff5252' );
+					$filtered_colors = apply_filters( 'analytify_visitor_devices_chart_colors', array() );
+					return array_replace( $default_colors, $filtered_colors );
+				})(),
 			),
 		);
 
@@ -1254,6 +1262,7 @@ class Analytify_Rest_API {
 			$sections['message'] = esc_html__( 'No sections found.', 'wp-analytify' );
 		} else {
 			$sections['success'] = true;
+			// translators: Analytics display
 			$sections['heading'] = sprintf( esc_html__( 'Displaying Analytics of this page from %1$s to %2$s.', 'wp-analytify' ), wp_date( 'jS F, Y', strtotime( $this->start_date ) ), wp_date( 'jS F, Y', strtotime( $this->end_date ) ) );
 		}
 
@@ -1333,6 +1342,7 @@ class Analytify_Rest_API {
 	 * @return string
 	 */
 	public function general_stats_footer( $number, $data ) {
+		// translators: User engagment time
 		return sprintf( __( 'Total time visitors spent on your site: %s?', 'wp-analytify' ), '<span class="analytify_red general_stats_message">' . WPANALYTIFY_Utils::pretty_time( $number ) . '</span>' );
 	}
 
@@ -1401,6 +1411,7 @@ class Analytify_Rest_API {
 		return array(
 			'arrow_type' => $arrow_type,
 			'main_text'  => $number . esc_html__( '%', 'wp-analytify' ),
+			// translators: Days
 			'sub_text'   => sprintf( esc_html__( '%s days ago', 'wp-analytify' ), $this->compare_days ),
 		);
 	}

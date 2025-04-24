@@ -70,6 +70,7 @@ if (!class_exists('WP_Analytify_Addons')) {
 
 				if (!empty($data) && is_array($data)) {
 					// Cache the data for a week.
+					// delete_transient( 'analytify_api_addons' );
 					set_transient('analytify_api_addons', $data, 7 * DAY_IN_SECONDS);
 				}
 			}
@@ -78,22 +79,36 @@ if (!class_exists('WP_Analytify_Addons')) {
 			$api_data = get_transient('analytify_api_addons') ?: [];
 
 			// Filter out WooCommerce and EDD add-ons.
+			if(version_compare( ANALYTIFY_PRO_VERSION, '6.1.0', '<' )){
+				$filtered_addons = array_filter($api_data, function ($addon) {
+					return !(
+						isset($addon->slug) && (
+							strpos($addon->slug, 'woocommerce') !== false || 
+							strpos($addon->slug, 'edd') !== false || 
+							strpos($addon->slug, 'campaigns') !== false || 
+							strpos($addon->slug, 'authors') !== false
+						)
+					);
+				});
+			}else{
 			$filtered_addons = array_filter($api_data, function ($addon) {
 				return !(
-					isset($addon->slug) && 
-					(strpos($addon->slug, 'woocommerce') !== false || 
-					strpos($addon->slug, 'edd') !== false || 
-					strpos($addon->slug, 'campaigns') !== false || 
-					strpos($addon->slug, 'authors') !== false)
+					isset($addon->slug) && (
+						strpos($addon->slug, 'woocommerce') !== false || 
+						strpos($addon->slug, 'edd') !== false || 
+						strpos($addon->slug, 'campaigns') !== false || 
+						strpos($addon->slug, 'authors') !== false ||
+						strpos($addon->slug, 'forms') !== false || 
+						strpos($addon->slug, 'email') !== false || 
+						strpos($addon->slug, 'goals') !== false
+					)
 				);
 			});
-			
-
+		  }
 			// Return the filtered addons.
 			return array_values($filtered_addons);
 
 		}
-
         /**
          * Enqueue admin scripts and localize variables.
          */
@@ -120,13 +135,13 @@ if (!class_exists('WP_Analytify_Addons')) {
 			$nonce = wp_create_nonce($slug);
 
 			if ('active' === $extension_or_status) {
-				echo sprintf(
+				echo sprintf(	// translators: Deactivate add-on
 					esc_html__('%1$s Deactivate add-on %2$s', 'wp-analytify'),
 					'<button type="button" class="button-primary analytify-addon-state analytify-deactivate-addon" data-slug="' . $slug . '" data-set-state="deactive" data-nonce="' . $nonce . '" >',
 					'</button>'
 				);
 			} else {
-				echo sprintf(
+				echo sprintf(	// translators: Activate add-on
 					esc_html__('%1$s Activate add-on %2$s', 'wp-analytify'),
 					'<button type="button" class="button-primary analytify-addon-state analytify-activate-addon" data-slug="' . $slug . '" data-set-state="active" data-nonce="' . $nonce . '" >',
 					'</button>'
@@ -141,20 +156,22 @@ if (!class_exists('WP_Analytify_Addons')) {
 			$slug = $slug . '/' . $addon_file_name . '.php';
 
 			if (is_plugin_active($slug)) {
-
+				// translators: Deactivate add-on
 				echo sprintf(esc_html__('%1$s Deactivate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-deactivate-module" data-slug="' . $slug . '" data-set-state="deactive" data-internal-module="false">', '</button>');
 
 			} else if (array_key_exists($slug, $this->plugins_list)) {
 
 				$link = wp_nonce_url(add_query_arg(array('action' => 'activate', 'plugin' => $slug), admin_url('plugins.php')), 'activate-plugin_' . $slug);
-
+				// translators: Activate add-on
 				echo sprintf(esc_html__('%1$s Activate add-on %2$s', 'wp-analytify'), '<a href="' . $link . '" class="button-primary analytify-module-state analytify-activate-module" data-slug="' . $slug . '" data-set-state="active" data-internal-module="false" >', '</a>');
 
 			} else if (is_plugin_inactive($slug)) {
 
 				if (isset($extension->status) && $extension->status != '') {
+					// translators: Simple shortcodes
 					echo sprintf(esc_html__('%1$s Download %2$s', 'wp-analytify'), '<a target="_blank" href="' . $extension->url . '" class="button-primary">', '</a>');
 				} else {
+					// translators: Get add-on
 					echo sprintf(esc_html__('%1$s Get this add-on %2$s', 'wp-analytify'), '<a target="_blank" href="' . $extension->url . '" class="button-primary">', '</a>');
 				}
 			}
@@ -203,19 +220,19 @@ if (!class_exists('WP_Analytify_Addons')) {
 			$nonce = wp_create_nonce($slug);
 
 			if ('active' === $this->modules_list[$slug]['status'] && $this->check_pro_support()) {
-
+				// translators: Deactivate add-on
 				echo sprintf(esc_html__('%1$s Deactivate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-deactivate-module" data-slug="' . $slug . '" data-set-state="deactive" data-internal-module="true" data-nonce="' . $nonce . '" >', '</button>');
 
 			} else if (!$this->modules_list[$slug]['status'] && $this->check_pro_support()) {
-							
+				// translators: Activate add-on	
 				echo sprintf(esc_html__('%1$s Activate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-activate-module" data-slug="' . $slug . '" data-set-state="active" data-internal-module="true" data-nonce="' . $nonce . '" >', '</button>');
 
 			} else if ($this->modules_list[$slug]['status'] === 'deactive' && $this->check_pro_support()) {
-
+				// translators: Activate add-on
 				echo sprintf(esc_html__('%1$s Activate add-on %2$s', 'wp-analytify'), '<button type="button" class="button-primary analytify-module-state analytify-activate-module" data-slug="' . $slug . '" data-set-state="active" data-internal-module="true" data-nonce="' . $nonce . '" >', '</button>');
 
 			} else {
-
+				// translators: Get add-on
 				echo sprintf(esc_html__('%1$s Get this add-on %2$s', 'wp-analytify'), '<a type="button" class="button-primary analytify-activate-module" href=" ' . $this->modules_list[$slug]['url'] . '?utm_source=analytify-lite" target="_blank">', '</a>');
 			}
 		}
@@ -242,14 +259,14 @@ if (!class_exists('WP_Analytify_Addons')) {
 						<circle class="loader-path" cx="50" cy="50" r="18" fill="none" stroke="#d8d8d8" stroke-width="1" />
 						</svg>
 						</div>
-						<p>' .  __( "Activating...", "analytify" ) . '</p>
+						<p>' .  __( "Activating...", "wp-analytify" ) . '</p>
 						</div>';
 			$html .= '<div class="wp-analytify-addon-install analytify-loader activated" style="display:none">
 						<svg class="circular-loader2" viewBox="25 25 50 50" >
 						<circle class="loader-path2" cx="50" cy="50" r="18" fill="none" stroke="#00c853" stroke-width="1" />
 						</svg>
 						<div class="checkmark draw"></div>
-						<p>' . __( 'Activated', 'analytify' ) . '</p>
+						<p>' . __( 'Activated', 'wp-analytify' ) . '</p>
 						</div>';
 			$html .= '<div class="wp-analytify-addon-uninstalling analytify-loader activated" style="display:none;">
 						<div class="analytify-logo-container">
@@ -258,21 +275,21 @@ if (!class_exists('WP_Analytify_Addons')) {
 							<circle class="loader-path" cx="50" cy="50" r="18" fill="none" stroke="#d8d8d8" stroke-width="1" />
 						</svg>
 						</div>
-						<p>' . __( "Deactivating...", "analytify" ) . '</p>
+						<p>' . __( "Deactivating...", "wp-analytify" ) . '</p>
 					  </div>';
 			$html .= '<div class="wp-analytify-addon-uninstall analytify-loader activated" style="display:none">
 						<svg class="circular-loader2" viewBox="25 25 50 50" >
 						<circle class="loader-path2" cx="50" cy="50" r="18" fill="none" stroke="#ff0000" stroke-width="1" />
 						</svg>
 						<div class="checkmark draw"></div>
-						<p>' . __( 'Deactivated', 'analytify' ) . '</p>
+						<p>' . __( 'Deactivated', 'wp-analytify' ) . '</p>
 						</div>';
 			$html .= '<div class="wp-analytify-addon-wrong activated analytify-loader" style="display:none">
 						<svg class="checkmark_login" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
 						<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"></circle>
 						<path class="checkmark__check" stroke="#ff0000" fill="none" d="M16 16 36 36 M36 16 16 36"></path>
 						</svg>
-						<p>' . __( 'Something Went Wrong', 'analytify' ) . '</p>
+						<p>' . __( 'Something Went Wrong', 'wp-analytify' ) . '</p>
 						</div></div>';
 
 			return $html;
@@ -294,8 +311,7 @@ $version = defined('ANALYTIFY_PRO_VERSION') ? ANALYTIFY_PRO_VERSION : ANALYTIFY_
 			<div class="wpb_plugin_header">
 				<div class="wpb_plugin_header_title"></div>
 				<div class="wpb_plugin_header_info">
-					<a href="https://analytify.io/changelog/" target="_blank" class="btn">Changelog -
-						v<?php echo $version; ?></a>
+					<a href="https://analytify.io/changelog/" target="_blank" class="btn">View Changelog</a>
 				</div>
 				<div class="wpb_plugin_header_logo">
 					<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/logo.svg' ?>" alt="Analytify">
@@ -329,7 +345,7 @@ $version = defined('ANALYTIFY_PRO_VERSION') ? ANALYTIFY_PRO_VERSION : ANALYTIFY_
 
 								<?php
 
-								if (class_exists('WP_Analytify_Pro') && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '=' ) && !empty($pro_addons)) {
+								if (class_exists('WP_Analytify_Pro') && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '>=' ) && !empty($pro_addons)) {
 									foreach ($pro_addons as $slug => $meta): ?>
 										<div class="wp-extension <?php echo $meta['name']; ?>">
 											<a target="_blank" href="<?php echo $meta['url']; ?>">

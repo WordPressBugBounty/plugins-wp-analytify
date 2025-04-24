@@ -52,12 +52,18 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 				<div class="wpb_plugin_body">
 					<div class="wpa-tab-wrapper"><?php echo $wp_analytify->dashboard_navigation(); ?></div>
 					<div class="wpb_plugin_tabs_content analytify-dashboard-content">
-						<div class="analytify_wraper <?php esc_html_e( implode( ' ', $selected_stats ) ); ?>">
+						<div class="analytify_wraper <?php echo esc_attr( implode( ' ', $selected_stats ) ); ?>">
 							<div class="analytify_main_title_section">
 								<div class="analytify_dashboard_title">
 									<h1 class="analytify_pull_left analytify_main_title"><?php esc_html_e( 'Overview Dashboard', 'wp-analytify' ); ?></h1>
 									<?php WPANALYTIFY_Utils::dashboard_subtitle_section(); ?>
-								</div>
+									<?php if (class_exists('WP_Analytify_Pro_Base') && isset($_GET['page']) && $_GET['page'] === 'analytify-dashboard' && count($_GET) === 1) { ?>
+									<button name="generate_dashboard_pdf" class="analytify_export_pdf_btn analytify_tooltip">
+										<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/pdf-btn.png' ?>" class="analytify_pdf_logo" alt="<?php _e('Export PDF Report', 'wp-analytify') ?>" />
+										<span class="analytify_tooltiptext">Export PDF Report!</span>								
+									</button>
+									<?php } ?>
+								</div>							
 								<div class="analytify_main_setting_bar">
 									<div class="analytify_pull_right analytify_setting">
 										<div class="analytify_select_date">
@@ -98,7 +104,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 													<h3><?php esc_html_e( 'General Statistics', 'wp-analytify' ); ?>
 													<?php if ( class_exists( 'WP_Analytify_Pro_Base' ) ) { ?>
 														<a href="#" class="analytify-export-data analytify_tooltip" data-stats-type="general-stats">
-															<span class="analytify_tooltiptext"><?php esc_html_e( 'Export General Stats', 'wp-analytify-pro' ); ?></span>
+															<span class="analytify_tooltiptext"><?php esc_html_e( 'Export General Stats', 'wp-analytify' ); ?></span>
 														</a>
 														<img src="<?php echo admin_url( 'images/spinner.gif' ); ?>" class='analytify-export-loader' style="display:none">
 													<?php } ?>

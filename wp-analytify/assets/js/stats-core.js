@@ -305,94 +305,103 @@ jQuery(function ($) {
 	*/
 	const es_chart_stats_general = () => {
 		if ($('#analytify_chart_new_vs_returning_visitors').length) {
-
 			const setting_title = $('#analytify_chart_new_vs_returning_visitors').attr('data-chart-title');
 			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-stats')));
 			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-colors')));
-
+	
 			if (setting_stats.new.number > 0 && setting_stats.returning.number > 0) {
-
 				const new_returning_graph_options = {
-					tooltip: { trigger: 'item', formatter: "{b} {a} : {c} ({d}%)" },
 					color: setting_colors,
-					legend: { orient: 'horizontal', y: 'bottom', data: [setting_stats.new.label, setting_stats.returning.label] },
-					series: [
-						{
-							name: setting_title,
-							type: 'pie',
-							smooth: true,
-							roseType: 'radius',
-							radius: [20, 60],
-							center: ['50%', '42%'],
-							data: [
-								{ name: setting_stats.new.label, value: setting_stats.new.number },
-								{ name: setting_stats.returning.label, value: setting_stats.returning.number }
-							]
-						}
-					]
+					legend: { 
+						orient: 'horizontal', 
+						bottom: '5%', 
+						textStyle: { fontSize: 14, fontWeight: '500' },
+						formatter: function(name) {
+							const value = setting_stats[name.toLowerCase()].number;
+							return `${name}: ${value}`;
+						},
+						data: [setting_stats.new.label, setting_stats.returning.label]
+					},
+					series: [{
+						name: setting_title,
+						type: 'pie',
+						center: ['50%', '43%'],
+						label: { 
+							show: false
+						},
+						labelLine: {
+							show: false
+						},
+						data: [
+							{ name: setting_stats.returning.label, value: setting_stats.returning.number },
+							{ name: setting_stats.new.label, value: setting_stats.new.number }
+						]
+					}]
 				};
-
+	
 				const new_returning_graph = echarts.init(document.getElementById('analytify_chart_new_vs_returning_visitors'));
 				new_returning_graph.setOption(new_returning_graph_options);
-
-				window.onresize = function () {
-					try {
-						new_returning_graph.resize();
-					} catch (err) {
-						console.log(err);
-					}
-				}
+	
+				window.onresize = () => new_returning_graph.resize();
 			} else {
 				$('#analytify_chart_new_vs_returning_visitors').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
 			}
 		}
-
+	
 		if ($('#analytify_chart_visitor_devices').length) {
-
 			const setting_title = $('#analytify_chart_visitor_devices').attr('data-chart-title');
 			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-stats')));
 			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-colors')));
-
+	
 			if (setting_stats.desktop.number > 0 || setting_stats.mobile.number > 0 || setting_stats.tablet.number > 0) {
-
 				const user_device_graph_options = {
-					tooltip: { trigger: 'item', formatter: "{a} <br/>{b} : {c} ({d}%)" },
+					// tooltip: { 
+					// 	trigger: 'item', 
+					// 	formatter: "{b}: {c} ({d}%)" 
+					// },
 					color: setting_colors,
-					legend: { x: 'center', y: 'bottom', data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label] },
-					series: [
-						{
-							name: setting_title,
-							type: 'pie',
-							smooth: true,
-							radius: [20, 60],
-							center: ['55%', '42%'],
-							roseType: 'radius',
-							label: { normal: { show: false }, emphasis: { show: false } },
-							lableLine: { normal: { show: false }, emphasis: { show: false } },
-							data: [
-								{ name: setting_stats.mobile.label, value: setting_stats.mobile.number },
-								{ name: setting_stats.tablet.label, value: setting_stats.tablet.number },
-								{ name: setting_stats.desktop.label, value: setting_stats.desktop.number },
-							]
-						}
-					]
+					legend: { 
+						orient: 'horizontal', 
+						bottom: '5%', 
+						textStyle: { fontSize: 13, fontWeight: '500' },
+						itemGap: 4,
+						formatter: function(name) {
+							let value = setting_stats[name.toLowerCase()].number;
+							if (value >= 1000) {
+								value = (value / 1000).toFixed(1) + 'k';
+							}
+							return `${name}: ${value}`;
+						},
+						data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label] 
+					},
+					series: [{
+						name: setting_title,
+						type: 'pie',
+						// radius: ['40%', '70%'],
+						center: ['50%', '43%'],
+						label: { 
+							show: false
+						},
+						labelLine: {
+							show: false
+						},
+						data: [
+							{ name: setting_stats.mobile.label, value: setting_stats.mobile.number },
+							{ name: setting_stats.tablet.label, value: setting_stats.tablet.number },
+							{ name: setting_stats.desktop.label, value: setting_stats.desktop.number },
+						]
+					}]
 				};
-
+	
 				const user_device_graph = echarts.init(document.getElementById('analytify_chart_visitor_devices'));
 				user_device_graph.setOption(user_device_graph_options);
-
-				window.onresize = function () {
-					try {
-						user_device_graph.resize();
-					} catch (err) {
-						console.log(err);
-					}
-				}
+	
+				window.onresize = () => user_device_graph.resize();
 			} else {
 				$('#analytify_chart_visitor_devices').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
 			}
 		}
-	}
+	}	
 
 	/**
 	* Builds map for the 'Geographic' section.
@@ -556,7 +565,7 @@ jQuery(function ($) {
 	* Fetches the data and build the template for all endpoints.
 	* 
 	*/
-	const build_sections = () => {
+	const build_sections_free = () => {
 
 		// To trigger same-height js script.
 		$(window).trigger('resize');
@@ -712,7 +721,7 @@ jQuery(function ($) {
 		$(window).trigger('resize');
 	}
 
-	build_sections();
+	build_sections_free();
 
 	// Call of submission of date form.
 	$('form.analytify_form_date').on('submit', function (e) {
@@ -720,7 +729,7 @@ jQuery(function ($) {
 			e.preventDefault();
 			let customEvent = new Event('analytify_form_date_submitted');
 			document.dispatchEvent(customEvent);
-			build_sections();
+			build_sections_free();
 			build_ga_dashboard_link();
 		}
 	});

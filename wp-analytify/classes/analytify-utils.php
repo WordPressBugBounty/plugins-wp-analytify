@@ -333,6 +333,7 @@ class WPANALYTIFY_Utils {
 	public static function insufficient_token_scope() {
 
 		$class   = 'wp-analytify-danger';
+		// translators: Insufficient token scope
 		$message = sprintf( __( '%1$sInsufficient Authentication Scopes:%2$s Please reauthenticate Analytify with your Google Analytics account and select all permission scopes at the Auth screen to ensure data from your website is properly tracked in Google Analytics.', 'wp-analytify'), '<b>', '</b>' );
 		analytify_notice( $message, $class );
 	}
@@ -346,6 +347,7 @@ class WPANALYTIFY_Utils {
 
 		$class   = 'wp-analytify-danger';
 		$link    = 'https://analytify.io/doc/fix-403-daily-limit-exceeded/';
+		// translators: Daily limit exceeded
 		$message = sprintf( __( '%1$sDaily Limit Exceeded:%2$s This Indicates that user has exceeded the daily quota (either per project or per view (profile)). Please %3$sfollow this tutorial%4$s to fix this issue. let us know this issue (if it still doesn\'t work) in the Help tab of Analytify->settings page.', 'wp-analytify'), '<b>', '</b>', '<a href="'. $link .'" target="_blank">', '</a>' );
 		analytify_notice( $message, $class );
 	}
@@ -372,6 +374,7 @@ class WPANALYTIFY_Utils {
 
 		$class   = 'wp-analytify-danger';
 		$link    = 'https://analytify.io/get-client-id-client-secret-developer-api-key-google-developers-console-application/';
+		// translators: User rate limit exceeded
 		$message = sprintf( __( '%1$susageLimits.userRateLimitExceededUnreg:%2$s Indicates that the application needs to be registered in the Google API Console. Read %3$sthis guide%4$s for to make it work. let us know this issue in (if it still doesn\'t work) Help tab of Analytify->settings page.', 'wp-analytify'), '<b>', '</b>', '<a href="'. $link .'">', '</a>'  );
 		analytify_notice( $message, $class );
 	}
@@ -385,7 +388,7 @@ class WPANALYTIFY_Utils {
 
 		$class   = 'wp-analytify-danger';
 		$link    = 'https://console.developers.google.com/';
-
+		// translators: User rate limit exceeded
 		$message = sprintf( __( '%1$sUser Rate Limit Exceeded:%2$s Indicates that the user rate limit has been exceeded. The maximum rate limit is 10 qps per IP address. The default value set in Google API Console is 1 qps per IP address. You can increase this limit in the %3$sGoogle API Console%4$s to a maximum of 10 qps. let us know this issue in Help tab of Analytify->settings page.', 'wp-analytify'), '<b>', '</b>', '<a href="'. $link .'">', '</a>'  );
 		analytify_notice( $message, $class );
 	}
@@ -399,6 +402,7 @@ class WPANALYTIFY_Utils {
 
 		$class   = 'wp-analytify-danger';
 		$link    = 'https://analytics.google.com/';
+		// translators: Rate limit exceeded
 		$message = sprintf( __( '%1$sRate Limit Exceeded:%2$s Indicates that the global or overall project rate limits have been exceeded. let us know this issue in Help tab of Analytify->settings page.', 'wp-analytify'), '<b>', '</b>' );
 		analytify_notice( $message, $class );
 	}
@@ -412,6 +416,7 @@ class WPANALYTIFY_Utils {
 
 		$class   = 'wp-analytify-danger';
 		$link    = 'https://analytics.google.com/';
+		// translators: Quota reached error
 		$message = sprintf( __( '%1$sQuota Exceeded:%2$s This indicates that the 10 concurrent requests per view (profile) in the Core Reporting API has been reached. let us know this issue in Help tab of Analytify->settings page.', 'wp-analytify'), '<b>', '</b>' );
 		analytify_notice( $message, $class );
 	}
@@ -425,7 +430,7 @@ class WPANALYTIFY_Utils {
 
 		$class   = 'wp-analytify-danger';
 		$link    = 'https://console.developers.google.com/';
-
+		// translators: Access not configured
 		$message = sprintf( __( '%1$sAccess Not Configured:%2$s Google Analytics API has not been used in this project before or it is disabled. Enable it by visiting your project in %3$sGoogle Project Console%4$s then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.', 'wp-analytify' ), '<b>', '</b>', '<a href="'. $link .'">', '</a>' );
 		analytify_notice( $message, $class );
 	}
@@ -438,7 +443,7 @@ class WPANALYTIFY_Utils {
 	public static function unexpected_profile_error() {
 
 		$class   = 'wp-analytify-danger';
-
+		// translators: Unexpected profile error
 		$message = sprintf( __( '%1$sUnexpected Error:%2$s An unexpected error occurred while getting profiles list from the Google Analytics account. let us know this issue in Help tab of Analytify->settings page.', 'wp-analytify'), '<b>', '</b>' );
 		analytify_notice( $message, $class );
 	}
@@ -566,8 +571,9 @@ class WPANALYTIFY_Utils {
 			return;
 		}
 		?>
+		<?php $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : ''; $class = ($page === 'edd-dashboard' || $page === 'analytify-woocommerce') ? 'ecommerce-stats-class' : $page;?>
 
-		<form class="analytify_form_date analytify_form_date_pro" action="" method="post">
+		<form class="analytify_form_date analytify_form_date_pro <?php echo esc_attr($class); ?>" action="" method="post">
 
 			<?php
 			if ( isset( $args['input_before_field_set'] ) && ! empty( $args['input_before_field_set'] ) ) {
@@ -600,7 +606,9 @@ class WPANALYTIFY_Utils {
 			<?php echo self::get_date_list(); ?>
 
 		</form>
-	<?php
+		<br>
+		<!-- button for exporting the pdf in dashboard (main) -->
+		<?php
 	}
 
 	/**
@@ -952,7 +960,7 @@ class WPANALYTIFY_Utils {
 		<div class="analytify-email-promo-contianer">
 			<div class="analytify-email-premium-overlay">
 				<div class="analytify-email-premium-popup">
-					<h3 class="analytify-promo-popup-heading" style="text-align: left;"><?php _e( $heading, 'wp-analytify' ); ?></h3>
+					<h3 class="analytify-promo-popup-heading" style="text-align: left;"><?php echo esc_html( $heading ); ?></h3>
 					<p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong><?php _e( 'Status:', 'wp-analytify' ); ?> </strong> <?php echo $status; ?></p>
 					<p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong><?php _e( 'Message:', 'wp-analytify' ); ?> </strong> <?php echo $message; ?></p>
 				</div>

@@ -108,7 +108,7 @@ class Analytify_Email_Core
 	{
 		$email_options= get_option('wp-analytify-email');
 
-		if($email_options['disable_email_reports'] == 'on'){
+		if (isset($email_options['disable_email_reports']) && $email_options['disable_email_reports'] == 'on') {
 			$class   = 'wp-analytify-danger';
 			$message = esc_html('Analytify email reports and test emails disabled.');
 		}else{
@@ -153,14 +153,14 @@ class Analytify_Email_Core
 				array(
 					'name'              => 'analytify_email_user_email',
 					'label'             => __('Receiver Email Address', 'wp-analytify'),
-					'desc'              => __(''),
+					'desc'              => '',
 					'default'           => '',
 					'type'              => 'email_receivers',
 				),
 			),
 		);
 
-		if (!class_exists('WP_Analytify_Email')) {
+		if (!class_exists('WP_Analytify_Email') && !class_exists('WP_Analytify_Addon_Email')) {
 			array_push($email_fields['wp-analytify-email'], array(
 				'name'              => 'analytify_email_promo',
 				'type'              => 'email_promo',
@@ -219,7 +219,7 @@ class Analytify_Email_Core
 
 			if ($_logo_id) {
 				$_logo_link_array =  wp_get_attachment_image_src($_logo_id, array(150, 150));
-				$logo_link = $_logo_link_array[0];
+				$logo_link = $_logo_link_array ? $_logo_link_array[0] : '';
 			} else {
 				$logo_link = ANALYTIFY_IMAGES_PATH . "logo.png";
 			}
@@ -242,9 +242,11 @@ class Analytify_Email_Core
 				$site_url = str_replace($protocols, '', get_home_url());
 
 				if ($when == 'week') {
-					$subject = __('Weekly Engagement Summary of ' . $site_url, 'wp-analytify');
+					// translators: Weekly engagement
+					$subject = sprintf(__('Weekly Engagement Summary of %s', 'wp-analytify'), $site_url);
 				} elseif ($when == 'month') {
-					$subject = __('Monthly Engagement Summary of ' . $site_url, 'wp-analytify');
+					// translators: Monthly engagement
+					$subject = sprintf(__('Monthly Engagement Summary of %s', 'wp-analytify'), $site_url);
 				}
 			}
 
@@ -349,6 +351,9 @@ class Analytify_Email_Core
 								border-color: #fff !important; 
 								color: #fff !important;
 							}
+							
+							table tbody td [color="#313133"],
+							table tbody td [color="#383b3d"],
 							table tbody td [color="#444"],
 							table tbody td [color="#444444"],
 							table tbody td [color="#848484"],
@@ -492,7 +497,7 @@ class Analytify_Email_Core
 
 		// Return true, if test button trigger.
 		if (isset($_POST['test_email'])) {
-			if (class_exists('WP_Analytify_Email')) {
+			if (class_exists('WP_Analytify_Email') || class_exists('WP_Analytify_Addon_Email')) {
 				$when_to_send_email[] = 'month';
 			} else {
 				$when_to_send_email[] = 'week';
@@ -501,7 +506,7 @@ class Analytify_Email_Core
 			return $when_to_send_email;
 		}
 
-		if (class_exists('WP_Analytify_Email')) {
+		if (class_exists('WP_Analytify_Email') || class_exists('WP_Analytify_Addon_Email')) {
 			$time_settings = $GLOBALS['WP_ANALYTIFY']->settings->get_option('analytif_email_cron_time', 'wp-analytify-email');
 			$week_date  = $time_settings['week'];
 			$month_date = $time_settings['month'];
@@ -535,7 +540,7 @@ class Analytify_Email_Core
 	 */
 	function single_send_email() {
 		echo '<div class="analytify-single-mail-submit">
-  		<input type="submit" value="' . __( 'Send Email', 'wp-analytify' ) . '" name="send_email" class="analytify_submit_date_btn"  id="send_single_analytics">';
+  		<input type="submit" value="' . __( 'Send Email Report', 'wp-analytify' ) . '" name="send_email" class="analytify_submit_date_btn"  id="send_single_analytics">';
     
 		if (apply_filters('wpa_display_email_single_input_field', $display = false)){
 			echo '<input type="email" name="recipient_email" placeholder="' . esc_attr__( 'Enter Recipient Email', 'wp-analytify' ) . '" id="recipient_email" style="min-height: 46px; min-width: 250px;">';
@@ -741,6 +746,8 @@ class Analytify_Email_Core
 								border-color: #fff !important; 
 								color: #fff !important;
 							}
+							table tbody td [color="#313133"],
+							table tbody td [color="#383b3d"],
 							table tbody td [color="#444"],
 							table tbody td [color="#444444"],
 							table tbody td [color="#848484"],

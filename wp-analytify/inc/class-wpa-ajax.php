@@ -15,7 +15,7 @@ add_action( 'wp_ajax_analytify_opt_out_option',  'analytify_opt_out_option' );
 // This Method is used as ajax call action to update partial opt-out options.
 function analytify_opt_out_option() {
 	if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optout_page_nonce', 'optout_nonce' ) ){
-		wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+		wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.', 'wp-analytify' ) . '</p>', 403 );
 	}
 	// Get the current option and decode it as an associative array
 	$sdk_data = json_decode(get_option('wpb_sdk_wp-analytify'), true);
@@ -1048,7 +1048,7 @@ class WPANALYTIFY_AJAX {
 
 
 		if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optin_page_nonce', 'optin_yes_nonce' ) ){
-			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.', 'wp-analytify' ) . '</p>', 403 );
 		};
 
 		//Update SDK Options also
@@ -1070,7 +1070,7 @@ class WPANALYTIFY_AJAX {
 	// delete opt-in beacon
 	public static function optout_yes() {
 		if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optout_page_nonce', 'optout_yes_nonce' ) ){
-			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.', 'wp-analytify' ) . '</p>', 403 );
 		}
 		update_site_option('_analytify_optin','no');
 		wp_die();
@@ -1080,7 +1080,7 @@ class WPANALYTIFY_AJAX {
 	public static function optin_skip() {
 
 		if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'analytify_optin_page_nonce', 'optin_skip_nonce' ) ){
-			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+			wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.', 'wp-analytify' ) . '</p>', 403 );
 		};
 
         // Retrieve the existing option and decode it into an array
@@ -1127,7 +1127,7 @@ class WPANALYTIFY_AJAX {
 			$settings['wp-analytify-custom-dimensions'] = get_option( 'wp-analytify-custom-dimensions' );
 		}
 
-		if ( class_exists( 'Analytify_Forms' ) ) {
+		if ( class_exists( 'Analytify_Addon_Forms' ) ) {
 			$settings['wp-analytify-forms'] = get_option( 'wp-analytify-forms' );
 		}
 		// JSON encode the sanitized settings.

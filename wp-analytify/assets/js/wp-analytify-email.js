@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
 				nonce: wpanalytify_data.nonces.send_single_post_email
 			},
 			beforeSend: function () {
-				$('.send_email.stats_loading').css('display', 'inline-block');
+				// $('.send_email.stats_loading').css('display', 'inline-block');
 				$('#send_single_analytics').attr('disabled', 'disabled');
 			},
 			success: function (data, textStatus, XMLHttpRequest) {
@@ -112,6 +112,14 @@ jQuery(document).ready(function($) {
 				$("#recipient_email").val('').attr('placeholder', 'Enter recipient email');
 				$("#send_email_to_individual").prop('checked', false);
 				$("#recipient_email").css('display', 'none');
+
+				$('<span class="email-sent-success" style="color: #6ab074; margin-left:7px;">Email Report Sent!</span>')
+					.insertAfter('#send_single_analytics')
+					.delay(3000)
+					.fadeOut(1000, function() {
+						$(this).remove();
+					});
+	
 			},
 			error: function (MLHttpRequest, textStatus, errorThrown) {
 				alert("Oops: Something is wrong, Please contact our support at analytify.io");

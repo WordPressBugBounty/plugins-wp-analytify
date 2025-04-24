@@ -390,13 +390,15 @@ echo '<h1> <img id="analytify-logo-text" src="' . plugins_url( 'assets/img/notic
     echo '<div class="step-wrapper">';
     if ( get_site_option( '_analytify_optin' ) == 'no' || ! get_site_option( '_analytify_optin' ) ) {
     echo "<div class='first-step step'>";
-      echo '<p id="analytify-splash-main-text">' .  sprintf ( __( 'Hey %2$s,  %4$s If you opt-in some data about your installation of Analytify will be sent to analytify.io (This doesn\'t include stats)%4$s and You will receive new feature updates, security notifications etc %7$sNo Spam, I promise.%8$s %4$s%4$s Help us %5$sImprove Google Analytics by Analytify%6$s %4$s %4$s ', 'wp-analytify' ), '<br>', '<strong>' . $name . '</strong>', '<strong>' . $website . '</strong>', '<br>', '<strong>', '</strong>', '<i>', '</i>' ) . '</p>';
+      echo '<p id="analytify-splash-main-text">' .  sprintf ( 
+                // translators: Opt-in notice
+        __( 'Hey %2$s,  %4$s If you opt-in some data about your installation of Analytify will be sent to analytify.io (This doesn\'t include stats)%4$s and You will receive new feature updates, security notifications etc %7$sNo Spam, I promise.%8$s %4$s%4$s Help us %5$sImprove Google Analytics by Analytify%6$s %4$s %4$s ', 'wp-analytify' ), '<br>', '<strong>' . $name . '</strong>', '<strong>' . $website . '</strong>', '<br>', '<strong>', '</strong>', '<i>', '</i>' ) . '</p>';
       
       // Create the nonce field for optin and skip this step button.
       $analytify_optin_page_nonce = wp_create_nonce( "analytify_optin_page_nonce" );
 
-      echo "<button type='submit' id='analytify-ga-submit-btn' class='analytify-ga-button button button-primary' name='analytify-submit-optin' >" . __( 'Allow and Continue  ', 'analytify-ga') . "</button><img class='analytify-optin-loader' src='". admin_url( 'images/spinner.gif' ) ."'/><br>";
-      echo "<button type='submit' id='analytify-ga-optout-btn' name='analytify-submit-optout' >" . __( 'Skip This Step', 'analytify-ga') . "</button><img class='analytify-skip-loader' src='". admin_url( 'images/spinner.gif' ) ."'/>";
+      echo "<button type='submit' id='analytify-ga-submit-btn' class='analytify-ga-button button button-primary' name='analytify-submit-optin' >" . __( 'Allow and Continue  ', 'wp-analytify') . "</button><img class='analytify-optin-loader' src='". admin_url( 'images/spinner.gif' ) ."'/><br>";
+      echo "<button type='submit' id='analytify-ga-optout-btn' name='analytify-submit-optout' >" . __( 'Skip This Step', 'wp-analytify') . "</button><img class='analytify-skip-loader' src='". admin_url( 'images/spinner.gif' ) ."'/>";
       echo '<div id="analytify-splash-permissions" class="analytify-splash-box">';
         echo '<a id="analytify-splash-permissions-toggle" href="#" >' . __( 'What permissions are being granted?', 'wp-analytify' ) . '</a>';
         echo '<div id="analytify-splash-permissions-dropdown" style="display: none;">';
@@ -465,7 +467,9 @@ jQuery(document).ready(function(s) {
   </h2>
   <div class="analytify-tab-content active" id="get-started">
     <p class="about-description">
-      <?php echo sprintf( esc_html__( 'Getting started with Analytify, plugin settings are very easy to use and ready to go in minutes. If there is something you don\'t understand or confusing, do ask us on %1$sWordPress.org support forum%2$s without hesitation.', 'wp-analytify' ), ' <a href="https://wordpress.org/support/plugin/wp-analytify/" target="_blank">', '</a>');?>
+      <?php echo sprintf( 
+                // translators: Getting started notice
+        esc_html__( 'Getting started with Analytify, plugin settings are very easy to use and ready to go in minutes. If there is something you don\'t understand or confusing, do ask us on %1$sWordPress.org support forum%2$s without hesitation.', 'wp-analytify' ), ' <a href="https://wordpress.org/support/plugin/wp-analytify/" target="_blank">', '</a>');?>
     </p>
 
     <div class="changelog">
@@ -519,14 +523,18 @@ jQuery(document).ready(function(s) {
         <img src="<?php echo plugins_url( 'assets/img/front-end-new.png', dirname( __FILE__ ) );?>" alt="welcome" class="wp-analytify-welcome-screenshots">
 
         <h4><?php esc_html_e( 'Front Tab', 'wp-analytify' );?></h4>
-        <p><?php echo sprintf( esc_html__( 'In version %4$s, We have introduced the %1$s New Front-end Analytics%2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development since 1.0 but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s Below are it\'s important options: ', 'wp-analytify' ), '<em>', '</em>', '<br /><br />', ANALYTIFY_VERSION);?></p>
+        <p><?php echo sprintf( 
+                  // translators: Front-end analytics notice
+          esc_html__( 'In version %4$s, We have introduced the %1$s New Front-end Analytics%2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development since 1.0 but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s Below are it\'s important options: ', 'wp-analytify' ), '<em>', '</em>', '<br /><br />', ANALYTIFY_VERSION);?></p>
           <div class="analytify-text-settings">
             <div >
               <h4><?php esc_html_e( 'Disable front-end', 'wp-analytify' );?></h4>
               <p><?php esc_html_e( 'We introduced the ability to disable the front-end stats on the full site. Check it, if you don\'t want to load Analytics at all. Remember, you can use Shortcodes still.', 'wp-analytify' );?></p>
 
               <h4><?php esc_html_e( 'Display Analytics to Users', 'wp-analytify' );?></h4>
-              <p><?php echo sprintf(esc_html__( 'Show %1$sfront-end%2$s Analytics to selected user roles only.', 'wp-analytify' ), '<em>', '</em>');?></p>
+              <p><?php echo sprintf(
+                        // translators: Display analytics to users
+                esc_html__( 'Show %1$sfront-end%2$s Analytics to selected user roles only.', 'wp-analytify' ), '<em>', '</em>');?></p>
             </div>
 
             <div>
@@ -561,7 +569,9 @@ jQuery(document).ready(function(s) {
               <p><?php esc_html_e( 'Check it, If you don\'t want to load Stats by default on all pages. If you disable it, you can still fetch the stats under each post/page on single click.', 'wp-analytify' );?></p>
 
               <h4><?php esc_html_e( 'Display Analytics to Users', 'wp-analytify' );?></h4>
-              <p><?php echo sprintf( esc_html__( 'Show %1$s Google %2$s Analytics to selected user roles only.', 'wp-analytify' ), '<em>', '</em>');?></p>
+              <p><?php echo sprintf( 
+                        // translators: Display analytics to users
+                esc_html__( 'Show %1$s Google %2$s Analytics to selected user roles only.', 'wp-analytify' ), '<em>', '</em>');?></p>
             </div>
 
             <div>
@@ -606,7 +616,9 @@ jQuery(document).ready(function(s) {
 
             <h4><?php esc_html_e( 'Translation ready', 'wp-analytify' );?></h4>
             <p>
-              <?php echo sprintf( esc_html__( 'Analytify %1$s contains all the strings ready to translate in any language. %2$s Click here %3$s to start translating this plugin into your language and don\'t forget to share your language files with us to ease for other users.', 'wp-analytify' ), ANALYTIFY_VERSION, '<a href="https://analytify.io/doc/can-translate-analytify-language/" style="text-decoration:none">', '</a>' ); ?>
+              <?php echo sprintf( 
+                        // translators: Translation ready description
+                esc_html__( 'Analytify %1$s contains all the strings ready to translate in any language. %2$s Click here %3$s to start translating this plugin into your language and don\'t forget to share your language files with us to ease for other users.', 'wp-analytify' ), ANALYTIFY_VERSION, '<a href="https://analytify.io/doc/can-translate-analytify-language/" style="text-decoration:none">', '</a>' ); ?>
               </p>
             </div>
 
@@ -622,17 +634,23 @@ jQuery(document).ready(function(s) {
             <div class="analytify-text-settings">
               <h4><?php esc_html_e( 'Analytify Shortcodes', 'wp-analytify' );?></h4>
               <p>
-                <?php echo sprintf( esc_html__( 'Analytify shortcodes can be used for multiple purposes. It gives you more flexibility than the front-end statistics. You can disable front-end stats and use these shortcodes in any of your pages/posts to show Analytics in tabular style. If you are familiar with CSS, It can be easily modified to match with your website look and feel. %1$s Following are two types of shortcodes:', 'wp-analytify' ), '<br /><br />' );?>
+                <?php echo sprintf( 
+                          // translators: Analytify shortcodes
+                  esc_html__( 'Analytify shortcodes can be used for multiple purposes. It gives you more flexibility than the front-end statistics. You can disable front-end stats and use these shortcodes in any of your pages/posts to show Analytics in tabular style. If you are familiar with CSS, It can be easily modified to match with your website look and feel. %1$s Following are two types of shortcodes:', 'wp-analytify' ), '<br /><br />' );?>
                 </p>
 
                 <h4><?php esc_html_e( 'a) Simple:', 'wp-analytify' );?></h4>
                 <p>
-                  <?php echo sprintf( esc_html__( 'Simple Analytify shortcode returns you only the numbers i.e results. It is useful when you want results of only 1 Metrics and can apply permissions using roles. You can fetch numbers of %1$s Sessions, Pageviews, Bounce Rate and Users %2$s etc', 'wp-analytify' ), '<em>', '</em> ');?>
+                  <?php echo sprintf( 
+                            // translators: Simple shortcodes
+                    esc_html__( 'Simple Analytify shortcode returns you only the numbers i.e results. It is useful when you want results of only 1 Metrics and can apply permissions using roles. You can fetch numbers of %1$s Sessions, Pageviews, Bounce Rate and Users %2$s etc', 'wp-analytify' ), '<em>', '</em> ');?>
                 </p>
 
                 <h4><?php esc_html_e( 'b) Advanced:', 'wp-analytify' );?></h4>
                 <p>
-                  <?php echo sprintf( esc_html__( 'With this Advanced option, You can choose %1$s more than 1 Metrics and Dimensions, Sort the results, get maximum rows, apply permissions and fetch Analytics with specified start-date and end-date. %2$s Advanced shortcode returns results in table form which can be styled according to your website.', 'wp-analytify' ), '<em>', '</em>' );?>
+                  <?php echo sprintf( 
+                            // translators: Advanced shortcodes
+                    esc_html__( 'With this Advanced option, You can choose %1$s more than 1 Metrics and Dimensions, Sort the results, get maximum rows, apply permissions and fetch Analytics with specified start-date and end-date. %2$s Advanced shortcode returns results in table form which can be styled according to your website.', 'wp-analytify' ), '<em>', '</em>' );?>
                 </p>
               </div>
 
@@ -644,7 +662,9 @@ jQuery(document).ready(function(s) {
             <div class="analytify-text-settings">
               <h3><?php esc_html_e( 'Front-end Statistics', 'wp-analytify' );?></h3>
               <p>
-                <?php echo sprintf( esc_html__( 'We have introduced the %1$s New Front-end Analytics %2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s below are it\'s important options: ', 'wp-analytify' ), '<em>', '</em>', '<br /><br />' );?>
+                <?php echo sprintf( 
+                          // translators: Simple shortcodes
+                  esc_html__( 'We have introduced the %1$s New Front-end Analytics %2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s below are it\'s important options: ', 'wp-analytify' ), '<em>', '</em>', '<br /><br />' );?>
                 </p>
 
                 <div class="feature-section col three-col">
@@ -656,7 +676,9 @@ jQuery(document).ready(function(s) {
 
                     <h4><?php esc_html_e( 'Display Analytics to Users', 'wp-analytify' );?></h4>
                     <p>
-                      <?php echo sprintf( esc_html__( 'Show %1$s front-end %2$s Analytics to selected user roles only.', 'wp-analytify' ), '<em>', '</em>' );?>
+                      <?php echo sprintf( 
+                                // translators: Show analytics to users
+                        esc_html__( 'Show %1$s front-end %2$s Analytics to selected user roles only.', 'wp-analytify' ), '<em>', '</em>' );?>
                     </p>
                   </div>
 

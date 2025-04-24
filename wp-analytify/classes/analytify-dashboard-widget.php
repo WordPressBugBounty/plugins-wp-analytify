@@ -32,7 +32,7 @@ class Analytify_Dashboard_Addon_Install {
     if ( $this->is_already_installed == true ) {
       return;
     }
-    wp_add_dashboard_widget( 'analytify-dashboard-addon', __( 'Google Analytics Dashboard By Analytify', 'analytify-analytics-dashboard-widget' ), array( $this, 'wpa_general_dashboard_area' ), null , null );
+    wp_add_dashboard_widget( 'analytify-dashboard-addon', __( 'Google Analytics Dashboard By Analytify', 'wp-analytify' ), array( $this, 'wpa_general_dashboard_area' ), null , null );
 
   }
 

@@ -4,17 +4,25 @@
         const allowedSlugs = ['wp-analytify-edd', 'wp-analytify-authors',
             'wp-analytify-campaigns',
             'wp-analytify-woocommerce',
-            'wp-analytify-goals/wp-analytify-goals.php',
-            'wp-analytify-email/wp-analytify-email.php',
-            'wp-analytify-forms/wp-analytify-forms.php',
+            'wp-analytify-goals',
+            'wp-analytify-email',
+            'wp-analytify-forms',
             'analytify-analytics-dashboard-widget/wp-analytify-dashboard.php',
             'events-tracking',
             'custom-dimensions',
             'amp',
-            'google-ads-tracking'
+            'google-ads-tracking',
+            'wp-analytify-forms/wp-analytify-forms.php',
+            'wp-analytify-authors/wp-analytify-authors.php',
+            'wp-analytify-campaigns/wp-analytify-campaigns.php',
+            'wp-analytify-woocommerce/wp-analytify-woocommerce.php',
+            'wp-analytify-goals/wp-analytify-goals.php',
+            'wp-analytify-email/wp-analytify-email.php',
+            'wp-analytify-edd/wp-analytify-edd.php',
         ];
 
         function isValidSlug(slug) {
+            console.log("Checking slug: " + slug);
             return allowedSlugs.includes(slug); 
         }
 

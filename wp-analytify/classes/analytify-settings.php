@@ -283,6 +283,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'    => 'show_analytics_post_types_back_end',
 						'label'   => __( 'Analytics on post types', 'wp-analytify' ),
+						// translators: Analytics on post types
 						'desc'    => class_exists( 'WP_Analytify_Pro' ) ? __( 'Show Analytics under the above post types only', 'wp-analytify' ) : sprintf( __( 'Show analytics below these post types only. Buy %1$sPremium%1$s version for Custom Post Types.', 'wp-analytify' ), '<a href="' . analytify_get_update_link() . '" target="_blank">', '</a>' ),
 						'type'    => 'chosen',
 						'default' => array(),
@@ -292,6 +293,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'    => 'show_panels_back_end',
 						'label'   => __( 'Edit posts/pages analytics panels', 'wp-analytify' ),
+						// translators: Edit posts/pages analytics panels
 						'desc'    => class_exists( 'WP_Analytify_Pro' ) ? __( 'Select which statistic panels you want to display under posts/pages.', 'wp-analytify' ) : sprintf( __( 'Select which statistic panels you want to display under posts/pages. Only "General Stats" will visible in Free Version. Buy %1$sPremium%2$s version to see the full statistics.', 'wp-analytify' ), '<a href="' . analytify_get_update_link() . '" target="_blank">', '</a>' ),
 						'type'    => 'chosen',
 						'default' => array(),
@@ -333,6 +335,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'  => 'user_advanced_keys',
 						'label' => __( 'Setup Custom API keys?', 'wp-analytify' ),
+						// translators: Custom API keys setup
 						'desc'  => sprintf( __( 'It is highly recommended by Google to use your own API keys. %1$sYou need to create a Project in Google %2$s. %3$sHere is a short %4$svideo guide%5$s to get your own ClientID, Client Secret and Redirect URL and enter them in below inputs.', 'wp-analytify' ), '<br />', '<a target=\'_blank\' href=\'https://console.developers.google.com/project\'>Console</a>', '<br />', '<a target=\'_blank\' href=\'https://analytify.io/custom-api-keys-video\'>', '</a>' ),
 						'type'  => 'checkbox',
 						'class' => 'user_advanced_keys',
@@ -356,6 +359,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'              => 'redirect_uri',
 						'label'             => __( 'Redirect URL', 'wp-analytify' ),
+						// translators: Analytics on post types
 						'desc'              => sprintf( __( '( Redirect URL is very important when you are using your own keys. Paste this into the above field: %1$s )', 'wp-analytify' ), '<b>' . admin_url( 'admin.php?page=analytify-settings' ) . '</b>' ),
 						'type'              => 'text',
 						'class'             => 'user_keys',
@@ -383,6 +387,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'  => 'anonymize_ip',
 						'label' => __( 'Anonymize IP addresses', 'wp-analytify' ),
+						// translators: Anonymize IP addresses
 						'desc'  => sprintf( __( 'Detailed information about IP anonymization in Google Analytics can be found %1$shere%2$s.', 'wp-analytify' ), '<a href=\'https://support.google.com/analytics/answer/2763052\' target=\'_blank\'>', '</a>' ),
 						'type'  => 'checkbox',
 					),
@@ -395,6 +400,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'  => 'track_user_id',
 						'label' => __( 'Track User ID', 'wp-analytify' ),
+						// translators: Track User ID
 						'desc'  => sprintf( __( 'Detailed information about Track User ID in Google Analytics can be found %1$shere%2$s.', 'wp-analytify' ), '<a href=\'https://support.google.com/analytics/answer/3123662\' target=\'_blank\'>', '</a>' ),
 						'type'  => 'checkbox',
 					),
@@ -437,6 +443,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 					array(
 						'name'  => 'linker_cross_domain_tracking',
 						'label' => __( 'Setup Cross-domain Tracking', 'wp-analytify' ),
+						// translators: Cross-domain tracking setup
 						'desc'  => sprintf( __( 'This will add the %1$s tag to your tracking code. Read this %2$sguide%3$s for more information.', 'wp-analytify' ), '<code>allowLinker:true</code>', '<a href=\'https:\//analytify.io/doc/setup-cross-domain-tracking-wordpress\' target=\'_blank\'>', '</a>' ),
 						'type'  => 'checkbox',
 						'class' => 'user_linker_tracking',
@@ -490,12 +497,11 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 		function admin_init() {
 			global $pagenow;
 			WPANALYTIFY_Utils::handle_ga4_exceptions();
-			if ( ('admin.php' === $pagenow) && ( 'analytify-settings' === $_GET['page'] ) || 'options.php' === $pagenow ) {
+			if ('admin.php' === $pagenow && ( isset($_GET['page']) && 'analytify-settings' === $_GET['page'] ) || 'options.php' === $pagenow ) {
 				$this->set_sections($this->get_settings_sections());
 				$this->set_fields($this->get_settings_fields());
-
-				// register settings sections
-				// creates our settings in the options table
+			
+				// Register settings sections
 				foreach ($this->settings_sections as $section) {
 					register_setting($section['id'], $section['id'], array( $this, 'sanitize_options' ));
 				}
@@ -1106,6 +1112,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 			if ( $exception = $GLOBALS['WP_ANALYTIFY']->get_exception() ) {
 				if ( isset( $exception[0]['reason'] ) && $exception[0]['reason'] == 'dailyLimitExceeded' ) {
 					$link = 'https://analytify.io/doc/fix-403-daily-limit-exceeded/';
+					// translators: Daily limit reached notice
 					printf( __( '%5$s%1$sDaily Limit Exceeded:%2$s This Indicates that user has exceeded the daily quota (either per project or per view (profile)). Please %3$sfollow this tutorial%4$s to fix this issue. let us know this issue (if it still doesn\'t work) in the Help tab of Analytify->settings page.%6$s', 'wp-analytify' ), '<b>', '</b>', '<a href="' . $link . '" target="_blank">', '</a>', '<p class="description" style="color:#ed1515">', '</p>' );
 					return;
 				} elseif ( isset( $exception[0]['reason'] ) && $exception[0]['reason'] == 'insufficientPermissions' && $exception[0]['domain'] == 'global' ) {
@@ -1242,7 +1249,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 			$value   = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 			$size    = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 			$id      = $args['section'] . '[' . $args['id'] . ']';
-			$label   = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose Image' );
+			$label   = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose Image', 'wp-analytify' );
 			$img     = wp_get_attachment_image_src( $value );
 			$img_url = $img ? $img[0] : '';
 			$html    = sprintf( '<input type="hidden" class="%1$s-text wpsa-image-id" id="%2$s" name="%2$s" value="%3$s"/>', $size, $id, $value );
@@ -1263,7 +1270,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 			$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 			$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 			$id    = $args['section'] . '[' . $args['id'] . ']';
-			$label = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose File' );
+			$label = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose File', 'wp-analytify' );
 			$html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s" name="%2$s" value="%3$s"/>', $size, $id, $value );
 			$html .= '<input type="button" class="button wpsa-browse" value="' . $label . '" />';
 			$html .= $this->get_field_description( $args );
@@ -1381,11 +1388,14 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 						<h3><?php esc_html_e( 'Support', 'wp-analytify' ); ?></h3>
 
-						<p><?php echo sprintf( esc_html__( 'As this is a free plugin, Post all of your questions to the %1$s WordPress.org support forum %2$s. Response time can range from a couple of days to a week as this is a free support.', 'wp-analytify' ), '<a href="https://wordpress.org/support/plugin/wp-analytify/" target="_blank">', '</a>' ); ?></p>
+						<p><?php echo sprintf( // translators: Support
+							esc_html__( 'As this is a free plugin, Post all of your questions to the %1$s WordPress.org support forum %2$s. Response time can range from a couple of days to a week as this is a free support.', 'wp-analytify' ), '<a href="https://wordpress.org/support/plugin/wp-analytify/" target="_blank">', '</a>' ); ?></p>
 
-						<p class="upgrade-to-pro"><?php echo sprintf( esc_html__( 'If you want a %1$s timely response via email from a developer %2$s who works on this plugin, %3$s upgrade to Analytify Pro %4$s and send us an email.', 'wp-analytify' ), '<strong>', '</strong>', '<a href="' . analytify_get_update_link( 'https://analytify.io/', '?utm_source=analytify-lite&amp;utm_medium=help-tab&amp;utm_content=support-upgrade&amp;utm_campaign=pro-upgrade' ) . '" target="_blank">', '</a>' ); ?></p>
+						<p class="upgrade-to-pro"><?php echo sprintf( // translators: Upgrade to Pro
+							esc_html__( 'If you want a %1$s timely response via email from a developer %2$s who works on this plugin, %3$s upgrade to Analytify Pro %4$s and send us an email.', 'wp-analytify' ), '<strong>', '</strong>', '<a href="' . analytify_get_update_link( 'https://analytify.io/', '?utm_source=analytify-lite&amp;utm_medium=help-tab&amp;utm_content=support-upgrade&amp;utm_campaign=pro-upgrade' ) . '" target="_blank">', '</a>' ); ?></p>
 
-						<p><?php echo sprintf( esc_html__( 'If you\'ve found a bug, please %1$s submit an issue at Github %2$s.', 'wp-analytify' ), '<a href="https://github.com/hiddenpearls/wp-analytify/issues" target="_blank">', '</a>' ); ?></p>
+						<p><?php echo sprintf( // translators: Notify the bug
+							esc_html__( 'If you\'ve found a bug, please %1$s submit an issue at Github %2$s.', 'wp-analytify' ), '<a href="https://github.com/hiddenpearls/wp-analytify/issues" target="_blank">', '</a>' ); ?></p>
 
 					<?php } ?>
 
@@ -1437,7 +1447,8 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 			<div class="wp-analytify-video-container">
 				<h3>
-					<?php echo sprintf( esc_html__( 'Videos %1$s (Subscribe To Our Youtube Channel) %2$s', 'wp-analytify' ), '<a href="https://www.youtube.com/c/Wp-analytify/videos" target="_blank">', '</a>' ); ?>
+					<?php echo sprintf( // translators: Video
+						esc_html__( 'Videos %1$s (Subscribe To Our Youtube Channel) %2$s', 'wp-analytify' ), '<a href="https://www.youtube.com/c/Wp-analytify/videos" target="_blank">', '</a>' ); ?>
 				</h3>
 				
 				<ul>
@@ -2131,7 +2142,7 @@ function wp_analytify_tracking_accordion_pro( $accordions ) {
 
 		} else if ( $accordion['id'] == 'wp-analytify-forms' ) {
 			
-			$accordion['is_active'] = class_exists( 'Analytify_Forms' ) ? true : false;
+			$accordion['is_active'] = class_exists( 'Analytify_Addon_Forms' ) || class_exists( 'Analytify_Forms' ) ? true : false;
 			$accordion['promo_text'] = '<div class="analytify-email-promo-contianer">
 				
 				<div class="analytify-email-premium-overlay">
@@ -2153,7 +2164,7 @@ function wp_analytify_tracking_accordion_pro( $accordions ) {
 
 		} else if ( $accordion['id'] == 'analytify-google-ads-tracking' ) {
 			
-			$accordion['is_active'] = ( $analytify_modules['google-ads-tracking']['status'] === 'active' ) ? true : false;;
+			$accordion['is_active'] = isset($analytify_modules['google-ads-tracking']) && $analytify_modules['google-ads-tracking']['status'] === 'active' ? true : false;
 			$accordion['promo_text'] = '<div class="analytify-email-promo-contianer analytify-google-ads-container">
 				
 				<div class="analytify-google-ads-overlay">
@@ -2184,14 +2195,14 @@ function wp_analytify_tracking_accordion( $accordions, $type = 'promo' ) { ?>
 				<?php foreach( $accordions as $accordion ) { ?>
 					<li class="tracking-accordion event-tracking <?php echo $accordion['id']; ?>" data-id="<?php echo $accordion['id']; ?>">
 						<div class="tracking-accordions-heading">
-							<p><?php _e( $accordion['title'] ); ?></p>
+							<p><?php echo wp_kses_post( $accordion['title'] ); ?></p>
 						</div>
 						<div class="tracking-accordions-content">
 
 							<?php if ( 'pro' === $type and $accordion['is_active'] ) {
 								do_action( 'wp_analytify_tracking_accordion_options', $accordion['id'] );
 							} else {
-								_e( $accordion['promo_text'] );
+								echo wp_kses_post( $accordion['promo_text'] );
 							} ?>
 
 						</div>

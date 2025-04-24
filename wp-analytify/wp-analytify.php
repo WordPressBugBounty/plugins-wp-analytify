@@ -3,12 +3,12 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 6.0.2
+ * Version: 6.1.0
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
  * Text Domain: wp-analytify
- * Tested up to: 6.7
+ * Tested up to: 6.8
  * Domain Path: /languages
  *
  * @package WP_ANALYTIFY
@@ -38,7 +38,7 @@ if ( ! function_exists( 'wa_wpb78834179' ) ) {
                     'account'        => false,
                     'support'        => false,
                 ],
-                'settings'           => [ 'wp_analytify_modules' => '' , 'wp-analytify-tracking' => '' , 'wp-analytify-email' => '' , 'wp-analytify-events-tracking' => '' , 'wp-analytify-front' => '', 'wp-analytify-custom-dimensions' => '' , 'wp-analytify-forms' => '' , 'analytify_widget_date_differ' => '' , 'wp-analytify-profile' => '' , 'wp-analytify-admin' => '' , 'wp-analytify-dashboard' => '' , 'wp-analytify-advanced' => '' , 'analytify_ua_code' => '' , 'analytify_date_differ' => '' , 'wp_analytify_review_dismiss_4_1_8' => '' , 'wpanalytify_settings' => '' , 'analytify_license_key' => '' , 'analytify_license_status' => '' , 'analytify_campaigns_license_status' => '' , 'analytify_campaigns_license_key' => '' , 'analytify_goals_license_status' => '' , 'analytify_goals_license_key' => '' , 'analytify_forms_license_status' => '' , 'analytify_forms_license_key' => '' , 'analytify_authors_license_status' => '' , 'analytify_authors_license_key' => '' , 'analytify_woo_license_status' => '' , 'analytify_woo_license_key' => '' , 'analytify_email_license_status' => '' , 'analytify_email_license_key' => '' , 'analytify-google-ads-tracking' => '' , '_analytify_optin' => '' , 'analytify_cache_timeout' => '' , 'analytify_csv_data' => '' , 'analytify_active_date' => '' , 'analytify_edd_license_status' => '' , 'analytify_edd_license_key' => '' , '_transient_timeout_analytify_api_addons' => '' , '_transient_analytify_api_addons' => '' , 'analytify_ga4_exceptions' => '' , 'analytify-ga-properties-summery' => '' , 'analytify-ga4-streams' => '' , 'analytify_tracking_property_info' => '' , 'analytify_reporting_property_info' => '' , 'analytify_gtag_move_to_notice' => '' , 'analytify_current_version' => '' , 'analytify_logs_setup' => '' , 'analytify_pro_default_settings' => '' , 'analytify_pro_active_date' => '' , 'analytify_pro_upgrade_routine' => '' , 'analytify_pro_current_version' => '' , 'WP_ANALYTIFY_PRO_PLUGIN_VERSION' => '' , 'wp-analytify-license' => '' , 'analytify_authentication_date' => '' , 'WP_ANALYTIFY_PLUGIN_VERSION_OLD' => '' , 'WP_ANALYTIFY_PRO_PLUGIN_VERSION_OLD' => '' , 'analytify_default_settings' => '' , 'analytify_free_upgrade_routine' => '' , 'WP_ANALYTIFY_PLUGIN_VERSION' => '' , 'wp_analytify_active_time' => '' , 'wp-analytify-authentication' => '' , 'wp-analytify-help' => '' , 'WP_ANALYTIFY_NEW_LOGIN' => '' , 'profiles_list_summary' => '' , 'pa_google_token' => '' , 'post_analytics_token' => '' ],
+                'settings'           => [ 'wp_analytify_modules' => '' , 'wp-analytify-tracking' => '' , 'wp-analytify-email' => '' , 'wp-analytify-events-tracking' => '' , 'wp-analytify-front' => '', 'wp-analytify-custom-dimensions' => '' , 'wp-analytify-forms' => '' , 'analytify_widget_date_differ' => '' , 'wp-analytify-profile' => '' , 'wp-analytify-admin' => '' , 'wp-analytify-dashboard' => '' , 'wp-analytify-advanced' => '' , 'analytify_ua_code' => '' , 'analytify_date_differ' => '' , 'wp_analytify_review_dismiss_4_1_8' => '' , 'wpanalytify_settings' => '' , 'analytify_license_key' => '' , 'analytify_license_status' => '' , 'analytify_campaigns_license_status' => '' , 'analytify_campaigns_license_key' => '' , 'analytify_goals_license_status' => '' , 'analytify_goals_license_key' => '' , 'Analytify_Addon_Forms_license_status' => '' , 'analytify_forms_license_key' => '' , 'analytify_authors_license_status' => '' , 'analytify_authors_license_key' => '' , 'analytify_woo_license_status' => '' , 'analytify_woo_license_key' => '' , 'analytify_email_license_status' => '' , 'analytify_email_license_key' => '' , 'analytify-google-ads-tracking' => '' , '_analytify_optin' => '' , 'analytify_cache_timeout' => '' , 'analytify_csv_data' => '' , 'analytify_active_date' => '' , 'analytify_edd_license_status' => '' , 'analytify_edd_license_key' => '' , '_transient_timeout_analytify_api_addons' => '' , '_transient_analytify_api_addons' => '' , 'analytify_ga4_exceptions' => '' , 'analytify-ga-properties-summery' => '' , 'analytify-ga4-streams' => '' , 'analytify_tracking_property_info' => '' , 'analytify_reporting_property_info' => '' , 'analytify_gtag_move_to_notice' => '' , 'analytify_current_version' => '' , 'analytify_logs_setup' => '' , 'analytify_pro_default_settings' => '' , 'analytify_pro_active_date' => '' , 'analytify_pro_upgrade_routine' => '' , 'analytify_pro_current_version' => '' , 'WP_ANALYTIFY_PRO_PLUGIN_VERSION' => '' , 'wp-analytify-license' => '' , 'analytify_authentication_date' => '' , 'WP_ANALYTIFY_PLUGIN_VERSION_OLD' => '' , 'WP_ANALYTIFY_PRO_PLUGIN_VERSION_OLD' => '' , 'analytify_default_settings' => '' , 'analytify_free_upgrade_routine' => '' , 'WP_ANALYTIFY_PLUGIN_VERSION' => '' , 'wp_analytify_active_time' => '' , 'wp-analytify-authentication' => '' , 'wp-analytify-help' => '' , 'WP_ANALYTIFY_NEW_LOGIN' => '' , 'profiles_list_summary' => '' , 'pa_google_token' => '' , 'post_analytics_token' => '' ],
             ]);
         }
 
@@ -287,16 +287,20 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 		}
 
+		/**
+		 * Display a notice to update to the latest Analytify Pro version.
+		 */
 		public function pro_update_notice() {
-			if( defined( 'ANALYTIFY_PRO_VERSION' ) && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '<' )){
-			?>
-			<div class="notice notice-error is-dismissible">
-				<p>
-					<strong><?php echo esc_html__('Note:', 'wp-analytify'); ?></strong>
-					<?php echo esc_html__('Please update to the latest Analytify Pro version 6.0.0 to manage these modules (WooCommerce, EDD, Campaigns, and Authors) from', 'wp-analytify'); ?> <a href="<?php echo esc_url(admin_url('admin.php?page=analytify-addons')); ?>" aria-label="addons page"><?php echo esc_html__('here', 'wp-analytify'); ?></a>.
-				</p>
-			</div>
-			<?php
+			if ( defined( 'ANALYTIFY_PRO_VERSION' ) && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '<' ) ) {
+				$class = 'wp-analytify-danger';
+				$message = sprintf(	// translators: Update notice
+					esc_html__( '%1$sNote:%2$s Please update to the latest Analytify Pro version to manage all modules/addons from %3$s here %4$s.', 'wp-analytify' ),
+					'<b>',
+					'</b>',
+					'<a href="' . esc_url( admin_url( 'admin.php?page=analytify-addons' ) ) . '">',
+					'</a>'
+				);
+				analytify_notice( $message, $class );
 			}
 		}
 		
@@ -469,7 +473,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
     			} else {
 					$plugin_page_url = admin_url( 'plugins.php' );
 					wp_die(
-						sprintf( 
+						sprintf( 	// translators: Nonce verification failed
 							esc_html__( 'Sorry, you are not allowed as nonce verification failed. %1$sClick here to return to the Dashboard%2$s.', 'wp-analytify' ),
 							'<a href="' . esc_url($plugin_page_url) . '">',
 							'</a>'
@@ -630,7 +634,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 	        $local_analytics_file = ( new Analytify_Host_Analytics( 'gtag', false ) )->local_analytics_file_url();
 
 			if ( false !== apply_filters( 'analytify_tracking_code_comments', true ) ) {
-				echo sprintf( esc_html__( '%2$s This code is added by Analytify (%1$s) %4$s %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->', 'https://analytify.io/' );
+				echo sprintf( // translators: Tracking code comments
+					esc_html__( '%2$s This code is added by Analytify (%1$s) %4$s %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->', 'https://analytify.io/' );
 			}
 
 			$anonymize_ip           = ( 'on' === $this->settings->get_option( 'anonymize_ip', 'wp-analytify-advanced' ) ) ? 'true' : 'false';
@@ -725,7 +730,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			<?php
 			if ( false !== apply_filters( 'analytify_tracking_code_comments', true ) ) {
-				echo sprintf( esc_html__( '%2$s This code is added by Analytify (%1$s) %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->' );
+				echo sprintf( // translators: Tracking code comments
+					esc_html__( '%2$s This code is added by Analytify (%1$s) %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->' );
 			}
 
 			$gtag_code = ob_get_contents();
@@ -746,7 +752,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			$src = apply_filters( 'analytify_output_ga_js_src', '//www.google-analytics.com/analytics.js' );
 
 			if ( false !== apply_filters( 'analytify_tracking_code_comments', true ) ) {
-				echo sprintf( esc_html__( '%2$s This code is added by Analytify (%1$s) %4$s %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->', 'https://analytify.io/' );
+				echo sprintf( // translators: Tracking code comments
+					esc_html__( '%2$s This code is added by Analytify (%1$s) %4$s %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->', 'https://analytify.io/' );
 			}
 			?>
 
@@ -801,7 +808,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			<?php
 			if ( false !== apply_filters( 'analytify_tracking_code_comments', true ) ) {
-				echo sprintf( esc_html__( '%2$s This code is added by Analytify (%1$s) %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->' );
+				echo sprintf( // translators: Tracking code comments
+					esc_html__( '%2$s This code is added by Analytify (%1$s) %3$s', 'wp-analytify' ), ANALYTIFY_VERSION, '<!--', '!-->' );
 			}
 
 			$ga_code = ob_get_contents();
@@ -833,7 +841,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			 $all_options_false = $communication === false && $diagnostic_info === false && $extensions === false;
 			 // Build the settings link based on the option states
 			 if ($communication || $diagnostic_info || $extensions) {
-				 $settings_link .= sprintf(esc_html__('%1$s Opt Out %2$s | ', 'wp-analytify'), '<a class="opt-out" href="' . admin_url('admin.php?page=analytify-settings') . '">', '</a>');
+				 $settings_link .= sprintf(	// translators: Opt out
+					esc_html__('%1$s Opt Out %2$s | ', 'wp-analytify'), '<a class="opt-out" href="' . admin_url('admin.php?page=analytify-settings') . '">', '</a>');
 			 } else {
 				 if ($is_optin) {
 					 if ($all_options_false) {
@@ -845,24 +854,29 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 							 'user_skip' => '0',
 						 ]);
 						 update_option('wpb_sdk_wp-analytify', $sdk_data);
-						 $settings_link .= sprintf(esc_html__('%1$s Opt Out %2$s | ', 'wp-analytify'), '<a class="opt-out" href="' . admin_url('admin.php?page=analytify-settings') . '">', '</a>');
+						 $settings_link .= sprintf(	// translators: Opt out
+							esc_html__('%1$s Opt Out %2$s | ', 'wp-analytify'), '<a class="opt-out" href="' . admin_url('admin.php?page=analytify-settings') . '">', '</a>');
 					 } else {
 						 // If opted in and not all options are false, update the opt-in state
 						 update_option('_analytify_optin', 'no');
-						 $settings_link .= sprintf(esc_html__('%1$s Opt In %2$s | ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-optin') . '">', '</a>');
+						 $settings_link .= sprintf(	// translators: Opt in
+							esc_html__('%1$s Opt In %2$s | ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-optin') . '">', '</a>');
 					 }
 				 } else {
 					 // Display opt-in link
-					 $settings_link .= sprintf(esc_html__('%1$s Opt In %2$s | ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-optin') . '">', '</a>');
+					 $settings_link .= sprintf(	// translators: Opt in
+						esc_html__('%1$s Opt In %2$s | ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-optin') . '">', '</a>');
 				 }
 			 } 
 
 			if (!class_exists('WP_Analytify_Pro')) {
-                $settings_link .= sprintf(esc_html__('%1$s Get Analytify Pro %2$s |', 'wp-analytify'), '<a  href="https://analytify.io/pricing/?utm_source=analytify-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Get+Analytify+Pro" target="_blank" style="color:#3db634;">', '</a>');
+                $settings_link .= sprintf(	// translators: Get Pro
+					esc_html__('%1$s Get Analytify Pro %2$s |', 'wp-analytify'), '<a  href="https://analytify.io/pricing/?utm_source=analytify-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Get+Analytify+Pro" target="_blank" style="color:#3db634;">', '</a>');
             }
 			
             // Build the initial settings and customize links
-            $settings_link .= sprintf(esc_html__('%1$s Settings %2$s ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-settings') . '">', '</a>');
+            $settings_link .= sprintf(	// translators: Settings
+				esc_html__('%1$s Settings %2$s ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-settings') . '">', '</a>');
             //$settings_link .= sprintf(esc_html__('%1$s Support %2$s | ', 'wp-analytify'), '<a target="blank" href="https://wordpress.org/support/plugin/wp-analytify">', '</a>');
 
            // $settings_link .= sprintf(esc_html__('%1$s Dashboard %2$s ', 'wp-analytify'), '<a href="' . admin_url('admin.php?page=analytify-dashboard') . '">', '</a>');
@@ -928,7 +942,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			$links = array(
 				//sprintf( esc_html__( '%1$s Get FREE Help %2$s', 'wp-analytify' ), '<a target="_blank" href="https://wordpress.org/support/plugin/wp-analytify">', '</a>' ),
-				sprintf( esc_html__( '%1$s Explore Premium Features %2$s', 'wp-analytify' ), '<a target="_blank" href="https://analytify.io/add-ons/?ref=27&utm_source=analytify-pro&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Explore+Premium+Features">', '</a>' ),
+				sprintf( // translators: Premium features
+					esc_html__( '%1$s Explore Premium Features %2$s', 'wp-analytify' ), '<a target="_blank" href="https://analytify.io/add-ons/?ref=27&utm_source=analytify-pro&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Explore+Premium+Features">', '</a>' ),
 				//'<a href="https://wordpress.org/support/view/plugin-reviews/wp-analytify/" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> ' . __( 'Vote!', 'wp-analytify' ) . '</a>',
 			);
 
@@ -1096,10 +1111,10 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				wp_localize_script( 'moment', 'moment_analytify', array( 'timezone' => $timezone ) );
 				*/
 
+
 				wp_enqueue_script( 'pikaday-js', plugins_url( 'assets/js/pikaday.js', __FILE__ ), array( 'moment' ), ANALYTIFY_VERSION );
-
 				wp_enqueue_script( 'analytify-dashboard-js', plugins_url( 'assets/js/wp-analytify-dashboard.js', __FILE__ ), array( 'pikaday-js' ), ANALYTIFY_VERSION );
-
+				
 				wp_localize_script(
 					'analytify-dashboard-js',
 					'analytify_dashboard',
@@ -1169,7 +1184,10 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				$api_url   = $rest_url . 'wp-analytify/v1/get_report/';
 
 				if ( class_exists( 'WP_Analytify_Pro_Base' ) && version_compare( ANALYTIFY_PRO_VERSION, '5.0.0' ) >= 0 && isset( $_GET['page'] ) && ! isset( $_GET['show'] ) && 'analytify-dashboard' == $_GET['page'] ) {
-					wp_enqueue_script( 'analytify-stats-core', plugins_url( 'assets/js/stats-core.js', __FILE__ ), array( 'jquery', 'echarts-js', 'analytify-comp-chart' ), ANALYTIFY_VERSION, true );				
+					wp_enqueue_script( 'analytify-stats-core', plugins_url( 'assets/js/stats-core.js', __FILE__ ), array( 'jquery', 'echarts-js', 'analytify-comp-chart' ), ANALYTIFY_VERSION, true );
+					wp_enqueue_script( 'jspdf','https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js', array(), ANALYTIFY_VERSION );
+					wp_enqueue_script( 'html2canvas','https://html2canvas.hertzen.com/dist/html2canvas.js', array(), ANALYTIFY_VERSION );
+
 				} else {
 					wp_enqueue_script( 'analytify-stats-core', plugins_url( 'assets/js/stats-core.js', __FILE__ ), array( 'jquery', 'echarts-js' ), ANALYTIFY_VERSION, true );
 				}
@@ -1555,7 +1573,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					echo '<br /><p class="description">' . esc_html__( 'You must authenticate to access your web profiles.', 'wp-analytify' ) . '</p>';
 				}
 			} catch ( Exception $e ) {
-				echo sprintf( esc_html__( '%1$s %2$s Oops, Something went wrong!%3$s %4$s Try to %5$s Reset %6$s Authentication.', 'wp-analytify' ), '<br />', '<strong>', '</strong>', '<br /><br />', '<a href=\'?page=analytify-settings&tab=authentication\' title="Reset">', '</a>' );
+				echo sprintf( // translators: Something wrong
+					esc_html__( '%1$s %2$s Oops, Something went wrong!%3$s %4$s Try to %5$s Reset %6$s Authentication.', 'wp-analytify' ), '<br />', '<strong>', '</strong>', '<br /><br />', '<a href=\'?page=analytify-settings&tab=authentication\' title="Reset">', '</a>' );
 			}
 		}
 
@@ -1621,10 +1640,12 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			$acces_token = get_option( 'post_analytics_token' );
 
 			if ( ! isset( $acces_token ) || empty( $acces_token ) ) {
-				echo "<div id='message' class='error'><p><strong>" . sprintf( esc_html__( 'Analytify is not active. Please %1$sAuthenticate%2$s in order to get started using this plugin.', 'wp-analytify' ), '<a href="' . esc_url( menu_page_url( 'analytify-settings', false ) ) . '">', '</a>' ) . '</p></div>';
+				echo "<div id='message' class='error'><p><strong>" . sprintf( // translators: Profile warning
+					esc_html__( 'Analytify is not active. Please %1$sAuthenticate%2$s in order to get started using this plugin.', 'wp-analytify' ), '<a href="' . esc_url( menu_page_url( 'analytify-settings', false ) ) . '">', '</a>' ) . '</p></div>';
 			} else {
 				if ( ! isset( $profile_id ) || empty( $profile_id ) ) {
-					echo sprintf( esc_html__( '%1$s Google Analytics Profile is not set. Set the %2$s Profile %3$s', 'wp-analytify' ), '<div class="error"><p><strong>', '<a href="' . esc_url( menu_page_url( 'analytify-settings', false ) ) . '&tab=profile">', '</a></p></div>' );
+					echo sprintf( // translators: Profile is not set warning
+						esc_html__( '%1$s Google Analytics Profile is not set. Set the %2$s Profile %3$s', 'wp-analytify' ), '<div class="error"><p><strong>', '<a href="' . esc_url( menu_page_url( 'analytify-settings', false ) ) . '&tab=profile">', '</a></p></div>' );
 				}
 			}
 		}
@@ -1748,7 +1769,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				return;
 			}
 
-			echo sprintf( esc_html__( '%1$s Displaying Analytics of this page from %2$s to %3$s %4$s', 'wp-analytify' ), '<p>', date( 'jS F, Y', strtotime( $s_date ) ), date( 'jS F, Y', strtotime( $e_date ) ), '</p>' );
+			echo sprintf( // translators: Analytics of this page
+				esc_html__( '%1$s Displaying Analytics of this page from %2$s to %3$s %4$s', 'wp-analytify' ), '<p>', date( 'jS F, Y', strtotime( $s_date ) ), date( 'jS F, Y', strtotime( $e_date ) ), '</p>' );
 			echo '<div class="analytify_wraper analytify_single_post_page">';
 
 			if ( is_array( $show_settings ) ) {
@@ -1948,7 +1970,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			if ( ! $this->is_reporting_in_ga4 ) {
 				$class   = 'wp-analytify-danger';
-				$message = sprintf(
+				$message = sprintf(	// translators: GA4 update notice
 					esc_html__( '%1$sAttention:%2$s Switch to GA4 (Google Analytics 4), Your current version of Google Analytics (UA) is outdated and no longer tracks data. %3$sFollow the guide%4$s.', 'wp-analytify' ),
 					'<b>',
 					'</b>',
@@ -1976,7 +1998,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				$addons_update_todo = WPANALYTIFY_Utils::get_addons_to_update();
 				if ( ! empty( $addons_update_todo ) ) {
 					$class   = 'wp-analytify-danger';
-					$message = sprintf( esc_html__( '%1$sNotice:%2$s Please update the following plugins to make them work with the Analytify 5.0.0 smoothly. %3$s', 'wp-analytify' ), '<b>', '</b>', '<br>' . implode( '<br>', $addons_update_todo ) );
+					$message = sprintf( // translators: Update addons
+						esc_html__( '%1$sNotice:%2$s Please update the following plugins to make them work with the Analytify 5.0.0 smoothly. %3$s', 'wp-analytify' ), '<b>', '</b>', '<br>' . implode( '<br>', $addons_update_todo ) );
 					analytify_notice( $message, $class );
 				}
 			}
@@ -1992,11 +2015,16 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		 * @version 5.0.6
 		 */
 		public function analytify_cache_clear_notice() {
-			if( ! isset( $_GET['analytify-cache'] ) ) {
+			if ( ! isset( $_GET['analytify-cache'] )) {
 				return;
 			}
-			echo '<div id="message" class="updated notice is-dismissible"><p> ' .  __( 'Analytify statistics refreshed', 'wp-analytify') . ' </p></div>';
+		
+			$notice_message = esc_html__( 'Analytify statistics refreshed', 'wp-analytify' );
+			$class = 'wp-analytify-danger';
+			
+			analytify_notice( $notice_message, $class );
 		}
+		
 
 		public function analytify_dismiss_rank_math_notice()
 		{
@@ -2024,7 +2052,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					// Check if the current page is related to Rank Math or Analytify
 					if ($screen && (strpos($screen->id, 'analytify') !== false)) {
 						echo '<div id="message" class="notice notice-warning is-dismissible analytify-rank-math-notice">
-								<p>' . sprintf(
+								<p>' . sprintf(	// translators: Rank match notice
 							__('Kindly note that Rank Math Self-Hosted Analytics JS File Feature is available in %1$s Analytify %2$s as well. We recommend using Analytify for this functionality.', 'wp-analytify'),
 							'<a style="text-decoration:none" href="' . menu_page_url('analytify-settings', false) . '#wp-analytify-advanced">',
 							'</a>'
@@ -2041,7 +2069,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					<?php
 					} else if (strpos($screen->id, 'rank-math') !== false) {
 						echo '<div id="message" class="rank-math-notice notice is-dismissible">
-								<p>' . sprintf(
+								<p>' . sprintf(	// translators: Rank match notice
 							__('Kindly note that Rank Math Self-Hosted Analytics JS File Feature is available in %1$s Analytify %2$s as well. We recommend using Analytify for this functionality.', 'wp-analytify'),
 							'<a style="text-decoration:none" href="' . menu_page_url('analytify-settings', false) . '#wp-analytify-advanced">',
 							'</a>'
@@ -2091,14 +2119,16 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				if ( ! in_array( $current_screen, $dashboard_pages ) ) {
 					$class   = 'wp-analytify-danger';
 					$link    = esc_url( menu_page_url( 'analytify-settings', false ) );
-					$message = sprintf( esc_html__( '%1$sNotice:%2$s %3$sConnect%4$s %2$s Analytify with your Google account.', 'wp-analytify' ), '<b>', '</b>', '<b><a style="text-decoration:none" href=' . $link . '>', '</a>' );
+					$message = sprintf(	// translators: Connect google account notice 
+						esc_html__( '%1$sNotice:%2$s %3$sConnect%4$s %2$s Analytify with your Google account.', 'wp-analytify' ), '<b>', '</b>', '<b><a style="text-decoration:none" href=' . $link . '>', '</a>' );
 					analytify_notice( $message, $class );
 				}
 			} else {
 				if ( empty( $manual_ua_code ) && ! WP_ANALYTIFY_FUNCTIONS::is_profile_selected() ) {
 					$class   = 'wp-analytify-success';
 					$link    = esc_url( menu_page_url( 'analytify-settings', false ) );
-					$message = sprintf( esc_html__( 'Congratulations! Analytify is now authenticated. Please select your website profile %1$s here %2$s to get started.', 'wp-analytify' ), '<a style="text-decoration:none" href="' . $link . '#wp-analytify-profile">', '</a>' );
+					$message = sprintf(	// translators: Successful authentication notice 
+						esc_html__( 'Congratulations! Analytify is now authenticated. Please select your website profile %1$s here %2$s to get started.', 'wp-analytify' ), '<a style="text-decoration:none" href="' . $link . '#wp-analytify-profile">', '</a>' );
 					analytify_notice( $message, $class );
 				}
 			}
@@ -2106,7 +2136,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			if ( defined( 'ANALYTIFY_TRACKING_MODE' ) && 'gtag' === ANALYTIFY_TRACKING_MODE ) {
 				$update_gtag_plugins = array();
 
-				if ( class_exists( 'WP_Analytify_Woocommerce' ) && 1 === version_compare( '4.1.0', ANALTYIFY_WOOCOMMERCE_VERSION ) ) {
+				if ( class_exists( 'WP_Analytify_WooCommerce' ) && 1 === version_compare( '4.1.0', ANALTYIFY_WOOCOMMERCE_VERSION ) ) {
 					array_push( $update_gtag_plugins, 'Analytify - WooCommerce Tracking' );
 				}
 				if ( class_exists( 'Analytify_Forms' ) && defined( 'ANALYTIFY_FORMS_VERSION' ) && 1 === version_compare( '2.0.0', ANALYTIFY_FORMS_VERSION ) ) {
@@ -2122,7 +2152,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 				if ( ! empty( $update_gtag_plugins ) ) {
 					$class   = 'wp-analytify-danger';
-					$message = sprintf( esc_html__( '%1$sNotice:%2$s Please update the following plugins to make them work with the Analytify gtag.js tracking mode. %3$s', 'wp-analytify' ), '<b>', '</b>', '<br>' . implode( ', ', $update_gtag_plugins ) );
+					$message = sprintf( // translators: Update plugins notice
+						esc_html__( '%1$sNotice:%2$s Please update the following plugins to make them work with the Analytify gtag.js tracking mode. %3$s', 'wp-analytify' ), '<b>', '</b>', '<br>' . implode( ', ', $update_gtag_plugins ) );
 					analytify_notice( $message, $class );
 				}
 			}
@@ -2140,7 +2171,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			?>
 
 			<div class="wp-analytify-notification wp-analytify-danger">
-				<a class="" href="#" aria-label="Dismiss the welcome panel"></a>
+				<a class="wp-analytify-notice-dismiss" href="<?php echo $dismiss_url; ?>" aria-label="Dismiss the notice">&times;</a>
 				<div class="wp-analytify-notice-logo">
 					<img src="<?php echo plugins_url( 'assets/img/notice-logo.svg', __FILE__ ); ?>" alt="notice">
 				</div>
@@ -2473,7 +2504,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				delete_option( 'profiles_list_summary' );
 				delete_option( 'analytify_ga_properties_list' ); // GA properties list.
 
-				$update_message = sprintf( esc_html__( '%1$s %2$s %3$s Authentication Cleared login again. %4$s %5$s %6$s', 'wp-analytify' ), '<div id="setting-error-settings_updated" class="updated notice is-dismissible settings-error below-h2">', '<p>', '<strong>', '</strong>', '</p>', '</div>' );
+				$update_message = sprintf(	// translators: Login again notice 
+					esc_html__( '%1$s %2$s %3$s Authentication Cleared login again. %4$s %5$s %6$s', 'wp-analytify' ), '<div id="setting-error-settings_updated" class="updated notice is-dismissible settings-error below-h2">', '<p>', '<strong>', '</strong>', '</p>', '</div>' );
 			}
 		}
 
@@ -2740,10 +2772,10 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				/* Check that the user hasn't already clicked to ignore the message */
 				if ( ! get_user_meta( $user_id, 'analytify_ignore_bf_deal_1' ) ) {
 					$message  = '<p> ';
-					$message .= sprintf(
+					$message .= sprintf(	// translators: Black friday deal
 						__(
 							'<strong>Biggest Black Friday Deal</strong> in the WordPress Analytics Universe! Everything is <strong>50%% OFF</strong> for <strong>Analytify</strong> [Limited Availability].<a href="https://analytify.io/in/thanks2018" target="_blank" style="text-decoration: none;"><span class="dashicons dashicons-smiley" style="margin-left: 10px;"></span> Grab The Deal</a>
-						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version</a>'
+						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version</a>' , 'wp-analytify'
 						),
 						admin_url( 'admin.php?page=analytify-dashboard&analytify_bf_nag_ignore_1=0' )
 					);
@@ -2779,10 +2811,10 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				/* Check that the user hasn't already clicked to ignore the message */
 				if ( ! get_user_meta( $user_id, 'analytify_ignore_winter_deal' ) ) {
 					$message  = '<p> ';
-					$message .= sprintf(
+					$message .= sprintf(	// translators: New year deal
 						__(
 							'<strong>The Biggest New Year Deal</strong> in the WordPress Universe! Everything is <strong>50%% OFF</strong> for <strong>Analytify</strong> [Limited Availability].<a href="https://analytify.io/in/winter2019" target="_blank" style="text-decoration: none;"><span class="dashicons dashicons-smiley" style="margin-left: 10px;"></span> Grab The Deal</a>
-						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version</a>'
+						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version</a>' , 'wp-analytify'
 						),
 						admin_url( 'admin.php?page=analytify-dashboard&analytify_winter_nag_ignore=0' )
 					);

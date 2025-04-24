@@ -105,66 +105,66 @@
         <div class="wpb-sdk_deactivation-frm-serveypanel">
             <form action="#" method="post" class="wpb-sdk_deactivation-frm-deactivate-form">
                 <div class="wpb-sdk_deactivation-frm-popup-header">
-                    <h2><?php _e('Quick feedback about ' . $product_name); ?></h2>
+                    <h2><?php _e('Quick feedback about ' . $product_name , 'wp-analytify' ); // phpcs:ignore ?></h2>
                 </div>
                 <div class="wpb-sdk_deactivation-frm-popup-body">
-                    <h3><?php _e('If you have a moment, please let us know why you are deactivating:'); ?></h3>
+                    <h3><?php _e('If you have a moment, please let us know why you are deactivating:', 'wp-analytify'); ?></h3>
                     <ul id="wpb-sdk_deactivation-frm-reason-list">
                         <li class="wpb-sdk_deactivation-frm-reason" data-input-type="" data-input-placeholder="">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="1"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('I only needed the plugin for a short period'); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('I only needed the plugin for a short period', 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                         </li>
                         <li class="wpb-sdk_deactivation-frm-reason has-input" data-input-type="textfield">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="2"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('I found a better plugin'); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('I found a better plugin', 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                             <div class="wpb-sdk_deactivation-frm-reason-input">
-                                <span class="message error-message"><?php _e('Kindly tell us the name of plugin'); ?></span>
-                                <input type="text" name="better_plugin" placeholder="<?php _e("What's the plugin's name?"); ?>">
+                                <span class="message error-message"><?php _e('Kindly tell us the name of plugin', 'wp-analytify'); ?></span>
+                                <input type="text" name="better_plugin" placeholder="<?php _e("What's the plugin's name?", 'wp-analytify'); ?>">
                             </div>
                         </li>
                         <li class="wpb-sdk_deactivation-frm-reason" data-input-type="" data-input-placeholder="">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="3"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('The plugin broke my site'); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('The plugin broke my site', 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                         </li>
                         <li class="wpb-sdk_deactivation-frm-reason" data-input-type="" data-input-placeholder="">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="4"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('The plugin suddenly stopped working'); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('The plugin suddenly stopped working', 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                         </li>
                         <li class="wpb-sdk_deactivation-frm-reason" data-input-type="" data-input-placeholder="">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="5"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('I no longer need the plugin'); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('I no longer need the plugin', 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                         </li>
                         <li class="wpb-sdk_deactivation-frm-reason" data-input-type="" data-input-placeholder="">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="6"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e("It's a temporary deactivation. I'm just debugging an issue."); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e("It's a temporary deactivation. I'm just debugging an issue.", 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                         </li>
                         <li class="wpb-sdk_deactivation-frm-reason has-input" data-input-type="textfield">
                             <label>
                                 <span class="wpb-sdk_deactivation-frm-radio"><input type="radio" name="wpb-sdk_deactivation-frm-selected-reason" value="7"></span>
-                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('Other'); ?></span>
+                                <span class="wpb-sdk_deactivation-frm-reason-text"><?php _e('Other', 'wp-analytify'); ?></span>
                             </label>
                             <div class="wpb-sdk_deactivation-frm-internal-message"></div>
                             <div class="wpb-sdk_deactivation-frm-reason-input">
-                                <span class="message error-message"><?php _e('Kindly tell us the reason so we can improve.'); ?></span>
-                                <input type="text" name="other_reason" placeholder="<?php _e("Would you like to share what's other reason?"); ?>">
+                                <span class="message error-message"><?php _e('Kindly tell us the reason so we can improve.', 'wp-analytify'); ?></span>
+                                <input type="text" name="other_reason" placeholder="<?php _e("Would you like to share what's other reason?", 'wp-analytify'); ?>">
                             </div>
                         </li>
                     </ul>
@@ -172,14 +172,14 @@
                 <div class="wpb-sdk_deactivation-frm-popup-footer">
                     <label class="wpb-sdk_deactivation-frm-anonymous">
                         <input type="checkbox" />
-                        <?php _e('Anonymous feedback'); ?>
+                        <?php _e('Anonymous feedback', 'wp-analytify'); ?>
                     </label>
                     <input type="button" class="button button-secondary button-skip wpb-sdk_deactivation-frm-popup-skip-feedback" value="Skip &amp; Deactivate">
                     <div class="action-btns">
                         <span class="wpb-sdk_deactivation-frm-spinner"><img src="<?php echo admin_url('/images/spinner.gif'); ?>" alt="spinner"></span>
                         <input type="submit" class="button button-secondary button-deactivate wpb-sdk_deactivation-frm-popup-allow-deactivate" value="Submit &amp; Deactivate" disabled="disabled">
                         <a href="#" class="button button-primary wpb-sdk_deactivation-frm-popup-button-close">
-                            <?php _e('Cancel'); ?>
+                            <?php _e('Cancel', 'wp-analytify'); ?>
                         </a>
                     </div>
                 </div>

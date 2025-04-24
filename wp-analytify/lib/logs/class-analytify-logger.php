@@ -114,7 +114,8 @@ class ANALYTIFY_Logger implements ANALYTIFY_Logger_Interface {
 	public function log( $level, $message, $context = array() ) {
 
 		if ( ! ANALYTIFY_Log_Levels::is_valid_level( $level ) ) {
-			_doing_it_wrong( __METHOD__, sprintf( __( '%1$s was called with an invalid level "%2$s".', 'wp-analytify' ), '<code>ANALYTIFY_Logger::log</code>', $level ), '3.0' );
+			_doing_it_wrong( __METHOD__, sprintf( // translators: Invalid level
+				__( '%1$s was called with an invalid level "%2$s".', 'wp-analytify' ), '<code>ANALYTIFY_Logger::log</code>', $level ), '3.0' );
 		}
 
 		if ( $this->should_handle( $level ) ) {

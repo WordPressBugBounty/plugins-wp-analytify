@@ -147,7 +147,9 @@ function wpa_admin_rate_footer_text( $footer_text ) {
 	if ( isset( $current_screen->id ) && in_array( $current_screen->id, $wpa_pages ) ) {
 		// Change the footer text
 		if ( ! get_option( 'analytify_admin_footer_text_rated' ) ) {
-				$rate_text = sprintf( esc_html__( 'If you like %1$s Analytify %2$s please leave us a %5$s %3$s %6$s rating. %4$s A huge thank you from %1$s WPBrigade %2$s in advance!', 'wp-analytify' ), '<strong>', '</strong>', '&#9733;&#9733;&#9733;&#9733;&#9733;', '<br />', '<a href="https://analytify.io/go/rate-analytify" target="_blank" class="wpa-rating-footer" data-rated="Thanks dude ;)">', '</a>' );
+				$rate_text = sprintf( 
+							// translators: Analytify rating
+					esc_html__( 'If you like %1$s Analytify %2$s please leave us a %5$s %3$s %6$s rating. %4$s A huge thank you from %1$s WPBrigade %2$s in advance!', 'wp-analytify' ), '<strong>', '</strong>', '&#9733;&#9733;&#9733;&#9733;&#9733;', '<br />', '<a href="https://analytify.io/go/rate-analytify" target="_blank" class="wpa-rating-footer" data-rated="Thanks dude ;)">', '</a>' );
 					wpa_enqueue_js( "
                         jQuery('a.wpa-rating-footer').on('click', function() {
                             jQuery.post( '" . admin_url( 'admin-ajax.php' ) . "', { action: 'analytify_rated' } );
@@ -288,7 +290,7 @@ if ( ! function_exists( 'analytify__' ) ) {
 	 * @return void
 	 */
 	function analytify__( $string, $textdomain = 'wp-analytify' ) {
-		return __( $string, $textdomain );
+		return __( $string, $textdomain );	// phpcs:ignore
 	}
 }
 
@@ -300,7 +302,7 @@ if ( ! function_exists( 'analytify_e' ) ) {
 	 * @return void
 	 */
 	function analytify_e( $string, $textdomain = 'wp-analytify' ) {
-		echo __( $string, $textdomain );
+		echo __( $string, $textdomain );	// phpcs:ignore
 	}
 }
 
@@ -356,17 +358,49 @@ function analytify_is_track_user() {
  *
  * @since 2.1.22
  */
- function analytify_notice( $message, $class = 'wp-analytify-success' ) {
-		echo '<div class="wp-analytify-notification '. $class .'">
-							<a class="" href="#" aria-label="Dismiss the welcome panel"></a>
-							<div class="wp-analytify-notice-logo">
-								<img src="' . plugins_url( 'assets/img/notice-logo.svg', dirname ( __FILE__ ) ) . '" alt="notice">
-							</div>
-							<div class="wp-analytify-notice-discription">
-								<p>' . $message .'</p>
-							</div>
-				</div>';
- }
+function analytify_notice( $message, $class = 'wp-analytify-success' ) {
+	$notice_id = 'analytify_notice_' . md5( $message );
+	if ( ! get_option( $notice_id ) ) {
+		echo '<div class="wp-analytify-notification '. $class .'" id="'. $notice_id .'">
+				<a class="wp-analytify-notice-dismiss" href="#" aria-label="Dismiss the notice" onclick="dismissAnalytifyNotice(\''. $notice_id .'\'); return false;">&times;</a>
+				<div class="wp-analytify-notice-icon">
+					<img src="' . plugins_url( 'assets/img/notice-logo.svg', dirname ( __FILE__ ) ) . '" alt="notice">
+				</div>
+				<div class="wp-analytify-notice-description">
+					<p>' . $message .'</p>
+				</div>
+			</div>';
+	}
+}
+
+add_action( 'admin_footer', 'analytify_notice_script' );
+function analytify_notice_script() {
+	?>
+	<script type="text/javascript">
+		function dismissAnalytifyNotice(noticeId) {
+			document.getElementById(noticeId).style.display = 'none';
+			var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+			var data = {
+				'action': 'dismiss_analytify_notice',
+				'notice_id': noticeId
+			};
+			jQuery.post(ajaxurl, data, function(response) {
+				console.log(response);
+			});
+		}
+	</script>
+	<?php
+}
+
+add_action( 'wp_ajax_dismiss_analytify_notice', 'dismiss_analytify_notice' );
+function dismiss_analytify_notice() {
+	if ( isset( $_POST['notice_id'] ) ) {
+		set_transient( $notice_id . '_dismissed', time(), 86400 );
+		wp_send_json_success();
+	} else {
+		wp_send_json_error();
+	}
+}
 
 
 
@@ -381,7 +415,7 @@ class WP_ANALYTIFY_FUNCTIONS {
 		}
 
 		$class   = 'wp-analytify-danger';
-		$message = sprintf(
+		$message = sprintf(		// translators: Check GA version
 			esc_html__( '%1$sAttention:%2$s Switch to GA4 (Google Analytics 4), Your current version of Google Analytics (UA) is outdated and no longer tracks data. %3$sFollow the guide%4$s.', 'wp-analytify' ),
 			'<b>',
 			'</b>',
@@ -414,7 +448,8 @@ class WP_ANALYTIFY_FUNCTIONS {
 
 				$class   = 'wp-analytify-danger';
 				$link    = menu_page_url( 'analytify-settings', false ) . '#wp-analytify-profile';
-				$notice_message = sprintf( esc_html__( $type . ' Dashboard can\'t be loaded until you select your website profile %1$s here%2$s.', 'wp-analytify' ), '<a style="text-decoration:none" href="'. $link .'">', '</a>' );
+				$notice_message = sprintf( // translators: No profile selected notice
+					esc_html__( '%1$s Dashboard can\'t be loaded until you select your website profile %2$s here%3$s.', 'wp-analytify' ), $type , '<a style="text-decoration:none" href="'. $link .'">', '</a>' );
 				analytify_notice( $notice_message, $class );
 			} else {
 				echo $message; 

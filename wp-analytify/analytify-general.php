@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '6.0.2' );
+define( 'ANALYTIFY_VERSION', '6.1.0' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -147,11 +147,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				} catch ( Exception $e ) {
 					// Show error message only for logged in users.
 					if ( current_user_can( 'manage_options' ) ) {
+						// translators: Error message for logged in users
 						echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 					}
 				} catch ( Exception $e ) {
 					// Show error message only for logged in users.
 					if ( current_user_can( 'manage_options' ) ) {
+						// translators: Reset authentication error message
 						echo sprintf( esc_html__( '%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %4$s', 'wp-analytify' ), '<br /><br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . 'title="Reset">', '</a>', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 					}
 				}
@@ -164,11 +166,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				} catch ( Exception $e ) {
 					// Show error message only for logged in users.
 					if ( current_user_can( 'manage_options' ) ) {
+						// translators: Error message for logged in users
 						echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 					}
 				} catch ( Exception $e ) {
 					// Show error message only for logged in users.
 					if ( current_user_can( 'manage_options' ) ) {
+						// translators: Reset authentication error message
 						echo sprintf( esc_html__( '%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %4$s', 'wp-analytify' ), '<br /><br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . 'title="Reset">', '</a>', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 					}
 				}
@@ -1300,6 +1304,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				// Show error message only for logged in users.
 				if ( current_user_can( 'manage_options' ) ) {
 					echo "<div class='wp_analytify_error_msg'>";
+					// translators: Error message for logged in users
 					echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
 					echo "</div>";
 				}
@@ -1307,6 +1312,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				// Show error message only for logged in users.
 				if ( current_user_can( 'manage_options' ) ) {
 					echo "<div class='wp_analytify_error_msg'>";
+					// translators: Reset authentication error message
 					echo sprintf( esc_html__( '%1$s Oops, Try to %3$s Reset %4$s Authentication. %2$s %7$s %2$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . ' title="Reset">', '</a>', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 					echo "</div>";
 				}
@@ -1314,6 +1320,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				// Show error message only for logged in users.
 				if ( current_user_can( 'manage_options' ) ) {
 					echo "<div class='wp_analytify_error_msg'>";
+					// translators: Error message
 					echo sprintf( esc_html__( '%1$s Oops! %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
 					echo "</div>";
 				}
@@ -1385,18 +1392,20 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				return $this->service->data_ga->get( 'ga:' . $profile_id, $start_date, $end_date, $metrics, $params );
 			} catch ( Analytify_Google_Service_Exception $e ) {
 				// Show error message only for logged in users.
-				// Show error message only for logged in users.
 				if ( current_user_can( 'manage_options' ) ) {
+					// translators: Error message
 					echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 				}
 			} catch ( Analytify_Google_Auth_Exception $e ) {
 				// Show error message only for logged in users.
 				if ( current_user_can( 'manage_options' ) ) {
+					// translators: Error message
 					echo sprintf( esc_html__( '%1$s Oops, Try to %3$s Reset %4$s Authentication. %2$s %7$s %2$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . ' title="Reset">', '</a>', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 				}
 			} catch ( Analytify_Google_IO_Exception $e ) {
 				// Show error message only for logged in users.
 				if ( current_user_can( 'manage_options' ) ) {
+					// translators: Error message
 					echo sprintf( esc_html__( '%1$s Oops! %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
 				}
 			}
@@ -1429,6 +1438,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			$result = check_ajax_referer( $action, 'nonce', false );
 
 			if ( false === $result ) {
+				// translators: Error message
 				$return = array( 'wpanalytify_error' => 1, 'body' => sprintf( __( 'Invalid nonce for: %s', 'wp-analytify' ), $action ) );
 				$this->end_ajax( json_encode( $return ) );
 			}
@@ -1437,6 +1447,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			$cap = apply_filters( 'wpanalytify_ajax_cap', $cap );
 
 			if ( ! current_user_can( $cap ) ) {
+				// translators: Error message
 				$return = array( 'wpanalytify_error' => 1, 'body' => sprintf( __( 'Access denied for: %s', 'wp-analytify' ), $action ) );
 				$this->end_ajax( json_encode( $return ) );
 			}
@@ -1628,7 +1639,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				'detail-realtime',
 				'detail-demographic',
 				'search-terms',
-        'page-speed',
+        		'page-speed',
 				'search-console-report',
 				'video-tracking'
 			];
@@ -1693,7 +1704,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					break;
 				
 				case 'wp-analytify-woocommerce':
-					if ( class_exists( 'WP_Analytify_Woocommerce' ) ) {
+					if ( class_exists( 'WP_Analytify_WooCommerce') || class_exists( 'WP_Analytify_WooCommerce_Addon' ) ) {
 						$addon_active = true;
 					}
 					break;
@@ -1717,7 +1728,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					break;
 
 				case 'wp-analytify-forms':
-					if ( class_exists( 'Analytify_Forms' ) ) {
+					if ( class_exists( 'Analytify_Forms' ) || class_exists( 'Analytify_Addon_Forms' ) ) {
 						$addon_active = true;
 					}
 					break;

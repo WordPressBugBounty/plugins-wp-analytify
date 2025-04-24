@@ -70,6 +70,7 @@ margin-left: 20px;
 .analytify_wraper ul {
     margin:0;
     padding:0;
+    top: 3rem;
 }
 .wp_analytify_error_msg{
     color:#fa5825;
@@ -1122,7 +1123,7 @@ transition: all .25s ease-in;
 }
 #inner_analytify_dashboard{
     margin: 0 -13px -12px;
-    min-height: 175px;
+    min-height: 360px;
 }
 #inner_analytify_dashboard .analytify_status_box_wraper{
     margin-bottom: 0;
@@ -1310,6 +1311,10 @@ transition: all .25s ease-in;
 }
 #pa-single-admin-analytics .show-hide {
     text-align: left;
+}
+.stats_loading{
+    background: url(../img/loader.gif) no-repeat center center;
+    min-height: 300px;
 }
 .analytify_flages {
     background-image:url(../img/flag_sprite.png);
@@ -2542,7 +2547,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     box-shadow: 0 2px 3px #dae1e3;
     border-radius: 5px 0px 5px 5px;
     overflow: hidden;
-    z-index: 4;
+    z-index: 999 !important;
     padding-top: 5px;
     width: 355px;
     position: absolute;
@@ -2603,6 +2608,27 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     cursor: pointer;
     vertical-align: top;
 }
+
+.analytify_setting.analytify_wraper .analytify_submit_date_btn{
+    margin-left: 4px;
+}
+
+.analytify_export_pdf_btn {
+    float: right;
+    /* display: inline-block; */
+    background:none;
+    border-radius: 5px;
+    border: 0;
+    color: #fff;
+    font-size: 14px;
+    padding: 0 13px;
+    height: 46px;
+    cursor: pointer;
+    vertical-align: top;
+    width: 100%;
+    margin-top: -10%;
+}
+
 [lang="fr-FR"] .analytify_submit_date_btn{
 	max-width: 92px;
     white-space: normal;
@@ -2611,6 +2637,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 [lang="fr-FR"] .analytify-single-mail-submit .analytify_submit_date_btn{
 	max-width: 100%;
 	margin-top: 10px;
+
 }
 .analytify_wraper .large-count{
     font-size: 34px;
@@ -2701,6 +2728,11 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     display: inline-block;
     text-decoration: none;
     vertical-align: top;
+}
+.analytify_pdf_logo{
+    height: 26px;
+    margin-top: 6px;
+    margin-left: -40px;
 }
 
 .analytify_tooltip .analytify_tooltiptext {
@@ -2899,10 +2931,12 @@ div.wp_analytify_pager span.wp_analytify_active, div.wp_analytify_pager span:hov
     box-shadow: none;
 }
 .analytify_select_date_single_page{
-    max-width: 500px;
+    max-width: 100%;
     margin: 0 auto;
-    display: block !important;
+    display: flex !important;
     padding: 10px 0 3px;
+    width: max-content;
+    flex-wrap: wrap;
 }
 .analytify_single_post_page .analytify_border_th_tp{
     border: 0;
@@ -3920,6 +3954,7 @@ div.wp_analytify_pager span.wp_analytify_active, div.wp_analytify_pager span:hov
     height: auto;
     min-height: 46px;
     padding: 5px 7px;
+    margin-left: 0px;
 }
 .analytify-widget-form .analytify_select_date .analytify-dashboard-stats-opts #analytify_dashboard_stats_type{
     width: calc(100% - 105px);
@@ -5034,6 +5069,9 @@ body:has(.analytify-dashboard-nav) #woocommerce-embedded-root + #wpbody{
     .analytify_submit_date_btn{
       margin-top: 10px;
     }
+    .analytify_export_pdf_btn{
+        margin-top: 10px;
+      }
 }
 
 @media screen and (max-width: 767px) {
@@ -5047,6 +5085,9 @@ body:has(.analytify-dashboard-nav) #woocommerce-embedded-root + #wpbody{
     
     .analytify_submit_date_btn {
         height: 50px;
+    }
+    .analytify_export_pdf_btn {
+        height: 20px;
     }
     
     .analytify_main_setting_bar {

@@ -195,7 +195,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'Avg time on site', 'wp-analytify-email' ); ?></font>
+									<font color="#848484"><?php _e( 'Avg time on site', 'wp-analytify' ); ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -231,7 +231,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'Pages/Session', 'wp-analytify-email' ) ?></font>
+									<font color="#848484"><?php _e( 'Pages/Session', 'wp-analytify' ) ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -337,7 +337,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'New visitors', 'wp-analytify-email' ) ?></font>
+									<font color="#848484"><?php _e( 'New visitors', 'wp-analytify' ) ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -371,7 +371,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'Returning visitors', 'wp-analytify-email' ) ?></font>
+									<font color="#848484"><?php _e( 'Returning visitors', 'wp-analytify' ) ?></font>
 								</td>
 							</tr>
 							<tr>
