@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
     /*if (pagenow == 'analytify_page_analytify-settings' && analytify_settings.is_authenticate == '') {
         localStorage.setItem('activetab', '#wp-analytify-authentication');
     }*/
-    // open profile tab after authenticate.
+    // open profile tab after authentication.
     if (pagenow == 'analytify_page_analytify-settings' && analytify_settings.is_authenticate == '1') {
         if (window.location.href.indexOf("#wp-analytify-profile") > -1) {
             localStorage.setItem('activetab', '#wp-analytify-profile');
@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
             localStorage.setItem('activetab', '#wp-analytify-email');
         }
     }
-
+ 
     // Apply Chosen Style on Select DropDowns
     $(".analytify-chosen").chosen(); 
 
@@ -205,17 +205,23 @@ jQuery(document).ready(function ($) {
                 nonce: wpanalytify_data.nonces.import_export
             },
             success: function (response) {
+                // Ensure the response is properly trimmed to avoid extra characters
+                const trimmedResponse = response.trim();
+
+                // Check if the response ends with an unwanted "0" and remove it
+                const sanitizedResponse = trimmedResponse.endsWith("0") ? trimmedResponse.slice(0, -1) : trimmedResponse;
+
                 if (!window.navigator.msSaveOrOpenBlob) {
                     $("<a />", {
                         "download": fileName,
                         "href": "data:text/plain;charset=utf-8," +
-                            encodeURIComponent(response),
+                            encodeURIComponent(sanitizedResponse),
                     }).appendTo("body")
                         .click(function () {
                             $(this).remove()
                         })[0].click()
                 } else {
-                    var blobObject = new Blob([response]);
+                    var blobObject = new Blob([sanitizedResponse]);
                     window.navigator.msSaveBlob(blobObject,
                         'analytify-settings.json');
                 }

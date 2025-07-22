@@ -422,7 +422,7 @@ echo "<div class='second-step step'>";
 echo "<h2>Thank You!</h2>";
 //echo "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>";
 if ( ! get_option( 'pa_google_token' ) ) {
-  echo "<a target='_self' href='https://accounts.google.com/o/oauth2/auth?". WP_ANALYTIFY_FUNCTIONS::generate_login_url(). "' type='submit' class='analytify-ga-button button button-primary' style='height: 40px; line-height:40px; padding:0 20px; margin: 30px; margin-bottom: 15px; font-size: 16px;' >Connect Analytify With Google Analytics</a>";
+  echo "<a target='_self' href='". WP_ANALYTIFY_FUNCTIONS::analytify_create_auth_url(). "' type='submit' class='analytify-ga-button button button-primary' style='height: 40px; line-height:40px; padding:0 20px; margin: 30px; margin-bottom: 15px; font-size: 16px;' >Connect Analytify With Google Analytics</a>";
 } else {
   echo "<a target='_self' href='". admin_url('admin.php?page=analytify-settings') . "' type='submit' class='analytify-ga-button button button-primary' style='height: 40px !important; margin: 30px; line-height:40px; padding:0 20px; margin-bottom: 15px; font-size: 16px;' >Go to Analytify Settings</a>";
 

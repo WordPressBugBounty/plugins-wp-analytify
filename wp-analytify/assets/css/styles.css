@@ -777,6 +777,7 @@ transition: all .25s ease-in;
     border:1px solid #e2e5e8;
     margin-bottom:20px;
     background:#fff;
+	clear: both;
 }
 .analytify_status_header {
     border-bottom:1px solid #e2e5e8;
@@ -1123,11 +1124,16 @@ transition: all .25s ease-in;
 }
 #inner_analytify_dashboard{
     margin: 0 -13px -12px;
-    min-height: 360px;
 }
 #inner_analytify_dashboard .analytify_status_box_wraper{
     margin-bottom: 0;
     background: none;
+}
+#inner_analytify_dashboard:has(.wpb-error-box){
+    min-height: 0;
+}
+#inner_analytify_dashboard:has(.wpb-error-box) #analytify_chart_visitor_devices{
+	height: auto !important;
 }
 .inside #inner_analytify_dashboard.stats_loading .analytify_status_box_wraper{
     opacity: 0;
@@ -1298,11 +1304,70 @@ transition: all .25s ease-in;
 .analytify_border_th_tp {
     border-top:1px solid #e2e5e8;
 }
-.analytify_data_tables th {
+.analytify_data_tables th,
+.wp_analytify_campaign_paginated th {
     border-left:1px solid #e2e5e8;
     background:#f5f9ff;
     font-weight:500;
+    cursor: pointer;
+    position: relative;
+    padding-right: 25px;
 }
+
+/* Default hidden icon, visible on hover for unsorted columns */
+.analytify_data_tables th:not(.sorted-asc):not(.sorted-desc)::after,
+.wp_analytify_campaign_paginated th:not(.sorted-asc):not(.sorted-desc)::after {
+    content: "\f140"; /* Down arrow default */
+    font-family: "dashicons";
+    color: #4aa3df;
+    font-size: 17px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s ease;
+}
+
+.wp_analytify_campaign_paginated th:not(.sorted-asc):not(.sorted-desc)::after, 
+.wp_analytify_campaign_paginated th.sorted-desc::after,
+.wp_analytify_campaign_paginated th.sorted-asc::after {
+    right: -2px !important;
+}
+/* Icon visible on hover for unsorted columns */
+.analytify_data_tables th:hover:not(.sorted-asc):not(.sorted-desc)::after,
+.wp_analytify_campaign_paginated th:hover:not(.sorted-asc):not(.sorted-desc)::after {
+    opacity: 1;
+}
+
+/* Always visible ascending icon when sorted */
+.analytify_data_tables th.sorted-asc::after,
+.wp_analytify_campaign_paginated th.sorted-asc::after {
+    content: "\f142"; /* Up arrow */
+    font-family: "dashicons";
+    color: #4aa3df;
+    font-size: 17px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1; /* Always visible */
+}
+
+/* Always visible descending icon when sorted */
+.analytify_data_tables th.sorted-desc::after,
+.wp_analytify_campaign_paginated th.sorted-desc::after {
+    content: "\f140"; /* Down arrow */
+    font-family: "dashicons";
+    color: #4aa3df;
+    font-size: 17px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1; /* Always visible */
+}
+
 .analytify_data_tables th:first-child {
     border-left:0px solid #e2e5e8;
 }
@@ -2614,21 +2679,20 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 }
 
 .analytify_export_pdf_btn {
-    float: right;
-    /* display: inline-block; */
+    display: inline-block;
     background:none;
     border-radius: 5px;
     border: 0;
     color: #fff;
     font-size: 14px;
-    padding: 0 13px;
+    padding: 0;
     height: 46px;
     cursor: pointer;
     vertical-align: top;
-    width: 100%;
-    margin-top: -10%;
 }
-
+.generate_dashboard_pdf{
+	display: inline-block;
+}
 [lang="fr-FR"] .analytify_submit_date_btn{
 	max-width: 92px;
     white-space: normal;
@@ -2731,12 +2795,10 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 }
 .analytify_pdf_logo{
     height: 26px;
-    margin-top: 6px;
-    margin-left: -40px;
 }
 
 .analytify_tooltip .analytify_tooltiptext {
-    visibility: hidden;
+        visibility: hidden;
     width: 220px;
     background-color: #555;
     color: #fff;
@@ -2745,12 +2807,12 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     padding: 7px 0;
     position: absolute;
     z-index: 1;
-    top: calc(-100% - 25px);
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
     opacity: 0;
     transition: opacity 1s;
-    font-size: 14px;
+    font-size: 12px;
 }
 .analytify_tp_btn .analytify-export-loader{
     position: absolute;
@@ -3031,6 +3093,9 @@ div.wp_analytify_pager span.wp_analytify_active, div.wp_analytify_pager span:hov
 }
 .analytify_page_analytify-settings .wrap{
   margin: 0px 20px 0 2px;
+}
+.analytify_page_analytify-settings .wpb_plugin_tabs_content>#setting-error-settings_updated {
+    display: none;
 }
 .analytify_page_analytify-settings .wrap.analytify-addons-wrapper h2{
   padding: 0;
@@ -3393,6 +3458,18 @@ div.wp_analytify_pager span.wp_analytify_active, div.wp_analytify_pager span:hov
 }
 .analytify_page_analytify-settings .wpb_plugin_wraper .wpb_plugin_body_wraper .wpb_plugin_tabs_content .form-table .description{
     color: #999999;
+}
+.analytify_page_analytify-settings .wpb_plugin_wraper .wpb_plugin_body_wraper .wpb_plugin_tabs_content .form-table .chosen-single{
+    background-image: none;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: none;
+    height: auto;
+    padding: 3px 50px 3px 10px; 
+}
+.analytify_page_analytify-settings .wpb_plugin_wraper .wpb_plugin_body_wraper .wpb_plugin_tabs_content .form-table .chosen-single div b{
+      background-position: 0 6px;
 }
 .analytify_page_analytify-settings .wpb_plugin_wraper .wpb_plugin_body_wraper .wpb_plugin_tabs_content .form-table .chosen-single{
     background-image: none;
@@ -4787,6 +4864,46 @@ body:has(.analytify-dashboard-nav) #woocommerce-embedded-root{
 body:has(.analytify-dashboard-nav) #woocommerce-embedded-root + #wpbody{
 	margin-top: 0 !important;
 }
+body.analytify_page_analytify-settings .notice.notice-success.is-dismissible{
+    border: 1px solid #6ab074;
+    background: #e6f0e8;
+    display: flex;
+    align-items: center;
+    padding-inline-start: 10px;
+    padding-block: 10px;
+    gap: 14px;
+}
+body.analytify_page_analytify-settings .notice.notice-success.is-dismissible:before{
+    background: url(/wp-content/plugins/wp-analytify/assets/img/logo.svg) no-repeat;
+    content: '';
+    width: 34px;
+    height: 25px;
+    display: inline-block;
+    background-size: auto 100%;
+}
+
+body.analytify_page_analytify-settings .notice.notice-success.is-dismissible p{
+    margin: 0;
+    padding: 0;
+    color: #21573a;
+}
+
+body.analytify_page_analytify-settings .notice.notice-success.is-dismissible p{
+    margin: 0;
+    padding: 0;
+    color: #21573a;
+}
+body.analytify_page_analytify-settings .notice-dismiss{
+    top:2px;
+}
+body.analytify_page_analytify-settings .notice-dismiss:before{
+    font-size: 18px;
+    color: rgb(17, 16, 16);
+    content:"×";
+    font-weight: bold;
+    margin-right: -3px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
 
 @keyframes checkmark {
     0% {
@@ -5259,4 +5376,10 @@ body:has(.analytify-dashboard-nav) #woocommerce-embedded-root + #wpbody{
 		height: 20px;
 		line-height: 20px;
 	}
+}
+
+.analytify_table_header_no_events {
+    pointer-events: none;
+    width: 50px;
+    border: 0 !important;
 }

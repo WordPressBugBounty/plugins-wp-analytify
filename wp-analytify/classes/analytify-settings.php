@@ -1353,7 +1353,7 @@ if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 							<th scope="row"><label class="pt-20">Google Authentication</label></th>
 							<td>
-								<a target="_self" title="Log in with your Google Analytics Account" class="button-primary authentication_btn" href="https://accounts.google.com/o/oauth2/auth?<?php echo WP_ANALYTIFY_FUNCTIONS::generate_login_url(); ?>"><?php esc_html_e( 'Log in with your Google Analytics Account', 'wp-analytify' ); ?></a>
+								<a target="_self" title="Log in with your Google Analytics Account" class="button-primary authentication_btn" href="<?php echo WP_ANALYTIFY_FUNCTIONS::analytify_create_auth_url(); ?>"><?php esc_html_e( 'Log in with your Google Analytics Account', 'wp-analytify' ); ?></a>
 								<p class="description">It is required to <a href="https://analytify.io/setup-account-google-analytics/" target="blank">Set up your account</a> and a website profile at <a href="https://analytics.google.com/" target="blank">Google Analytics</a> to see Analytify Dashboard reports.<br>If you don't want to see reports within WordPress Dashboard, Manually add UA or GA4 Tracking ID below.</p>
 							</td>
 						</tr>

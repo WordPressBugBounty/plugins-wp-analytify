@@ -379,6 +379,7 @@ function analytify_notice_script() {
 	<script type="text/javascript">
 		function dismissAnalytifyNotice(noticeId) {
 			document.getElementById(noticeId).style.display = 'none';
+			localStorage.setItem('analytify_stats_refreshed_dismissed', '1');
 			var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
 			var data = {
 				'action': 'dismiss_analytify_notice',
@@ -462,40 +463,29 @@ class WP_ANALYTIFY_FUNCTIONS {
 	}
 
 	/**
-	 * General Redirect URL to
+	 * Creates the Google OAuth authentication URL.
 	 *
-	 * @return [type] [description]
+	 * @since 2.0.0
+  	 * @version 7.0.0
+	 * @return string The complete authentication URL with query parameters.
 	 */
-	public static function generate_login_url() {
-		$wp_analytify = $GLOBALS['WP_ANALYTIFY'];
-		$url = array(
-			'next'            => $wp_analytify->pa_setting_url(),
-			'scope'           => ANALYTIFY_SCOPE_FULL,
-			'response_type'   => 'code',
-			'access_type'     => 'offline',
-			'approval_prompt' => 'force',
+	 public static function analytify_create_auth_url() {
+		// @formatter:off
+		$auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?';
+		$query_arr = array(
+			'client_id' => ANALYTIFY_CLIENTID,
+			'redirect_uri' => ANALYTIFY_REDIRECT,
+			'response_type' => 'code',
+			'scope' => ANALYTIFY_SCOPE_FULL,
+			'state' => add_query_arg( array( 'nonce' => wp_create_nonce( 'analytify_analytics_login' ) ), get_admin_url() . 'admin.php?page=analytify-settings' ),
+			'access_type' => 'offline',
+			'prompt' => 'consent',
 		);
-
-		if ( 'on' == $wp_analytify->settings->get_option( 'user_advanced_keys','wp-analytify-advanced' ) ) {
-			$redirect_url   = $wp_analytify->settings->get_option( 'redirect_uri','wp-analytify-advanced' );
-			$client_id      = $wp_analytify->settings->get_option( 'client_id','wp-analytify-advanced' );
-
-			$url['redirect_uri'] = $redirect_url;
-			$url['client_id']    = $client_id;
-			$nonce = wp_create_nonce( 'analytify_analytics_login','analytify_analytics_login_nonce' );
-    		// Include nonce in state parameter
-    		$url['state'] = urlencode( json_encode( array( 'nonce' => $nonce ) ) );
-		} else {
-			$url['redirect_uri'] = ANALYTIFY_REDIRECT;
-			$url['client_id']    = ANALYTIFY_CLIENTID;
-			// used to redirect the user back to site.
-			$url['state'] = add_query_arg( array( 'nonce' => wp_create_nonce( 'analytify_analytics_login' ) ), get_admin_url() . 'admin.php?page=analytify-settings' );
-		}
-		return http_build_query( $url );
+		// @formatter:on
+		$auth_url = $auth_url . http_build_query( $query_arr );
+		return $auth_url;
 	}
-
-
-
+	
 	public static function fetch_profiles_list() {
 
 		$wp_analytify = $GLOBALS['WP_ANALYTIFY'];
@@ -557,7 +547,7 @@ class WP_ANALYTIFY_FUNCTIONS {
 
 			// Fetch ga4 or UA properties based on the google analytics version.
 			if ( 'ga4' === WPANALYTIFY_Utils::get_ga_mode() ) {
-				$ga4_profiles_raw = $wp_analytify->get_ga_properties();
+				$ga4_profiles_raw = $wp_analytify->analytify_get_ga_properties();
 				if ( ! empty( $ga4_profiles_raw ) ) {
 					foreach ( $ga4_profiles_raw as $parent_account_name => $account_properties ) {
 						foreach ( $account_properties as $property_item ) {

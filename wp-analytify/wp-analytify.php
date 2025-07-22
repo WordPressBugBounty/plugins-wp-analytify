@@ -3,14 +3,14 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 6.1.0
+ * Version: 7.0.0
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
  * Text Domain: wp-analytify
- * Tested up to: 6.8
+ * Tested up to: 6.7
  * Domain Path: /languages
- *
+ * GitHub Plugin URI: https://github.com/WPBrigade/wp-analytify
  * @package WP_ANALYTIFY
  */
 
@@ -716,7 +716,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			<?php
 			if ( $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' ) ) {
 				$custom_js = $this->settings->get_option( 'custom_js_code', 'wp-analytify-advanced' );
-				var_dump($custom_js);
+
 				if ( ! empty( $custom_js ) ) {
 					echo '<script type="text/javascript">' . $custom_js . '</script>';
 				}
@@ -1497,7 +1497,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			);
 
 			// Promo page (will not appear in side menu).
-			add_submenu_page( 'analytify-dashboard', esc_html__( 'Analytify Promo', 'wp-analytify' ), esc_html__( 'Analytify Promo', 'wp-analytify' ), 'manage_options', 'analytify-promo', array( $this, 'addons_promo_screen' ) );
+			add_submenu_page( 'analytify-dashboard', esc_html__( 'Analytify Promo', 'wp-analytify' ), null, 'manage_options', 'analytify-promo', array( $this, 'addons_promo_screen' ) );
 		}
 
 		/**
@@ -1624,7 +1624,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			try {
 				update_option( 'post_analytics_token', $key_google_token );
 
-				if ( $this->pa_connect() ) {
+				if ( $this->analytify_pa_connect_v2() ) {
 					return true;
 				}
 			} catch ( Exception $e ) {
@@ -2020,7 +2020,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			}
 		
 			$notice_message = esc_html__( 'Analytify statistics refreshed', 'wp-analytify' );
-			$class = 'wp-analytify-danger';
+			$class = 'wp-analytify-success';
 			
 			analytify_notice( $notice_message, $class );
 		}
@@ -2588,10 +2588,10 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 					if( isset( $stream_data['full_name'] ) ){
 
-						$new_secret_value = $this->get_mp_secret( $stream_data['full_name'] );
+						$new_secret_value = $this->analytify_get_mp_secret( $stream_data['full_name'] );
 
 						if( empty( $new_secret_value ) ) {
-							$new_secret_value = $this->create_mp_secret( $property_id, $stream_data['full_name'], $stream_data['measurement_id'] );
+							$new_secret_value = $this->analytify_create_mp_secret( $property_id, $stream_data['full_name'], $stream_data['measurement_id'] );
 						}
 						WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $new_secret_value );
 						update_option( 'analytify_tracking_property_info', $stream_data );
@@ -2661,7 +2661,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		 */
 		private function setup_property( $property_id, $mode ) {
 
-			$ga4_streams      = $this->get_ga_streams( $property_id ) ?? false;
+			$ga4_streams      = $this->analytify_get_ga_streams( $property_id ) ?? false;
 			$measurement_data = array();
 
             if( ! empty( $ga4_streams ) ) {
@@ -2679,23 +2679,23 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				// if found the stream select that one otherwise checks added for old streams structure we were using if found the stream in that structure select it otherwise return null.
 				$measurement_data =  ! empty( $default_stream ) ? $default_stream : ( isset($ga4_streams['measurement_id']) && isset($ga4_streams['full_name']) ? $ga4_streams : null );
 			} else {
-				$measurement_data = $this->create_ga_stream( $property_id );
+				$measurement_data = $this->analytify_create_ga_stream( $property_id );
 			}
 
 			if ( ! empty( $measurement_data['measurement_id'] ) ) {
 
 				// Get and Update the secret value in settings.
-				$get_secret_value  = $this->get_mp_secret( $measurement_data['full_name'] );
+				$get_secret_value  = $this->analytify_get_mp_secret( $measurement_data['full_name'] );
 				if ( ! empty( $get_secret_value ) ) {
 					WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $get_secret_value );
 				} else {
-					$mp_secret_value = $this->create_mp_secret( $property_id, $measurement_data['full_name'], $measurement_data['measurement_id'] );
+					$mp_secret_value = $this->analytify_create_mp_secret( $property_id, $measurement_data['full_name'], $measurement_data['measurement_id'] );
 					if ( ! empty( $mp_secret_value ) ) {
 						WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $get_secret_value );
 					}
 				}
 
-				$dimensions = $this->list_dimensions_needs_creation();
+				$dimensions = $this->analytify_list_dimensions_needs_creation();
 	
 				// Store property with stream data for future use.
 				update_option( 'analytify_' . $mode . '_property_info', $measurement_data );
@@ -2709,7 +2709,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				
 				// Create dimensions for Analytify tracking.
 				foreach ( $dimensions as $dimension_info ) {
-					$create_dimesion = $this->create_dimension( $dimension_info['parameter_name'], $dimension_info['display_name'], $dimension_info['scope'] );
+					$create_dimesion = $this->analytify_create_dimension( $dimension_info['parameter_name'], $dimension_info['display_name'], $dimension_info['scope'] );
 				}
 			}
 		}

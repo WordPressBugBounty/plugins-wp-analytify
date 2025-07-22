@@ -364,7 +364,7 @@ class WPBRIGADE_Logger
                 'server' => isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '',
                 'timezoneoffset' => date('P'),
                 'ext/mysqli' => isset($wpdb->use_mysqli) && !empty($wpdb->use_mysqli) ? true : false,
-                'mysql_version' => function_exists('mysqli_get_server_info') ? mysqli_get_server_info($wpdb->dbh) : '',
+                'mysql_version' => method_exists($wpdb, 'db_version') ? ( function_exists('mysqli_get_server_info') && isset($wpdb->dbh) && $wpdb->dbh instanceof mysqli ? mysqli_get_server_info($wpdb->dbh) : $wpdb->db_version()) : 'unknown',
                 'memory_limit' => (defined(WP_MEMORY_LIMIT) ? WP_MEMORY_LIMIT : ini_get('memory_limit')) ? ini_get('memory_limit') : '',
                 'external_http_blocked' => $external_http_blocked,
                 'wp_locale' => get_locale(),

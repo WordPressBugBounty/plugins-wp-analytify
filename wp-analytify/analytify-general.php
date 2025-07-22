@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '6.1.0' );
+define( 'ANALYTIFY_VERSION', '7.0.0' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -46,11 +46,15 @@ if ( get_option( 'wpa_current_version' ) ) { // Pro Keys
 define( 'ANALYTIFY_SCOPE', 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/analytics.edit' );
 // Full read & write and extra.
 define( 'ANALYTIFY_SCOPE_FULL', 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/analytics https://www.googleapis.com/auth/analytics.edit https://www.googleapis.com/auth/webmasters' );
+define( 'ANALYTIFY_AUTH_URL', 'https://accounts.google.com/o/oauth2/v2/auth?');
 
 define( 'ANALYTIFY_REDIRECT', 'https://analytify.io/api/' );
 define( 'ANALYTIFY_DEV_KEY', 'AIzaSyDXjBezSlaVMPk8OEi8Vw5aFvteouXHZpI' );
 define( 'ANALYTIFY_STORE_URL', 'https://analytify.io' );
 define( 'ANALYTIFY_PRODUCT_NAME', 'Analytify WordPress Plugin' );
+
+// Google Analytics Admin API base URL
+define( 'ANALYTIFY_GA_ADMIN_API_BASE', 'https://analyticsadmin.googleapis.com/v1alpha' );
 
 include_once ANALYTIFY_PLUGIN_DIR . '/classes/analytify-settings.php';
 include_once ANALYTIFY_PLUGIN_DIR . '/classes/analytify-utils.php';
@@ -90,6 +94,16 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		
 		// User added client secret.
 		private $user_client_secret;
+		
+		// Authentication date format
+		private $auth_date_format;
+		
+		// Google token data
+		private $google_token;
+		
+		// GA4 streams data
+		private $ga4_streams;
+
 		/**
 		 * Constructor of analytify-general class.
 		 */
@@ -97,10 +111,11 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			$this->transient_timeout    = 60 * 60 * 12;
 			$this->plugin_base          = 'admin.php?page=analytify-dashboard';
 			$this->plugin_settings_base = 'admin.php?page=analytify-settings';
+			$this->auth_date_format     = date('l jS F Y h:i:s A') . ' ' . date_default_timezone_get();
 			if (isset($_GET['page']) && strpos($_GET['page'], 'analytify-settings') === 0) {
 			$this->exception            = get_option( 'analytify_profile_exception' );
 			$this->ga4_exception        = get_option( 'analytify_ga4_exceptions' );
-			}
+				}
 			$this->modules				= WPANALYTIFY_Utils::get_pro_modules();
 			// Setup Settings.
 			$this->settings = new WP_Analytify_Settings();
@@ -112,61 +127,28 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				if( ( isset( $_GET['page'] ) && $_GET['page'] == 'instant-indexing' ) || strpos( wp_get_referer(), 'instant-indexing' ) !== false ){
 					return;
 				}
-				require_once ANALYTIFY_LIB_PATH . '/Google-GA4/vendor/autoload.php';
-				$this->client = new Google\Client();
-			} else {
-				if ( ! class_exists( 'Analytify_Google_Client' ) ) {
-					require_once ANALYTIFY_LIB_PATH . 'Google/Client.php';
-					require_once ANALYTIFY_LIB_PATH . 'Google/Service/Analytics.php';
-				}
-				$this->client = new Analytify_Google_Client();
-			}
-
-			$this->client->setApprovalPrompt( 'force' );
-			$this->client->setAccessType( 'offline' );
 
 			if ( $this->settings->get_option( 'user_advanced_keys', 'wp-analytify-advanced', '' ) == 'on' ) {
 				$this->user_client_id     = $this->settings->get_option( 'client_id' ,'wp-analytify-advanced' );
 				$this->user_client_secret = $this->settings->get_option( 'client_secret' ,'wp-analytify-advanced' );
-				$this->client->setClientId( $this->user_client_id );
-				$this->client->setClientSecret( $this->user_client_secret );
-				$this->client->setRedirectUri( $this->settings->get_option( 'redirect_uri', 'wp-analytify-advanced' ) );
-			} else {
-				$this->client->setClientId( ANALYTIFY_CLIENTID );
-				$this->client->setClientSecret( ANALYTIFY_CLIENTSECRET );
-				$this->client->setRedirectUri( ANALYTIFY_REDIRECT );
+				//TODO
+				// $this->client->setClientId( $this->user_client_id );
+				// $this->client->setClientSecret( $this->user_client_secret );
+				// $this->client->setRedirectUri( $this->settings->get_option( 'redirect_uri', 'wp-analytify-advanced' ) );
 			}
 
-			$this->client->setScopes( ANALYTIFY_SCOPE );
+			// $this->client->setScopes( ANALYTIFY_SCOPE );
 
 			if ( $this->is_reporting_in_ga4 === true ) {
 
 				try {
-					$this->service = new Google\Service\Analytics( $this->client );
-					$this->pa_connect();
+					// $this->service = new Google\Service\Analytics( $this->client );
+					$this->analytify_pa_connect_v2();
 				} catch ( Exception $e ) {
 					// Show error message only for logged in users.
 					if ( current_user_can( 'manage_options' ) ) {
 						// translators: Error message for logged in users
-						echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
-					}
-				} catch ( Exception $e ) {
-					// Show error message only for logged in users.
-					if ( current_user_can( 'manage_options' ) ) {
-						// translators: Reset authentication error message
-						echo sprintf( esc_html__( '%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don\'t worry, This error message is only visible to Administrators. %6$s %4$s', 'wp-analytify' ), '<br /><br />', '<a href=' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=authentication' ) ) . 'title="Reset">', '</a>', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
-					}
-				}
 
-			} else {
-
-				try {
-					$this->service = new Analytify_Google_Service_Analytics( $this->client );
-					$this->pa_connect();
-				} catch ( Exception $e ) {
-					// Show error message only for logged in users.
-					if ( current_user_can( 'manage_options' ) ) {
-						// translators: Error message for logged in users
 						echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_textarea( $e->getMessage() ) );
 					}
 				} catch ( Exception $e ) {
@@ -181,8 +163,55 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 
 			add_action( 'after_setup_theme', array( $this, 'set_cache_time' ) );
 
-			$this->set_tracking_mode();
+			$this->analytify_set_tracking_mode();
 			
+		}
+	}
+		/**
+		 * Update authentication date with current timestamp.
+		 *
+		 * @since 7.0.0
+		 */
+		private function analytify_update_authentication_date() {
+			$this->auth_date_format = date('l jS F Y h:i:s A') . ' ' . date_default_timezone_get();
+			update_option('analytify_authentication_date', $this->auth_date_format);
+		}
+
+		/**
+		 * Get Google token data from options.
+		 *
+		 * @since 7.0.0
+		 * @return array|false Token data or false if not found
+		 */
+		private function analytify_get_google_token() {
+			if (empty($this->google_token)) {
+				$this->google_token = get_option('pa_google_token');
+			}
+			return $this->google_token;
+		}
+
+		/**
+		 * Update Google token data in options and class variable.
+		 *
+		 * @since 7.0.0
+		 * @param array $token_data Token data to save
+		 */
+		private function analytify_update_google_token($token_data) {
+			$this->google_token = $token_data;
+			update_option('pa_google_token', $token_data);
+		}
+
+		/**
+		 * Get GA4 streams data from options.
+		 *
+		 * @since 7.0.0
+		 * @return array GA4 streams data
+		 */
+		private function analytify_get_ga4_streams() {
+			if (empty($this->ga4_streams)) {
+				$this->ga4_streams = get_option('analytify-ga4-streams', array());
+			}
+			return $this->ga4_streams;
 		}
 
 		/**
@@ -190,118 +219,213 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 *
 		 * @return string ga/gtag
 		 */
-		public function set_tracking_mode() {
+		public function analytify_set_tracking_mode() {
 			if ( ! defined( 'ANALYTIFY_TRACKING_MODE' ) ) {
 				define( 'ANALYTIFY_TRACKING_MODE', $this->settings->get_option( 'gtag_tracking_mode', 'wp-analytify-advanced', 'gtag' ) );
 			}
 		}
+
 		/**
-		 * Connect with Google Analytics API and get authentication token and save it. 
+		 * Connect with Google Analytics API and get authentication token and save it.
+		 *
+		 * @since 6.0.0
+		 * @version 7.0.0
 		 *
 		 * @return void
 		 */
-		public function pa_connect() {
-			$ga_google_authtoken = get_option( 'pa_google_token' );
+		public function analytify_pa_connect_v2() {
+			
+			// Retrieve the stored token data
+			$token_data = $this->analytify_get_google_token();
+			$auth_code = get_option('post_analytics_token');
+			$refresh_token = isset($token_data['refresh_token']) ? $token_data['refresh_token'] : null;
+			$expires_in = isset($token_data['expires_in']) ? $token_data['expires_in'] : 0;
+			$token_time = isset($token_data['created_at']) ? $token_data['created_at'] : 0;
 
-			if ( ! empty( $ga_google_authtoken ) ) {
-
-				$ga_google_authtoken = is_array( $ga_google_authtoken ) ? json_encode( $ga_google_authtoken ) : $ga_google_authtoken;
-
-				$this->client->setAccessToken( $ga_google_authtoken );
-			} else {
-
-				$auth_code = get_option( 'post_analytics_token' );
-
-				if ( empty( $auth_code ) ) { return false; }
-
-				try {
-
-					$access_token = $this->client->authenticate( $auth_code );
-				} catch ( Exception $e ) {
-					echo 'Analytify (Bug): ' . esc_textarea( $e->getMessage() );
-					return false;
-				}
-
-				if ( $access_token ) {
-
-					$this->client->setAccessToken( $access_token );
-
-					update_option( 'pa_google_token', $access_token );
-					update_option( 'analytify_authentication_date', date( 'l jS F Y h:i:s A' ) . date_default_timezone_get() );
-
-					return true;
+			// Check if the access token is still valid
+			if (!empty($token_data) && (time() - $token_time) < $expires_in) {
+				// Return the valid token
+				return $token_data['access_token'];
+			}
+		
+			// If the access token is expired, check if a refresh token is available
+			if (isset($refresh_token)) {
+				$access_token_data = $this->analytify_refresh_access_token($refresh_token);
+				if ($access_token_data) {
+					$this->token = $access_token_data['access_token'];
+					return $access_token_data['access_token']; // Return the refreshed token
 				} else {
-
 					return false;
 				}
 			}
-
-			if ( $this->is_reporting_in_ga4 === true ) {
-				$access_token = $this->client->getAccessToken();	
-				$access_token = $access_token['access_token'];
-				$this->token = json_decode( $access_token );
-			} else {
-				$this->token = json_decode( $this->client->getAccessToken() );
+		
+			// Fallback: Get a new token using the authorization code
+			if (empty($auth_code)) {
+				error_log('Error: Authorization code is empty.');
+				return false;
 			}
-
-			return true;
-		}
-
-		/**
-		 * Get the Google Analytics required authentication details.
-		 *
-		 * @return array
-		 */
-		private function get_ga_auth_details() {
-
-
-			$raw_google_token = get_option( 'pa_google_token' );
-			$google_token     = is_array( $raw_google_token ) ? $raw_google_token : json_decode( $raw_google_token, TRUE );
-
-			if ( !empty( $google_token ) ) {
-				return array(
-					'credentials' => Google\ApiCore\CredentialsWrapper::build(array(
-							'scopes'  => explode(' ', ANALYTIFY_SCOPE_FULL),
-							'keyFile' => array(
-								'type'          => 'authorized_user',
-								'client_id'     => $this->user_client_id     ?? ANALYTIFY_CLIENTID ,
-								'client_secret' => $this->user_client_secret ?? ANALYTIFY_CLIENTSECRET,
-								'refresh_token' => $google_token['refresh_token'],
-							)
-						)),
+		
+			try {
+		
+				$token_uri = 'https://oauth2.googleapis.com/token'; // Google token endpoint
+				$token_data = array(
+					'client_id' => ANALYTIFY_CLIENTID,
+					'client_secret' => ANALYTIFY_CLIENTSECRET,
+					'code' => $auth_code,
+					'redirect_uri' => ANALYTIFY_REDIRECT,
+					'grant_type' => 'authorization_code',
+					'access_type' => 'offline',
 				);
+		
+				$request_args = array(
+					'body' => $token_data,
+					'headers' => array('Referer' => ANALYTIFY_VERSION),
+				);
+		
+				// Make POST request
+				$response = wp_remote_post($token_uri, $request_args);
+		
+				// Check for errors in the response
+				if (is_wp_error($response)) {
+					error_log('Error: Failed to send token request.');
+					return false;
+				}
+		
+				// Retrieve response body
+				$body = wp_remote_retrieve_body($response);
+				$access_token_data = json_decode($body, true);
+
+							// Check if the access token is present and valid
+				if (isset($access_token_data['access_token'])) {
+					$access_token = $access_token_data['access_token'];
+			
+					// Save the new token data along with the current time for token expiration checks
+					$access_token_data['created_at'] = time();
+					$this->analytify_update_google_token($access_token_data);
+					$this->analytify_update_authentication_date();
+			
+					// Optionally store the token in the object if needed later
+					$this->token = $access_token;
+			
+					// Return the new access token
+					return $access_token;
+				} else {
+					error_log('Error: Access token not found in response.');
+					return false;
+				}
+		
+			} catch (Exception $e) {
+				// Log the error instead of printing it to the screen
+				error_log('Analytify (Error): ' . $e->getMessage());
+				return false;
 			}
+		
+
 		}
+		
 
 		/**
-		 * Connect with Google Analytics data API.
+		 * Refreshes the access token using the provided refresh token.
 		 *
-		 * @return BetaAnalyticsDataClient
+		 * This function is responsible for obtaining a new access token
+		 * by using the given refresh token. It is typically used when the
+		 * current access token has expired and needs to be renewed.
+		 * 
+		 * @version 7.0.0
+		 * 
+		 * @param string $refresh_token The refresh token used to obtain a new access token.
+		 * @return mixed The new access token or an error response if the refresh fails.
 		 */
-		private function connect_data_api() {
-
-			$client = new Google\Analytics\Data\V1beta\BetaAnalyticsDataClient( $this->get_ga_auth_details() );
-
-			return $client;
+		public function analytify_refresh_access_token($refresh_token) {
+		
+			$token_uri = 'https://oauth2.googleapis.com/token';
+			$token_request_data = array(
+				'client_id' => ANALYTIFY_CLIENTID,
+				'client_secret' => ANALYTIFY_CLIENTSECRET,
+				'refresh_token' => $refresh_token,
+				'grant_type' => 'refresh_token',
+			);
+		
+			$request_args = array(
+				'body' => $token_request_data,
+				'headers' => array('Referer' => ANALYTIFY_VERSION),
+			);
+		
+			$response = wp_remote_post($token_uri, $request_args);
+		
+			if (is_wp_error($response)) {
+				error_log('Error: Failed to refresh access token.');
+				return false;
+			}
+		
+			$body = wp_remote_retrieve_body($response);
+			$access_token_data = json_decode($body, true);
+		
+			if (isset($access_token_data['access_token'])) {
+				error_log('New access token obtained via refresh token.');
+			
+				// Fetch the existing token data
+				$existing_token_data = $this->analytify_get_google_token() ?: [];
+			
+				// Update the existing data with the new access token and timestamp, excluding refresh_token
+				$updated_token_data = array_merge($existing_token_data, [
+					'access_token' => $access_token_data['access_token'],
+					'expires_in' => $access_token_data['expires_in'],
+					'created_at' => time(),
+				]);
+			
+				// Save the updated token data
+				$this->analytify_update_google_token($updated_token_data);
+			
+				// Update authentication date
+				$this->analytify_update_authentication_date();
+			
+				return $updated_token_data;
+			} else {
+				error_log('Error: Failed to retrieve new access token using refresh token.');
+				return false;
+			}
 		}
+		
 
 		/**
 		 * Connect with Google Analytics admin API.
 		 * 
 		 * @return AnalyticsAdminServiceClient
 		 */
-		private function connect_admin_api() {
-			/**
-			 * since a function in wp-analytify file is directly calling this method
-			 * without executing the constructor first in result the ga4 libs are
-			 * not included yet to avoid errors in this case we are doing require
-			 * once here too.
-			 */
-			require_once ANALYTIFY_LIB_PATH . '/Google-GA4/vendor/autoload.php';
-			$client = new Google\Analytics\Admin\V1alpha\AnalyticsAdminServiceClient( $this->get_ga_auth_details() );
-
-			return $client;
+		private function analytify_connect_admin_api() {
+		
+			try {
+				// Get a fresh access token using the refresh token
+				$token = $this->analytify_get_google_token();
+				$access_token = $token['access_token'];
+		
+				// Log the access token for debugging purposes
+				error_log('Access token retrieved: ' . $access_token);
+		
+				// Set the headers for the API request
+				$headers = [
+					"Authorization: Bearer $access_token",
+					"Content-Type: application/json"
+				];
+		
+				// Define the base API URL for Google Analytics Admin API
+				$api_base_url = ANALYTIFY_GA_ADMIN_API_BASE;
+		
+				// Log the API base URL for debugging purposes
+				error_log('API base URL: ' . $api_base_url);
+		
+				return [
+					'api_base_url' => $api_base_url,
+					'headers' => $headers,
+				];
+			} catch (Exception $e) {
+				// Log the error message for debugging purposes
+				error_log('Error connecting to Google Analytics Admin API: ' . $e->getMessage());
+				return null;
+			}
 		}
+		
 
 		/**
 		 * Create web stream for Analytify tracking in Google Analytics.
@@ -313,87 +437,159 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * 
 		 * @since 5.0.0
 		 */
-		public function create_ga_stream( $property_id ) {
-			$analytify_ga4_streams = get_option('analytify-ga4-streams');
-
-			if( isset( $analytify_ga4_streams ) && isset( $analytify_ga4_streams[$property_id] ) && isset( $analytify_ga4_streams[$property_id]['measurement_id']) ) {
+		public function analytify_create_ga_stream( $property_id ) {
+			$analytify_ga4_streams = $this->analytify_get_ga4_streams();
+		
+			// Check if the stream already exists in the saved option
+			if ( isset( $analytify_ga4_streams ) && isset( $analytify_ga4_streams[$property_id] ) && isset( $analytify_ga4_streams[$property_id]['measurement_id'] ) ) {
 				return $analytify_ga4_streams[$property_id];
 			}
-
+		
 			// Return if there is no property id given.
-			if( empty( $property_id ) ) {
+			if ( empty( $property_id ) ) {
 				return;
 			}
-
-			$admin_client = $this->connect_admin_api();
+		
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token']; // Method to retrieve your OAuth access token
+			$url_list_streams = ANALYTIFY_GA_ADMIN_API_BASE . '/properties/' . $property_id . '/dataStreams';
+			$stream_name = 'Analytify - ' . get_site_url(); // Defined stream name for Analytify.
+		
+			$args = array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+					'Content-Type'  => 'application/json',
+				),
+			);
+		
 			$measurement_data = array();
-			try {
-				$formatted_property_name = $admin_client->propertyName( $property_id );
-				$stream_name = 'Analytify - ' . get_site_url(); // Analytify defined stream name.
-
-				$data_stream = new Google\Analytics\Admin\V1alpha\DataStream(
-					array(
-						'type' => 1,
-						'display_name' => $stream_name
-					) 
-				);
-				$web_data_stream = new Google\Analytics\Admin\V1alpha\DataStream\WebStreamData(
-					array(
-						'default_uri' => get_site_url(),
-					) 
-				);
-
-				// Set data stream to web.
-				$data_stream->setWebStreamData( $web_data_stream );
-
-				try { // Try to create new stream.
-					$web_stream = $admin_client->createDataStream( $formatted_property_name, $data_stream );
-				} catch ( \Throwable $th ) { // Check if Analytify stream already exists.
-					$response = $th->getMessage();
-					$response = json_decode( $response );
-
-					// Error code 6: ALREADY_EXISTS.
-					if ( isset( $response->code ) && 6 === $response->code ) {
-						WPANALYTIFY_Utils::remove_ga4_exception( 'create_stream_exception' );
-						$paged_response = $admin_client->listDataStreams( $formatted_property_name );
-
-						// Get pre created stream.
-						foreach ( $paged_response->iterateAllElements() as $element ) {
-							if ( $stream_name === $element->getDisplayName() ) {
-								$web_stream = $element;
-								break;
+		
+			// Try to fetch existing data streams
+			$response = wp_remote_get( $url_list_streams, $args );
+		
+			// Log the response for debugging
+			$logger = analytify_get_logger();
+			$logger->info( 'Fetching existing streams.', array( 'response' => $response ) );
+		
+			if ( is_wp_error( $response ) ) {
+				$logger->error( 'Error fetching streams.', array( 'error_message' => $response->get_error_message(), 'source' => 'analytify_create_stream_errors' ) );
+				return;
+			}
+		
+			$body = wp_remote_retrieve_body( $response );
+			$decoded_response = json_decode( $body, true );
+			
+			// Log the decoded response for debugging
+			$logger->info( 'Decoded response from GA.', array( 'decoded_response' => $decoded_response ) );
+		
+			// Check if any existing streams match the Analytify stream
+			if ( isset( $decoded_response['dataStreams'] ) ) {
+				foreach ( $decoded_response['dataStreams'] as $stream ) {
+					if ( isset( $stream['displayName'] ) && $stream_name === $stream['displayName'] ) {
+						$web_stream = $stream;
+		
+						// Check if all required nested array elements exist
+						if ( isset( $web_stream['name'] ) && 
+							 isset( $web_stream['displayName'] ) && 
+							 isset( $web_stream['webStreamData']['measurementId'] ) && 
+							 isset( $web_stream['webStreamData']['defaultUri'] ) ) {
+							
+							$measurement_data = array(
+								'full_name'      => $web_stream['name'],
+								'property_id'    => $property_id,
+								'stream_name'    => $web_stream['displayName'],
+								'measurement_id' => $web_stream['webStreamData']['measurementId'],
+								'url'            => $web_stream['webStreamData']['defaultUri'],
+							);
+		
+							// Save stream info in the option
+							if ( empty( $analytify_ga4_streams ) ) {
+								$analytify_ga4_streams = array();
 							}
+							$analytify_ga4_streams[$property_id][$web_stream['webStreamData']['measurementId']] = $measurement_data;
+							
+							// Check if update_option is successful.
+							$update_result = update_option('analytify-ga4-streams', $analytify_ga4_streams);
+							if ( ! $update_result ) {
+								$logger->error( 'Failed to update GA4 streams option.', array( 'source' => 'analytify_create_stream_errors' ) );
+							}
+		
+							$logger->info( 'Stream found and saved.', array( 'stream_info' => $measurement_data ) );
+							return $measurement_data;
+						} else {
+							$logger->warning( 'Stream found but missing required data fields.', array( 'stream' => $web_stream ) );
 						}
-					} else {
-						WPANALYTIFY_Utils::add_ga4_exception( 'create_stream_exception', $response->reason, $response->message );
 					}
 				}
-
-				if ( $web_stream ) {
-					WPANALYTIFY_Utils::remove_ga4_exception( 'create_stream_exception' );
-					$measurement_data = array(
-						'full_name'      => $web_stream->getName(),
-						'property_id'    => $property_id,
-						'stream_name'    => $web_stream->getDisplayName(),
-						'measurement_id' => $web_stream->getWebStreamData()->getMeasurementId(),
-						'url'            => $web_stream->getWebStreamData()->getDefaultUri(),
-					);
+			}
+		
+			// Log when no stream was found
+			$logger->warning( 'No existing stream found.', array( 'property_id' => $property_id, 'stream_name' => $stream_name ) );
+		
+			// If no stream exists, create a new stream
+			$url_create_stream = ANALYTIFY_GA_ADMIN_API_BASE . '/properties/' . $property_id . '/dataStreams';
+			$body = array(
+				'type' => 'WEB_DATA_STREAM',
+				'displayName' => $stream_name,
+				'webStreamData' => array(
+					'defaultUri' => get_site_url(),
+				),
+			);
+		
+			$args['method'] = 'POST';
+			$args['body'] = json_encode( $body );
+		
+			$response = wp_remote_post( $url_create_stream, $args );
+		
+			// Log the response for debugging
+			$logger->info( 'Creating a new stream.', array( 'response' => $response ) );
+		
+			if ( is_wp_error( $response ) ) {
+				$logger->error( 'Error creating stream.', array( 'error_message' => $response->get_error_message(), 'source' => 'analytify_create_stream_errors' ) );
+				return;
+			}
+		
+			$body = wp_remote_retrieve_body( $response );
+			$web_stream = json_decode( $body, true );
+		
+			// Log the created stream's response
+			$logger->info( 'Created stream response.', array( 'web_stream' => $web_stream ) );
+		
+			if ( isset( $web_stream['name'] ) && 
+				 isset( $web_stream['displayName'] ) && 
+				 isset( $web_stream['webStreamData']['measurementId'] ) && 
+				 isset( $web_stream['webStreamData']['defaultUri'] ) ) {
 				
-				if( empty( $analytify_ga4_streams ) ) {
+				$measurement_data = array(
+					'full_name'      => $web_stream['name'],
+					'property_id'    => $property_id,
+					'stream_name'    => $web_stream['displayName'],
+					'measurement_id' => $web_stream['webStreamData']['measurementId'],
+					'url'            => $web_stream['webStreamData']['defaultUri'],
+				);
+	
+				// Save stream info in the option
+				if ( empty( $analytify_ga4_streams ) ) {
 					$analytify_ga4_streams = array();
 				}
-				$analytify_ga4_streams[$property_id][$web_stream->getWebStreamData()->getMeasurementId()] = $measurement_data;
-				update_option('analytify-ga4-streams', $analytify_ga4_streams);
+				$analytify_ga4_streams[$property_id][$web_stream['webStreamData']['measurementId']] = $measurement_data;
+				
+				// Check if update_option is successful.
+				$update_result = update_option('analytify-ga4-streams', $analytify_ga4_streams);
+				if ( ! $update_result ) {
+					$logger->error( 'Failed to update GA4 streams option.', array( 'source' => 'analytify_create_stream_errors' ) );
 				}
-			} catch( \Throwable $th ) {
-				$logger = analytify_get_logger();
-				$logger->warning( $th->getMessage(), array( 'source' => 'analytify_create_stream_errors' ) );
-			} finally {
-				$admin_client->close();
+	
+				$logger->info( 'Stream created and saved.', array( 'measurement_data' => $measurement_data ) );
+			} else {
+				$logger->warning( 'Stream created but missing required data fields.', array( 'web_stream' => $web_stream ) );
 			}
-
+		
 			return $measurement_data;
 		}
+		
+		
+		
 
 		/**
 		 * Fetches all the Google Analytics 4 data streams for a given property.
@@ -402,100 +598,155 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 *
 		 * @return array|false Array of data stream objects if found, otherwise false or empty array.
 		 */
-		public function get_ga_streams( $property_id ) {
+		public function analytify_get_ga_streams( $property_id ) {
 			// If no property ID specified, return false.
 			if ( empty( $property_id ) ) {
+				$logger = analytify_get_logger();
+				error_log( 'No property ID specified in analytify_get_ga_streams function.', array( 'source' => 'analytify_fetch_ga_streams' ) );
 				return false;
 			}
-
-			// Format the property ID for the request.
-			$formatted_parent = 'properties/' . $property_id;
-
-			// Get all the streams saved in the database.
-			$ga4_streams = (array) get_option( 'analytify-ga4-streams' );
-
-			// Check if there are any streams for the current property.
-			$streams = $ga4_streams[ $property_id ] ?? array();
-
-			// If streams exist for this property, return them.
-			if ( !empty( $streams ) ) {
-				return $streams;
-			}
-
-			// Connect to the Google Analytics Admin API.
-			$admin_client = $this->connect_admin_api();
-
-			// Call the API and save the streams.
-			try {
-				$response = $admin_client->listDataStreams( $formatted_parent );
-
-				// Array to store the streams.
-				$all_streams = array();
-
-				foreach ( $response as $element ) {
-					$serialize  = $element->serializeToJsonString();
-					// Deserialize the response to a stdClass object.
-					$stream_obj = json_decode( $serialize );
-
-					// We only need web streams.
-					if ( $stream_obj->type === 'WEB_DATA_STREAM' ) {
-						// Store the current stream data.
-						$stream_data = array(
-								'full_name'      => $stream_obj->name,
-								'property_id'    => $property_id,
-								'stream_name'    => $stream_obj->displayName,
-								'measurement_id' => $stream_obj->webStreamData->measurementId,
-								'url'            => $stream_obj->webStreamData->defaultUri,
-						);
-						// Add the current stream to the array of all streams.
-						$all_streams[ $stream_obj->webStreamData->measurementId ] = $stream_data;
-					}
-				}
-
-				// Save the streams to the database.
-				$streams[ $property_id ] = $all_streams;
-				update_option( 'analytify-ga4-streams', $streams );
-
-				return $all_streams;
-
-			} catch ( \Throwable $th ) {
-				// Log the error message.
+		
+			// Get the access token for authentication.
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token']; // Method to retrieve your OAuth access token.
+			if ( empty( $access_token ) ) {
 				$logger = analytify_get_logger();
-				$logger->warning( $th->getMessage(), array( 'source' => 'analytify_fetch_ga_streams' ) );
+				error_log( 'Failed to retrieve access token in analytify_get_ga_streams function.', array( 'source' => 'analytify_fetch_ga_streams' ) );
 				return null;
 			}
+			
+			// Prepare the request URL and headers.
+			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/properties/' . $property_id . '/dataStreams';
+			$args = array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+					'Content-Type'  => 'application/json',
+				),
+			);
+		
+			// Make the API call to list data streams.
+			$response = wp_remote_get( $url, $args );
+		
+			// Check for errors in the response.
+			if ( is_wp_error( $response ) ) {
+				error_log( 'Error in wp_remote_get: ' . $response->get_error_message(), array( 'source' => 'analytify_fetch_ga_streams' ) );
+				return null;
+			}
+		
+			// Parse the response body.
+			$body = wp_remote_retrieve_body( $response );
+			$decoded_response = json_decode( $body, true );
+		
+			// Check for JSON parsing errors.
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				error_log( 'JSON decoding error: ' . json_last_error_msg(), array( 'source' => 'analytify_fetch_ga_streams' ) );
+				return null;
+			}
+		
+			// Check if streams are available.
+			if ( isset( $decoded_response['dataStreams'] ) ) {
+				$all_streams = array();
+		
+				foreach ( $decoded_response['dataStreams'] as $stream ) {
+					// Only include web data streams with proper checks
+					if ( isset( $stream['type'] ) && $stream['type'] === 'WEB_DATA_STREAM' &&
+						 isset( $stream['name'] ) && 
+						 isset( $stream['displayName'] ) && 
+						 isset( $stream['webStreamData']['measurementId'] ) && 
+						 isset( $stream['webStreamData']['defaultUri'] ) ) {
+						
+						$stream_data = array(
+							'full_name'      => $stream['name'],
+							'property_id'    => $property_id,
+							'stream_name'    => $stream['displayName'],
+							'measurement_id' => $stream['webStreamData']['measurementId'],
+							'url'            => $stream['webStreamData']['defaultUri'],
+						);
+		
+						// Add the current stream to the array of all streams.
+						$all_streams[ $stream['webStreamData']['measurementId'] ] = $stream_data;
+					}
+				}
+		
+				// Save streams to the database for future reference.
+				$ga4_streams = $this->analytify_get_ga4_streams();
+				$ga4_streams[$property_id] = $all_streams;
+
+				// Check if update_option is successful.
+				$update_result = update_option( 'analytify-ga4-streams', $ga4_streams );
+				if ( ! $update_result ) {
+					error_log( 'Failed to update options for GA4 streams.' );
+				}
+		
+				return $all_streams; // Return the list of streams.
+			} else {
+				error_log( 'No dataStreams found in the response for property ID: ' . $property_id, array( 'source' => 'analytify_fetch_ga_streams' ) );
+			}
+		
+			return null; // Return null if no streams found.
 		}
+		
+		
 
 		/**
 		 * Lookup for a single "GA4" MeasurementProtocolSecret.
 		 *
 		 * @param string $formattedName The name of the measurement protocol secret to lookup.
 		 */
-		public function get_mp_secret( $formattedName )
+		public function analytify_get_mp_secret( $formattedName )
 		{
-			if( empty( $formattedName ) ) {
+			if (empty($formattedName)) {
+				error_log("Error: formattedName is empty in analytify_get_mp_secret.");
 				return;
 			}
-			// Create a client.
-			$admin_client = $this->connect_admin_api();
-			// set the value initially to null.
+
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token'];
+
+			if (empty($access_token)) {
+				error_log("Error: Access token is missing in analytify_get_mp_secret.");
+				return;
+			}
+
+			$url = ANALYTIFY_GA_ADMIN_API_BASE . "/$formattedName/measurementProtocolSecrets";
+
+			$args = array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+					'Content-Type'  => 'application/json',
+				),
+			);
+
 			$mp_secret_value = null;
-			/// Call the API and handle any network failures.
+
 			try {
-				$response = $admin_client->listMeasurementProtocolSecrets( $formattedName );
-		        // loop over the response and save the first found secret value.
-				foreach ($response as $element) {
-					$serialized_element = $element->serializeToJsonString();
-					$mp_secret_obj      = json_decode( $serialized_element );
-					$mp_secret_value    = $mp_secret_obj->secretValue;
-					break;
+				$response = wp_remote_get($url, $args);
+
+				if (is_wp_error($response)) {
+					error_log("Error in analytify_get_mp_secret: " . $response->get_error_message());
+					return false;
 				}
-			} catch ( \Throwable $th ) {
-				// Log the error message.
-				$logger = analytify_get_logger();
-				$logger->warning( $th->getMessage(), array( 'source' => 'analytify_fetch_mp_secret' ) );
+
+				$body = wp_remote_retrieve_body($response);
+				$data = json_decode($body, true);
+
+				if (isset($data['measurementProtocolSecrets']) && is_array($data['measurementProtocolSecrets'])) {
+					foreach ($data['measurementProtocolSecrets'] as $secret) {
+						if (isset($secret['secretValue'])) {
+							$mp_secret_value = $secret['secretValue'];
+							break;
+						}
+					}
+				}
+			} catch (Exception $e) {
+				error_log("Error in analytify_get_mp_secret: " . $e->getMessage());
 				return false;
 			}
+
+			if (is_null($mp_secret_value)) {
+				error_log("Error: No Measurement Protocol Secret found for formattedName: $formattedName.");
+			}
+
 			return $mp_secret_value;
 		}
 
@@ -508,114 +759,257 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * 
 		 * @since 5.0.0
 		 */
-		public function create_mp_secret( $property_id, $stream_full_name, $display_name ) {
-			$analytify_all_streams = (array)get_option( 'analytify-ga4-streams' );
-			$analytify_ga4_stream  = isset( $analytify_all_streams[$property_id][$display_name] ) ? $analytify_all_streams[$property_id][$display_name] : "";
-
-			if ( isset( $analytify_ga4_stream['analytify_mp_secret'] ) && $analytify_ga4_stream['analytify_mp_secret'] ) {
+		public function analytify_create_mp_secret( $property_id, $stream_full_name, $display_name ) {
+			$analytify_all_streams = $this->analytify_get_ga4_streams();
+			$analytify_ga4_stream  = isset($analytify_all_streams[$property_id][$display_name]) ? $analytify_all_streams[$property_id][$display_name] : "";
+		
+			// Return the secret if it exists.
+			if (isset($analytify_ga4_stream['analytify_mp_secret']) && $analytify_ga4_stream['analytify_mp_secret']) {
+				error_log("MP Secret already exists for property ID: {$property_id}, display name: {$display_name}");
 				return $analytify_ga4_stream['analytify_mp_secret'];
-			} elseif ( empty( $analytify_ga4_stream['full_name'] ) ) {
+			} elseif (empty($analytify_ga4_stream['full_name'])) {
+				error_log("Stream full name is empty for property ID: {$property_id}, display name: {$display_name}");
 				return;
 			}
-
-			$analyticsAdminServiceClient = $this->connect_admin_api();
-			if ( ! isset( $analytify_ga4_stream['mp_user_acknowledgement'] ) || true != $analytify_ga4_stream['mp_user_acknowledgement'] ) {
+		
+			// Fetch the access token for making authorized API calls.
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token'];
+			if (!$access_token) {
+				error_log("Access token is missing for property ID: {$property_id}");
+				return;
+			}
+		
+			// Step 1: Acknowledge user data collection if necessary.
+			if (!isset($analytify_ga4_stream['mp_user_acknowledgement']) || true != $analytify_ga4_stream['mp_user_acknowledgement']) {
 				try {
-					$formattedProperty = $analyticsAdminServiceClient->propertyName($property_id);
-					$acknowledgement   = 'I acknowledge that I have the necessary privacy disclosures and rights from my end users for the collection and processing of their data, including the association of such data with the visitation information Google Analytics collects from my site and/or app property.';
-					$response = $analyticsAdminServiceClient->acknowledgeUserDataCollection($formattedProperty, $acknowledgement);
-					if ($response) {
-						$analytify_ga4_stream['mp_user_acknowledgement']    = true;
-						$analytify_all_streams[$property_id][$display_name] = $analytify_ga4_stream;
-						update_option( 'analytify-ga4-streams' , $analytify_all_streams );
-						WPANALYTIFY_Utils::remove_ga4_exception( 'mp_secret_exception' );
+					$url = ANALYTIFY_GA_ADMIN_API_BASE . "/properties/{$property_id}:acknowledgeUserDataCollection";
+					$acknowledgement = array(
+						'acknowledgement' => 'I acknowledge that I have the necessary privacy disclosures and rights from my end users...',
+					);
+					$response = wp_remote_post($url, array(
+						'method'  => 'POST',
+						'headers' => array(
+							'Authorization' => 'Bearer ' . $access_token,
+							'Content-Type'  => 'application/json',
+						),
+						'body'    => wp_json_encode($acknowledgement),
+					));
+		
+					if (is_wp_error($response)) {
+						error_log("Error acknowledging user data collection: " . $response->get_error_message());
+						return;
 					}
-				} catch (\Throwable $th) {
-					$response = $th->getMessage();
-					$response = json_decode($response);
-					WPANALYTIFY_Utils::add_ga4_exception( 'mp_secret_exception', $response->reason, $response->message );
+		
+					// If successful, update the acknowledgment in the option.
+					$analytify_ga4_stream['mp_user_acknowledgement'] = true;
+					$analytify_all_streams[$property_id][$display_name] = $analytify_ga4_stream;
+					update_option('analytify-ga4-streams', $analytify_all_streams);
+					WPANALYTIFY_Utils::remove_ga4_exception('mp_secret_exception');
+					error_log("User data collection acknowledged for property ID: {$property_id}");
+				} catch (Exception $e) {
+					WPANALYTIFY_Utils::add_ga4_exception('mp_secret_exception', 'Acknowledgment error', $e->getMessage());
+					error_log("Exception during user data acknowledgment: " . $e->getMessage());
 					return;
 				}
 			}
-			
+		
+			// Step 2: Create Measurement Protocol Secret.
 			try {
-				$formattedParent           = $stream_full_name;
-				$measurementProtocolSecret = new Google\Analytics\Admin\V1alpha\MeasurementProtocolSecret( ['display_name' => 'analytify_mp_secret' ] );
-				$response                  = $analyticsAdminServiceClient->createMeasurementProtocolSecret( $formattedParent, $measurementProtocolSecret );
-				if( $response ) {
-					$secret_value                                               = $response->getSecretValue();
-					$analytify_ga4_stream['analytify_mp_secret']                = $secret_value;
-					$analytify_all_streams[$property_id][$display_name]         = $analytify_ga4_stream;
-					update_option( 'analytify-ga4-streams' , $analytify_all_streams );
-					WPANALYTIFY_Utils::remove_ga4_exception( 'mp_secret_exception' );
-					return $secret_value;
+				$url = ANALYTIFY_GA_ADMIN_API_BASE . "/{$stream_full_name}/measurementProtocolSecrets";
+				$body = array(
+					'displayName' => 'analytify_mp_secret',
+				);
+		
+				$response = wp_remote_post($url, array(
+					'method'  => 'POST',
+					'headers' => array(
+						'Authorization' => 'Bearer ' . $access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'body'    => wp_json_encode($body),
+				));
+		
+				if (is_wp_error($response)) {
+					error_log("Error creating MP Secret: " . $response->get_error_message());
+					return;
 				}
-			} catch ( \Throwable $th ) {
-				$response = $th->getMessage();
-				$response = json_decode($response);
-				WPANALYTIFY_Utils::add_ga4_exception( 'mp_secret_exception', $response->message, $response->message );
-				$logger = analytify_get_logger();
-				$logger->warning( $response->message, array( 'source' => 'analytify_create_mp_secret_error' ) );
-			} finally {
-     		    $analyticsAdminServiceClient->close();
-     		}
+		
+				$response_body = json_decode(wp_remote_retrieve_body($response), true);
+				if (isset($response_body['secretValue']) && !empty($response_body['secretValue'])) {
+					$secret_value = $response_body['secretValue'];
+					$analytify_ga4_stream['analytify_mp_secret'] = $secret_value;
+					$analytify_all_streams[$property_id][$display_name] = $analytify_ga4_stream;
+					update_option('analytify-ga4-streams', $analytify_all_streams);
+					WPANALYTIFY_Utils::remove_ga4_exception('mp_secret_exception');
+					error_log("MP Secret created successfully for property ID: {$property_id}, display name: {$display_name}");
+		
+					return $secret_value;
+				} else {
+					error_log("MP Secret creation response does not contain a secret value for property ID: {$property_id}");
+				}
+			} catch (Exception $e) {
+				WPANALYTIFY_Utils::add_ga4_exception('mp_secret_exception', 'Creation error', $e->getMessage());
+				error_log("Exception during MP Secret creation: " . $e->getMessage());
+			}
+		
+			error_log("MP Secret creation failed for property ID: {$property_id}, display name: {$display_name}");
+			return;
 		}
+		
 
 		/**
-		 * Fetch properties form Google Analytics.
-		 * Google\Analytics\Admin\V1alpha\Account
-		 * 
-		 * @return array
+		 * Retrieve and list Google Analytics accounts using the provided access token.
+		 *
+		 * This function interacts with the Google Analytics API to fetch a list of accounts
+		 * associated with the given access token. It is used to display or process the accounts
+		 * linked to the authenticated user.
+		 * @since 7.0.0
+		 * @param string $access_token The access token for authenticating with the Google Analytics API.
+		 * @return void Outputs or processes the list of accounts.
 		 */
-		public function get_ga_properties() {
+		private function analytify_list_accounts( $access_token ) {
+			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/accounts';
+		
+			$response = wp_remote_get( $url, array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+				),
+			) );
+		
+			if ( is_wp_error( $response ) ) {
+				error_log( 'Error fetching accounts: ' . $response->get_error_message() );
+				return array();
+			}
+		
+			$raw_body = wp_remote_retrieve_body( $response );
+		
+			$body = json_decode( $raw_body, true );
+		
+			if ( isset( $body['accounts'] ) ) {
+				return $body['accounts'];
+			} else {
+				return array();
+			}
+		}
+		
+		
 
-			$admin_client = $this->connect_admin_api();
+		/**
+		 * List properties for a given account using the provided access token.
+		 *
+		 * This function retrieves and lists the properties associated with a specific
+		 * Google Analytics account. It requires an access token for authentication
+		 * and the account name to identify the target account.
+		 *
+		 * @param string $access_token The access token for authenticating the API request.
+		 * @param string $account_name The name of the Google Analytics account.
+		 *
+		 * @since 7.0.0
+		 */
+		private function analytify_list_properties( $access_token, $account_name ) {
+			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/properties?filter=parent:' . $account_name;
+		
+			$response = wp_remote_get( $url, array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+				),
+			));
+		
+			// Check for errors in the response
+			if ( is_wp_error( $response ) ) {
+				error_log( 'Error fetching properties: ' . $response->get_error_message() );
+				return array();
+			}
+		
+			// Log the response code for better debugging
+			$response_code = wp_remote_retrieve_response_code( $response );
+		
+			// Check if response code is 200 (OK)
+			if ( $response_code != 200 ) {
+				error_log( 'Response Message: ' . wp_remote_retrieve_response_message( $response ) );
+				error_log( 'Raw Body: ' . wp_remote_retrieve_body( $response ) );
+				return array();
+			}
+		
+			// Decode the response body
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		
+			// Check if 'properties' exists in the response
+			if ( isset( $body['properties'] ) ) {
+				return $body['properties'];
+			} else {
+				error_log( 'Error: Properties not found in response.' );
+				return array();
+			}
+		}
+	
+
+		/**
+		 * Retrieve Google Analytics properties for the authenticated user.
+		 *
+		 * @since 7.0.0
+		 */
+		public function analytify_get_ga_properties() {
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token'];
+			
+			if ( ! $access_token ) {
+				echo sprintf( '<br /><div class="notice notice-warning"><p>%s</p></div>', esc_html__( 'Error: Unable to authenticate with Google Analytics.', 'wp-analytify' ) );
+				return array();
+			}
+		
 			$accounts = array();
-			try{
+			try {
 				if ( $this->get_ga4_exception() ) {
 					WPANALYTIFY_Utils::handle_exceptions( $this->get_ga4_exception() );
 				}
+		
 				if ( get_option( 'pa_google_token' ) != '' ) {
-					$accounts = $admin_client->listAccounts();
+					$accounts = $this->analytify_list_accounts( $access_token );
 				} else {
-					echo '<br /><div class="notice notice-warning"><p>' . esc_html__( 'Notice: You must authenticate to access your web profiles.', 'wp-analytify' ) . '</p></div>';
+					echo sprintf( '<br /><div class="notice notice-warning"><p>%s</p></div>', esc_html__( 'Notice: You must authenticate to access your web profiles.', 'wp-analytify' ) );
+					return array();
 				}
-			} catch (Exception $e) {
+		
+			} catch ( Exception $e ) {
 				$error_message = $e->getMessage();
 				$logger = analytify_get_logger();
-				$logger->warning( $error_message, array( 'source' => 'analytify_get_ga_properties_errors' ) );
+				$logger->warning( $error_message, array( 'source' => 'analytify_analytify_get_ga_properties_errors' ) );
 				return array();
 			}
+		
 			$ga_properties = array();
-
+		
 			foreach ( $accounts as $account ) {
-				$formatted_account_name = 'parent:' . $account->getName();
-				$properties = $admin_client->listProperties( $formatted_account_name );
+				$account_name = $account['name'];  // e.g., 'accounts/123456'
+				$properties = $this->analytify_list_properties( $access_token, $account_name );
 				$property_data = array();
-
-				foreach ( $properties as $property )  {
-					// Extract property id since there is no direct method to get it (API is in alpha).
-					$id = explode( '/', $property->getName() );
-					$id = isset( $id[1] ) ? $id[1] : $property->getName();
-
+		
+				foreach ( $properties as $property ) {
+					// Extract property ID in a similar way to the previous code
+					$id = explode( '/', $property['name'] );
+					$id = isset( $id[1] ) ? $id[1] : $property['name'];
+		
 					$property_data[] = array(
 						'id' => $id,
-						'name' => $property->getName(),
-						'display_name' => $property->getDisplayName(),
+						'name' => $property['name'],
+						'display_name' => $property['displayName'],
 					);
 				}
-
+		
 				if ( $property_data ) {
-					$ga_properties[$account->getDisplayName()] = $property_data;
+					$ga_properties[ $account['displayName'] ] = $property_data;
 				}
 			}
-
-			// If no error then delete the exception.
-            WPANALYTIFY_Utils::remove_ga4_exception('fetch_ga4_profiles_exception');
-
-
+		
+			// If no error, delete the exception.
+			WPANALYTIFY_Utils::remove_ga4_exception( 'fetch_ga4_profiles_exception' );
+	
 			return $ga_properties;
 		}
+		
+		
 		
 		/**
 		 * Fetch reports from Google Analytics Data API.
@@ -663,24 +1057,24 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 */
 		public function get_reports( $name, $metrics, $date_range, $dimensions = array(), $order_by = array(), $filters = array(), $limit = 0, $cached = true ) {
 			$property_id   = WPANALYTIFY_Utils::get_reporting_property();
-			
-			// Don't use cache if custom API keys are in use. 
+		
+			// Don't use cache if custom API keys are in use.
 			if ( $this->settings->get_option( 'user_advanced_keys', 'wp-analytify-advanced' ) === 'on' ) {
 				$cached = false;
 			}
-
+		
 			// To override the caching.
 			$cached = apply_filters( 'analytify_set_caching_to', $cached );
-
+		
 			if ( $cached ) {
 				$cache_key = 'analytify_transient_' . md5( $name . $property_id . $date_range['start'] . $date_range['end'] );
 				$report_cache = get_transient( $cache_key );
-
+		
 				if ( $report_cache ) {
 					return $report_cache;
 				}
 			}
-
+		
 			$reports = array();
 			$dimension_filters = array();
 
@@ -692,189 +1086,178 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				'error'        => array(),
 				'aggregations' => array(),
 			);
-
+		
 			try {
-				$data_client = $this->connect_data_api();
-
 				// Main request body for the report.
 				$request_body = array(
-					'property'   => 'properties/' . $property_id,
 					'dateRanges' => array(
-						new Google\Analytics\Data\V1beta\DateRange(
-							array(
-							'start_date' => isset( $date_range['start'] ) ? $date_range['start'] : 'today',
-							'end_date'   => isset( $date_range['end'] ) ? $date_range['end'] : 'today',
-							)
+						array(
+							'startDate' => isset( $date_range['start'] ) ? $date_range['start'] : 'today',
+							'endDate'   => isset( $date_range['end'] ) ? $date_range['end'] : 'today',
 						),
 					),
 					'metricAggregations' => array( 1 ) // TOTAL = 1; COUNT = 4; MINIMUM = 5; MAXIMUM = 6;
 				);
-
+		
 				// Set metrics.
 				if ( $metrics ) {
 					$send_metrics = array();
-
 					foreach ( $metrics as $value ) {
-						$send_metrics[] = new Google\Analytics\Data\V1beta\Metric( array( 'name' => $value ) );
+						$send_metrics[] = array( 'name' => $value );
 					}
-
 					$request_body['metrics'] = $send_metrics;
 				}
-
+		
 				// Add dimensions.
 				if ( $dimensions ) {
 					$send_dimensions = array();
-
 					foreach ( $dimensions as $value ) {
-						$send_dimensions[] = new Google\Analytics\Data\V1beta\Dimension( array( 'name' => $value ) );
+						$send_dimensions[] = array( 'name' => $value );
 					}
-	
 					$request_body['dimensions'] = $send_dimensions;
 				}
-
+		
 				// Order report by metric or dimension.
 				if ( $order_by ) {
 					$order_by_request = array();
 					$is_desc = ( empty( $order_by['order'] ) || 'desc' !== $order_by['order'] ) ? false : true;
-
+		
 					if ( 'metric' === $order_by['type'] ) {
 						$order_by_request = array(
-							'metric' => new Google\Analytics\Data\V1beta\OrderBy\MetricOrderBy(
-								array(
-									'metric_name' => $order_by['name']
-								)
+							'metric' => array(
+								'metric_name' => isset($order_by['name']) ? $order_by['name'] : ''
 							),
 							'desc' => $is_desc,
 						);
 					} else if ( 'dimension' === $order_by['type'] ) {
 						$order_by_request = array(
-							'dimension' => new Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy(
-								array(
-									'dimension_name' => $order_by['name']
-								)
+							'dimension' => array(
+								'dimension_name' => $order_by['name']
 							),
 							'desc' => $is_desc,
 						);
 					}
-
-					$request_body['orderBys'] = [new Google\Analytics\Data\V1beta\OrderBy( $order_by_request )];
+		
+					$request_body['orderBys'] = array($order_by_request);
 				}
-
+		
 				// Filters for the report.
 				if ( $filters ) {
-
+					$dimension_filters = array(); // Initialize an empty array for filters.
+				
 					foreach ( $filters['filters'] as $filter_data ) {
 						if ( 'dimension' === $filter_data['type'] ) {
 							if ( isset( $filter_data['not_expression'] ) && $filter_data['not_expression'] ) {
-								$dimension_filters[] =  new Google\Analytics\Data\V1beta\FilterExpression(
-								array(
-									'not_expression' => new Google\Analytics\Data\V1beta\FilterExpression(
-										array(
-											'filter' =>
-												new \Google\Analytics\Data\V1beta\Filter (
-													array(
-														'field_name'    => $filter_data['name'],
-														'string_filter' => new \Google\Analytics\Data\V1beta\Filter\StringFilter(
-															array(
-																'match_type'     => $filter_data['match_type'],
-																'value'          => $filter_data['value'],
-																'case_sensitive' => true
-															)
-														)
-													)
-												)
+								// Handle 'not_expression' logic.
+								$dimension_filters[] = array(
+									'not_expression' => array(
+										'filter' => array(
+											'field_name'    => $filter_data['name'],
+											'string_filter' => array(
+												'match_type'     => $filter_data['match_type'],
+												'value'          => $filter_data['value'],
+												'case_sensitive' => true,
 											)
 										)
 									)
 								);
 							} else {
-								$dimension_filters[] = new Google\Analytics\Data\V1beta\FilterExpression(
-									array(
-										'filter' => new \Google\Analytics\Data\V1beta\Filter (
-											array(
-												'field_name'    => $filter_data['name'],
-												'string_filter' => new \Google\Analytics\Data\V1beta\Filter\StringFilter(
-													array(
-														'match_type'     => $filter_data['match_type'],
-														'value'          => $filter_data['value'],
-														'case_sensitive' => true
-													)
-												)
-											)
+								// Standard dimension filter.
+								$dimension_filters[] = array(
+									'filter' => array(
+										'field_name'    => $filter_data['name'],
+										'string_filter' => array(
+											'match_type'     => $filter_data['match_type'],
+											'value'          => $filter_data['value'],
+											'case_sensitive' => true,
 										)
 									)
 								);
 							}
 						} else if ( 'metric' === $filter_data['type'] ) {
-							// TODO: Add metric filter.
+							// TODO: Add metric filter handling here.
 						}
 					}
-
+				
 					if ( $dimension_filters ) {
 						$group_type = ( isset( $filters['logic'] ) && 'OR' === $filters['logic'] ) ? 'or_group' : 'and_group';
-						$dimension_filter_construct = new Google\Analytics\Data\V1beta\FilterExpression(
-							array(
-								$group_type =>
-								new \Google\Analytics\Data\V1beta\FilterExpressionList(
-									array( 'expressions' => $dimension_filters )
-								)
+		
+						$dimension_filter_construct = array(
+							$group_type => array(
+								'expressions' => $dimension_filters
 							)
 						);
-
+		
 						$request_body['dimensionFilter'] = $dimension_filter_construct;
 					}
 				}
-
+		
 				// Set limit.
 				if ( 0 < $limit ) {
 					$request_body['limit'] = $limit;
 				}
+		
+				// Get access token (this function should be implemented by you).
+				$token = $this->analytify_get_google_token();
+				$access_token = $token['access_token'];
 
-				// Send reports request.
-				$reports = $data_client->runReport( $request_body );
+		
+				// Prepare the cURL request URL for GA4 API.
+				$url = 'https://analyticsdata.googleapis.com/v1beta/properties/' . $property_id . ':runReport';
+		
+				// Send the request using wp_remote_post.
+				$response = wp_remote_post( $url, array(
+					'headers' => array(
+						'Authorization' => 'Bearer ' . $access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'body'    => json_encode( $request_body ),
+				));
+		
+				// Check for errors in the response.
+				if ( is_wp_error( $response ) ) {
+					throw new Exception( $response->get_error_message() );
+				}
+		
+				// Parse the response body.
+				$reports = json_decode( wp_remote_retrieve_body( $response ), true );
+		
+				// If the response doesn't contain rows, handle it accordingly.
+				if ( !isset( $reports['rows'] ) ) {
+					return $default_response;
+				}
+		
 			} catch ( \Throwable $th ) {
 				if ( is_callable( $th, 'getStatus' ) && is_callable( $th, 'getBasicMessage' ) ) {
 					$default_response['error'] = array(
 						'status'  => $th->getStatus(),
 						'message' => $th->getBasicMessage(),
 					);
-					
-				} else if ( method_exists( $th, 'getMessage' ) ) {					
+				} else if ( method_exists( $th, 'getMessage' ) ) {
 					$default_response['error'] = array(
 						'status'  => 'Token Expired',
 						'message' => $th->getMessage(),
-						// 'basicmessage' => $th->getBasicMessage(),
 					);
 				}
-
+		
 				return $default_response;
 			}
-
-			if ( ! is_object( $reports ) ) {
-				$default_response['error'] = array(
-					'status'  => 'API Request Error',
-					'message' => 'Invalid response from API, proper object not found.',
-				);
-
-				return $default_response;
-			}
-
-			if ( 0 === $reports->getRowCount() ) {
-				return $default_response;
-			}
-
-			$formatted_reports = $this->format_ga_reports( $reports );
-
+		
+			// Format the reports using your existing function.
+			$formatted_reports = $this->analytify_format_ga_reports( $reports );
+		
 			if ( empty( $formatted_reports ) ) {
 				return $default_response;
 			}
-
+		
+			// Cache the response if caching is enabled.
 			if ( $cached ) {
-				set_transient( $cache_key, $formatted_reports, $this->get_cache_time() );
+				$this->analytify_handle_report_cache($cache_key, $formatted_reports, $name, $cached);
 			}
-
+		
 			return $formatted_reports;
 		}
+		
 
 		/**
 		 * Fetch real time reports from Google Analytics Data API.
@@ -898,11 +1281,10 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * 	   }
 		 * }
 		 */
-		public function get_real_time_reports( $metrics, $dimensions = array() ) {
-
+		public function get_real_time_reports($metrics, $dimensions = array()) {
 			$property_id = WPANALYTIFY_Utils::get_reporting_property();
 			$reports = array();
-
+		
 			// Default response array.
 			$default_response = array(
 				'headers'      => array(),
@@ -910,89 +1292,101 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				'error'        => array(),
 				'aggregations' => array(),
 			);
-
+		
 			try {
-				$data_client = $this->connect_data_api();
-
 				// Main request body for the report.
 				$request_body = array(
 					'property' => 'properties/' . $property_id,
 				);
-
+		
 				// Set metrics.
-				if ( $metrics ) {
+				if ($metrics) {
 					$send_metrics = array();
-
-					foreach ( $metrics as $value ) {
-						$send_metrics[] = new Google\Analytics\Data\V1beta\Metric( array( 'name' => $value ) );
+		
+					foreach ($metrics as $value) {
+						$send_metrics[] = array('name' => $value); // Replace Google Metric with plain array
 					}
-
+		
 					$request_body['metrics'] = $send_metrics;
 				}
-	
+		
 				// Add dimensions.
-				if ( $dimensions ) {
+				if ($dimensions) {
 					$send_dimensions = array();
-
-					foreach ( $dimensions as $value ) {
-						$send_dimensions[] = new Google\Analytics\Data\V1beta\Dimension( array( 'name' => $value ) );
+		
+					foreach ($dimensions as $value) {
+						$send_dimensions[] = array('name' => $value); // Replace Google Dimension with plain array
 					}
-	
+		
 					$request_body['dimensions'] = $send_dimensions;
 				}
+		
+				// Prepare the cURL request.
+				$url = 'https://analyticsdata.googleapis.com/v1beta/properties/' . $property_id . ':runRealtimeReport';
 
-				// Send reports request.
-				$reports = $data_client->runRealtimeReport( $request_body );
-			} catch ( \Throwable $th ) {
+				$token = $this->analytify_get_google_token();
+				$access_token = $token['access_token'];
+		
+				$response = wp_remote_post($url, array(
+					'headers' => array(
+						'Authorization' => 'Bearer ' . $access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'body'    => json_encode($request_body),
+				));
+		
+				// Check if the request was successful.
+				if (is_wp_error($response)) {
+					throw new Exception($response->get_error_message());
+				}
+		
+				$reports = json_decode(wp_remote_retrieve_body($response), true); // Decode the response
+		
+			} catch (\Throwable $th) {
 				$default_response['error'] = array(
 					'status'  => '',
 					'message' => '',
 				);
-
+		
 				return $default_response;
 			}
-
-			if ( ! is_object( $reports ) ) {
-				if ( is_callable( $th, 'getStatus' ) && is_callable( $th, 'getBasicMessage' ) ) {
-					$default_response['error'] = array(
-						'status'  => $th->getStatus(),
-						'message' => $th->getBasicMessage(),
-					);
-					
-				} else if ( method_exists( $th, 'getMessage' ) ) {					
+		
+			if (!is_array($reports)) {
+				if (isset($th) && method_exists($th, 'getMessage')) {
 					$default_response['error'] = array(
 						'status'  => 'Token Expired',
 						'message' => $th->getMessage(),
-					);	
+					);
 				}
 				return $default_response;
 			}
-
-			if ( 0 === $reports->getRowCount() ) {
+		
+			if (empty($reports['rows'])) {
 				return $default_response;
 			}
-
-			$formatted_reports = $this->format_ga_reports( $reports );
-
-			if ( empty( $formatted_reports ) ) {
+		
+			$formatted_reports = $this->analytify_format_ga_reports($reports);
+		
+			if (empty($formatted_reports)) {
 				return $default_response;
 			}
-
+		
 			return $formatted_reports;
 		}
+		
 
 		/**
 		 * List all dimensions present in current selected GA property.
 		 *
 		 * @return array
 		 */
-		public function list_dimensions() {
+		public function analytify_list_dimensions() {
 
 			$property_id = WPANALYTIFY_Utils::get_reporting_property();
 			$dimensions = array();
 
 			try {
-				$admin_client = $this->connect_admin_api();
+				$admin_client = $this->analytify_connect_admin_api();
 				$dimensions_paged_response = $admin_client->ListCustomDimensions( 'properties/' . $property_id );
 
 				foreach ( $dimensions_paged_response->iteratePages() as $page ) {
@@ -1013,9 +1407,9 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 *
 		 * @return array ()
 		 */
-		public function list_dimensions_needs_creation() {
+		public function analytify_list_dimensions_needs_creation() {
 
-			$current_property_dimensions = $this->list_dimensions();
+			$current_property_dimensions = $this->analytify_list_dimensions();
 			$required_dimensions         = WPANALYTIFY_Utils::required_dimensions();
 
 			if ( ! empty( $current_property_dimensions ) ) {
@@ -1041,53 +1435,72 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * 
 		 * @return array
 		 */
-		public function create_dimension( $parameter_name, $display_name, $scope, $description = '', $property_id = '' ) {
+		public function analytify_create_dimension( $parameter_name, $display_name, $scope, $description = '', $property_id = '' ) {
 
-			$property_id  = ! empty( $property_id ) ? $property_id : WPANALYTIFY_Utils::get_reporting_property();
+			// Get the property ID, if not provided
+			$property_id = ! empty( $property_id ) ? $property_id : WPANALYTIFY_Utils::get_reporting_property();
 			
-			if( empty( $property_id ) ) {
+			if ( empty( $property_id ) ) {
 				return;
 			}
-			$admin_client = $this->connect_admin_api();
-
+		
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token']; // You should have a method to retrieve the access token
+		
+			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/properties/' . $property_id . '/customDimensions';
+		
+			$body = array(
+				'parameterName' => $parameter_name,
+				'displayName'   => $display_name,
+				'scope'         => $scope,
+				'description'   => ! empty( $description ) ? $description : 'Analytify custom dimension.',
+			);
+		
+			$args = array(
+				'method'    => 'POST',
+				'headers'   => array(
+					'Authorization' => 'Bearer ' . $access_token,
+					'Content-Type'  => 'application/json',
+				),
+				'body'      => json_encode( $body ),
+			);
+		
 			$return_response = array(
 				'response' => 'created',
 			);
-
-			try {
-				$formatted_property_name = $admin_client->propertyName( $property_id );
-				$custom_dimension        = new Google\Analytics\Admin\V1alpha\CustomDimension(
-					array(
-						'parameter_name' => $parameter_name,
-						'display_name'   => $display_name,
-						'scope'          => $scope,
-						'description'    => ! empty( $description ) ? $description : 'Analytify custom dimension.',
-					)
-				);
-
-				try { // Try to create new dimension.
-					$response = $admin_client->createCustomDimension( $formatted_property_name, $custom_dimension );
-					if( $response ) {
-						WPANALYTIFY_Utils::remove_ga4_exception( 'create_dimensions_exception' );
-					}
-				} catch ( \Throwable $th ) {
-					$logger = analytify_get_logger();
-					$logger->warning( $th->getMessage(), array( 'source' => 'analytify_create_dimension_errors' ) );
-					$return_response = array(
-						'response' => 'failed',
-						'message'  => $th->getMessage(),
-					);
-				}
-			} catch( \Throwable $th ) {
-				
+		
+			// Send the API request
+			$response = wp_remote_post( $url, $args );
+		
+			// Handle the response
+			if ( is_wp_error( $response ) ) {
 				$logger = analytify_get_logger();
-				$logger->warning( $th->getMessage(), array( 'source' => 'analytify_create_dimension_errors' ) );
-			} finally {
-				$admin_client->close();
+				$logger->warning( $response->get_error_message(), array( 'source' => 'analytify_analytify_create_dimension_errors' ) );
+				return array(
+					'response' => 'failed',
+					'message'  => $response->get_error_message(),
+				);
 			}
-
+		
+			$response_code = wp_remote_retrieve_response_code( $response );
+			if ( $response_code != 200 ) {
+				$body = wp_remote_retrieve_body( $response );
+				$decoded_body = json_decode( $body, true );
+				$message = isset( $decoded_body['error']['message'] ) ? $decoded_body['error']['message'] : 'Unknown error';
+		
+				$logger = analytify_get_logger();
+				$logger->warning( $message, array( 'source' => 'analytify_analytify_create_dimension_errors' ) );
+		
+				return array(
+					'response' => 'failed',
+					'message'  => $message,
+				);
+			}
+		
+			// Return the response
 			return $return_response;
 		}
+		
 
 		/**
 		 * Format reports data fetched from Google Analytics Data API.
@@ -1097,64 +1510,112 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param $reports
 		 * @return array
 		 */
-		public function format_ga_reports( $reports ) {
-
+		public function analytify_format_ga_reports( $reports ) {
 			$metric_header_data = array();
 			$dimension_header_data = array();
 			$aggregations = array();
-
-			$data_rows = $reports->getRows();
+			$rows = array();
 
 			// Get metric headers.
-			foreach ( $reports->getMetricHeaders() as $metric_header ) {
-				$metric_header_data[] = $metric_header->getName();
+			if (isset($reports['metricHeaders'])) {
+				foreach ( $reports['metricHeaders'] as $metric_header ) {
+					$metric_header_data[] = $metric_header['name'];
+				}
 			}
+		
 			// Get dimension headers.
-			foreach ( $reports->getDimensionHeaders() as $dimension_header ) {
-				$dimension_header_data[] = $dimension_header->getName();
+			if (isset($reports['dimensionHeaders'])) {
+				foreach ( $reports['dimensionHeaders'] as $dimension_header ) {
+					$dimension_header_data[] = $dimension_header['name'];
+				}
 			}
-
+		
 			$headers = array_merge( $metric_header_data, $dimension_header_data );
-
+		
 			// Bind metrics and dimensions to rows.
-			foreach ( $data_rows as $row ) {
-				$metric_data = array();
-				$dimension_data = array();
-
-				$index_metric = 0;
-				$index_dimension = 0;
-
-				foreach ( $row->getMetricValues() as $value ) {
-					$metric_data[$metric_header_data[$index_metric]] = $value->getValue();
-					$index_metric++;
-				}
-
-				foreach ( $row->getDimensionValues() as $value ) {
-					$dimension_data[$dimension_header_data[$index_dimension]] = $value->getValue();
-					$index_dimension++;
-				}
-
-				$rows[] = array_merge( $metric_data, $dimension_data );
-			}
-
-			// Get metric aggregations.
-			foreach ( $reports->getTotals() as $total ) {
-				$index_metric = 0;
-
-				foreach ( $total->getMetricValues() as $value ) {
-					$aggregations[$metric_header_data[$index_metric]] = $value->getValue();
-					$index_metric++;
+			if (isset($reports['rows'])) {
+				foreach ( $reports['rows'] as $row ) {
+					$metric_data = array();
+					$dimension_data = array();
+		
+					// Process metric values.
+					if (isset($row['metricValues'])) {
+						$index_metric = 0;
+						foreach ( $row['metricValues'] as $value ) {
+							$metric_data[$metric_header_data[$index_metric]] = $value['value'];
+							$index_metric++;
+						}
+					}
+		
+					// Process dimension values.
+					if (isset($row['dimensionValues'])) {
+						$index_dimension = 0;
+						foreach ( $row['dimensionValues'] as $value ) {
+							$dimension_data[$dimension_header_data[$index_dimension]] = $value['value'];
+							$index_dimension++;
+						}
+					}
+		
+					// Combine metric and dimension data.
+					$rows[] = array_merge( $metric_data, $dimension_data );
 				}
 			}
-
+		
+			// Get metric aggregations (totals).
+			if (isset($reports['totals'])) {
+				foreach ( $reports['totals'] as $total ) {
+					$index_metric = 0;
+		
+					if (isset($total['metricValues'])) {
+						foreach ( $total['metricValues'] as $value ) {
+							$aggregations[$metric_header_data[$index_metric]] = $value['value'];
+							$index_metric++;
+						}
+					}
+				}
+			}
+		
+			// Format and return the data.
 			$formatted_data = array(
 				'headers'      => $headers,
 				'rows'         => $rows,
 				'aggregations' => $aggregations
 			);
-
+		
 			return $formatted_data;
-		}	
+		}
+		
+		/**
+		 * Get a fresh access token.
+		 *
+		 * @since 7.0.0
+		 */
+		public function analytify_get_fresh_access_token() {
+			// Load the token from your storage
+			$auth_token = $this->client->getAccessToken();
+		
+			// Extract the created time and expires_in value
+			$created_time = $auth_token['created'];
+			$expires_in = $auth_token['expires_in'];
+		
+			// Get the current time
+			$current_time = time();
+		
+			// Check if the token has expired
+			if (($created_time + $expires_in) < $current_time) {
+				// Token has expired, refresh it
+				if ($this->client->isAccessTokenExpired()) {
+					$this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
+		
+					// Save the new token to your storage
+					$new_token = $this->client->getAccessToken();
+				}
+			}
+		
+			// Return the access token (fresh or existing)
+			$auth_token = $this->client->getAccessToken();
+			return $auth_token['access_token'];
+		}
 
 		/**
 		 * Query the search console api and return the response.
@@ -1172,12 +1633,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				'error' => []
 			];
 			$logger = analytify_get_logger();
-			$search_console = new Google\Service\SearchConsole($this->client);
+			$token = $this->analytify_get_google_token();
+			$access_token = $token['access_token'];
 
+		
 			$tracking_stream_info = get_option('analytify_tracking_property_info');
 			try {
-				$stream_url = !empty($tracking_stream_info['url']) ? $tracking_stream_info['url'] : null;
-
+				$stream_url = (isset($tracking_stream_info['url']) && !empty($tracking_stream_info['url'])) ? $tracking_stream_info['url'] : null;
 			} catch (\Throwable $th) {
 				$logger->warning("Error Fetching Stream URL: " . $th->getMessage(), ['source' => 'analytify_fetch_stream_url']);
 				if (empty($stream_url)) {
@@ -1188,10 +1650,10 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					return $response;
 				}
 			}
-
+		
 			$domain_stream_url_filtered = preg_replace("/^(https?:\/\/)?(www\.)?([^\/]+)(\/.*)?$/i", "$3", $stream_url);
 			$domain_stream_url = "sc-domain:$domain_stream_url_filtered";
-			
+		
 			$urls = [
 				$domain_stream_url,
 				'https://' . preg_replace("(^(https?:\/\/([wW]{3}\.)?)?)", "", $domain_stream_url_filtered),
@@ -1199,36 +1661,69 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				'http://' . preg_replace("(^(https?:\/\/([wW]{3}\.)?)?)", "", $domain_stream_url_filtered),
 				'http://' . preg_replace("(^(https?:\/\/([wW]{3}\.)?)?)", "www.", $domain_stream_url_filtered)
 			];
-
+		
+			$base_url = "https://www.googleapis.com/webmasters/v3/sites/";
+			$start_date = isset($dates['start']) ? $dates['start'] : 'yesterday';
+			$end_date = isset($dates['end']) ? $dates['end'] : 'today';
+		
 			foreach ($urls as $url) {
 				try {
-					$request = new Google\Service\SearchConsole\SearchAnalyticsQueryRequest();
-					$request->setStartDate(isset($dates['start']) ? $dates['start'] : 'yesterday');
-					$request->setEndDate(isset($dates['end']) ? $dates['end'] : 'today');
-					$request->setDimensions(['QUERY']);
-					$request->setRowLimit($limit);
+					// Prepare the Search Analytics API query
+					$query_data = [
+						"startDate" => $start_date,
+						"endDate" => $end_date,
+						"dimensions" => ["query"],
+						"rowLimit" => $limit,
+					];
+		
+					// Set up cURL request to the Search Console API
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $base_url . urlencode($url) . "/searchAnalytics/query");
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, [
+						'Authorization: Bearer ' . $access_token,
+						'Content-Type: application/json'
+					]);
+					curl_setopt($ch, CURLOPT_POST, true);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query_data));
+		
+					// Execute the cURL request
+					$result = curl_exec($ch);
 
-					$response['response'] = $search_console->searchanalytics->query($url, $request);
-
-					// Clear error if successful
-					unset($response['error']);
-					return $response;
+					$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
+					// Handle the response
+					if ($http_code === 200) {
+						$response['response'] = json_decode($result, true);
+		
+						// Clear error if successful
+						unset($response['error']);
+						curl_close($ch);
+						return $response;
+					} else {
+						$logger->warning("Error querying $url: HTTP code $http_code", ['source' => 'analytify_fetch_search_console_stats']);
+					}
+		
+					curl_close($ch);
 				} catch (\Throwable $th) {
 					// Log error with context
 					$logger->warning("Error querying $url: " . $th->getMessage(), ['source' => 'analytify_fetch_search_console_stats']);
-
+		
 					// Continue to next URL if error is transient
 					continue;
 				}
 			}
+		
 			// Set error response if all URLs failed
 			$response['error'] = [
 				'status'  => "No Stats Available for $domain_stream_url_filtered",
 				'message' => __("Analytify gets GA4 Keyword stats from Search Console. Make sure you've verified and have owner access to your site in Search Console.", 'wp-analytify'),
 			];
-
+		
 			return $response;
-	}
+		}
+		
+		
 
 
 		/**
@@ -1282,7 +1777,6 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				// TODO: remove this hard coded setting
 
 				$is_custom_api = $this->settings->get_option( 'user_advanced_keys', 'wp-analytify-advanced' );
-				// $is_custom_api = 'on';
 
 				if ( 'on' !== $is_custom_api ) {
 					// If exception, return if the cache result else return the error.
@@ -1302,10 +1796,10 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				}
 			} catch ( Analytify_Google_Service_Exception $e ) {
 				// Show error message only for logged in users.
-				if ( current_user_can( 'manage_options' ) ) {
+			if ( current_user_can( 'manage_options' ) ) {
 					echo "<div class='wp_analytify_error_msg'>";
 					// translators: Error message for logged in users
-					echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
+					echo sprintf( esc_html__( '%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don\'t worry, This error message is only visible to Administrators. %4$s %2$s ', 'wp-analytify' ), '<br /><br />', '<br />', '<i>', '</i>', esc_html( $e->getMessage() ) );
 					echo "</div>";
 				}
 			} catch ( Analytify_Google_Auth_Exception $e ) {
@@ -2013,8 +2507,28 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				)
 			));
 
-
 			$this->navigation_markup( $nav_items );
 		}
+
+		/**
+		 * Handle caching of GA4 reports data and store it as transient
+		 * 
+		 * @since 7.0.0
+		 * @param string $cache_key The cache key to use
+		 * @param mixed $data The data to cache
+		 * @param string $name The report name
+		 * @param bool $should_cache Whether to cache the data
+		 * @return void
+		 */
+		private function analytify_handle_report_cache($cache_key, $data, $name, $should_cache = true) {
+			// Don't cache if caching is disabled or for specific reports
+			if (!$should_cache || $name === 'show-worldmap-front') {
+				return false;
+			}
+
+			// Set the cache with the configured timeout
+			set_transient($cache_key, $data, $this->get_cache_time());
+		}
+
 	}
 }

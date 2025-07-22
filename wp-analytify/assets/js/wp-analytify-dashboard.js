@@ -142,61 +142,78 @@ jQuery(document).ready(function ($) {
     $("table.wp_analytify_paginated:not(.is-paginated)").each(function () {
       $(this).addClass("is-paginated");
 
-      var currentPage = 0;
-      var numPerPage = $(this).data("product-per-page")
-        ? $(this).data("product-per-page")
-        : 5;
+      var numPerPage = 10; // Default rows per page
       var $table = $(this);
       var $pager = $('<div class="wp_analytify_pager"></div>');
 
+      // Count total rows
+      var totalRows = $table.find("tbody tr").length;
+      if (totalRows <= 10) {
+        // Don't show pagination controls if 10 or fewer rows
+        return;
+      }
+      var rowsOptions = [10, 25, 50, 100];
+
+      // Determine which buttons to show
+      var shownOptions = rowsOptions.filter(function (opt) {
+        return opt < totalRows;
+      });
+
+      // Always show the next highest option (if any)
+      var nextHighest = rowsOptions.find(function (opt) {
+        return opt >= totalRows;
+      });
+      if (nextHighest && !shownOptions.includes(nextHighest)) {
+          shownOptions.push(nextHighest);
+      }
+      if (shownOptions.length === 0) shownOptions = [rowsOptions[0]];
+
+      // Add buttons for shownOptions
+      var $buttons = $();
+      shownOptions.forEach(function(num) {
+          $buttons = $buttons.add(
+              $('<span class="rows-per-page page-number" data-rows="' + num + '">' + num + '</span>')
+          );
+      });
+
+      // Append buttons to the pager
+      $pager.append($buttons);
+
+      // Append the pager to the pagination container
       $(this)
         .closest(".analytify_status_body")
         .next(".analytify_status_footer")
         .find(".wp_analytify_pagination")
         .html($pager);
 
-      $table.bind("repaginate", function () {
+      // Function to update the table based on rows per page
+      function updateTable() {
         $table.find("tbody tr").hide();
 
-        $filteredRows = $table.find("tbody tr");
-
-        $filteredRows
-          .slice(currentPage * numPerPage, (currentPage + 1) * numPerPage)
-          .show();
+        var $filteredRows = $table.find("tbody tr");
+        $filteredRows.slice(0, numPerPage).show();
 
         var numRows = $filteredRows.length;
-        var numPages = Math.ceil(numRows / numPerPage);
 
-        $pager.find(".page-number, .previous, .next").remove();
+        // Ensure the pager is always visible
+        $pager.show();
+      }
 
-        // Show pagination if page is greate than 1.
-        if (numPages > 1) {
-          for (var page = 0; page < numPages; page++) {
-            var $newPage = $('<span class="page-number"></span>')
-              .text(page + 1)
-              .bind(
-                "click",
-                {
-                  newPage: page,
-                },
-                function (event) {
-                  currentPage = event.data["newPage"];
-                  $table.trigger("repaginate");
-                }
-              );
+      // Handle button clicks to change rows per page
+      $pager.on("click", ".rows-per-page", function () {
+        numPerPage = parseInt($(this).data("rows"), 10);
 
-            if (page == currentPage) {
-              $newPage.addClass("clickable wp_analytify_active");
-            } else {
-              $newPage.addClass("clickable");
-            }
+        // Highlight the active button
+        $pager.find(".rows-per-page").removeClass("wp_analytify_active");
+        $(this).addClass("wp_analytify_active");
 
-            $newPage.appendTo($pager);
-          }
-        }
+        // Reset and update the table
+        updateTable();
       });
 
-      $table.trigger("repaginate");
+      // Initialize with the default rows per page
+      $pager.find('.rows-per-page[data-rows="10"]').addClass("clickable wp_analytify_active");
+      updateTable();
     });
   };
 
@@ -571,7 +588,7 @@ function shouldIgnoreElement(element, tabType) {
         "analytify_disabled",
         "analytify_dashboard_title"
     ];
-
+  
     if (tabType === "views" && element.classList.contains("analytify_views") && !element.classList.contains("analytify_active_stats")) {
         return true;
     }
