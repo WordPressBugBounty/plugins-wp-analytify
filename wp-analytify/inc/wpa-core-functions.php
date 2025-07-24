@@ -379,7 +379,6 @@ function analytify_notice_script() {
 	<script type="text/javascript">
 		function dismissAnalytifyNotice(noticeId) {
 			document.getElementById(noticeId).style.display = 'none';
-			localStorage.setItem('analytify_stats_refreshed_dismissed', '1');
 			var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
 			var data = {
 				'action': 'dismiss_analytify_notice',

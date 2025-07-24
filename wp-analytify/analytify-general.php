@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '7.0.0' );
+define( 'ANALYTIFY_VERSION', '7.0.1' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -392,12 +392,20 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * Connect with Google Analytics admin API.
 		 * 
 		 * @return AnalyticsAdminServiceClient
+		 * @version 7.0.1
 		 */
 		private function analytify_connect_admin_api() {
 		
 			try {
-				// Get a fresh access token using the refresh token
+				// Get a fresh access token using the refresh token.
 				$token = $this->analytify_get_google_token();
+				
+				// Validate that token is an array and has the expected structure.
+				if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+					error_log('Error: Invalid or missing Google Analytics token in analytify_list_ga4_web_properties.');
+					return array();
+				}
+				
 				$access_token = $token['access_token'];
 		
 				// Log the access token for debugging purposes
@@ -436,6 +444,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @return array Measurement data.
 		 * 
 		 * @since 5.0.0
+		 * @version 7.0.1
 		 */
 		public function analytify_create_ga_stream( $property_id ) {
 			$analytify_ga4_streams = $this->analytify_get_ga4_streams();
@@ -449,8 +458,15 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			if ( empty( $property_id ) ) {
 				return;
 			}
-		
+
 			$token = $this->analytify_get_google_token();
+			
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				error_log('Error: Invalid or missing Google Analytics token in analytify_create_ga_stream.');
+				return;
+			}
+
 			$access_token = $token['access_token']; // Method to retrieve your OAuth access token
 			$url_list_streams = ANALYTIFY_GA_ADMIN_API_BASE . '/properties/' . $property_id . '/dataStreams';
 			$stream_name = 'Analytify - ' . get_site_url(); // Defined stream name for Analytify.
@@ -597,6 +613,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param string $property_id The ID of the property for which to fetch the data streams.
 		 *
 		 * @return array|false Array of data stream objects if found, otherwise false or empty array.
+		 * @version 7.0.1
 		 */
 		public function analytify_get_ga_streams( $property_id ) {
 			// If no property ID specified, return false.
@@ -608,6 +625,14 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		
 			// Get the access token for authentication.
 			$token = $this->analytify_get_google_token();
+			
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				$logger = analytify_get_logger();
+				error_log( 'Error: Invalid or missing Google Analytics token in analytify_get_ga_streams.', array( 'source' => 'analytify_fetch_ga_streams' ) );
+				return null;
+			}
+			
 			$access_token = $token['access_token']; // Method to retrieve your OAuth access token.
 			if ( empty( $access_token ) ) {
 				$logger = analytify_get_logger();
@@ -692,6 +717,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * Lookup for a single "GA4" MeasurementProtocolSecret.
 		 *
 		 * @param string $formattedName The name of the measurement protocol secret to lookup.
+		 * @version 7.0.1
 		 */
 		public function analytify_get_mp_secret( $formattedName )
 		{
@@ -701,6 +727,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			}
 
 			$token = $this->analytify_get_google_token();
+		
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				error_log("Error: Invalid or missing Google Analytics token in analytify_get_mp_secret.");
+				return;
+			}
+			
 			$access_token = $token['access_token'];
 
 			if (empty($access_token)) {
@@ -758,6 +791,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param string $property_id
 		 * 
 		 * @since 5.0.0
+		 * @version 7.0.1
 		 */
 		public function analytify_create_mp_secret( $property_id, $stream_full_name, $display_name ) {
 			$analytify_all_streams = $this->analytify_get_ga4_streams();
@@ -774,6 +808,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		
 			// Fetch the access token for making authorized API calls.
 			$token = $this->analytify_get_google_token();
+			
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				error_log("Error: Invalid or missing Google Analytics token for property ID: {$property_id}");
+				return;
+			}
+			
 			$access_token = $token['access_token'];
 			if (!$access_token) {
 				error_log("Access token is missing for property ID: {$property_id}");
@@ -949,9 +990,17 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * Retrieve Google Analytics properties for the authenticated user.
 		 *
 		 * @since 7.0.0
+		 * @version 7.0.1
 		 */
 		public function analytify_get_ga_properties() {
 			$token = $this->analytify_get_google_token();
+			
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				echo sprintf( '<br /><div class="notice notice-warning"><p>%s</p></div>', esc_html__( 'Error: Invalid or missing Google Analytics token. Please re-authenticate.', 'wp-analytify' ) );
+				return array();
+			}
+			
 			$access_token = $token['access_token'];
 			
 			if ( ! $access_token ) {
@@ -1054,6 +1103,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 *         ...
 		 * 	   }
 		 * }
+		 * @version 7.0.1
 		 */
 		public function get_reports( $name, $metrics, $date_range, $dimensions = array(), $order_by = array(), $filters = array(), $limit = 0, $cached = true ) {
 			$property_id   = WPANALYTIFY_Utils::get_reporting_property();
@@ -1199,6 +1249,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		
 				// Get access token (this function should be implemented by you).
 				$token = $this->analytify_get_google_token();
+				
+				// Validate that token is an array and has the expected structure.
+				if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+					error_log('Error: Invalid or missing Google Analytics token in runReport.');
+					return array();
+				}
+				
 				$access_token = $token['access_token'];
 
 		
@@ -1280,6 +1337,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 *         ...
 		 * 	   }
 		 * }
+		 * @version 7.0.1
 		 */
 		public function get_real_time_reports($metrics, $dimensions = array()) {
 			$property_id = WPANALYTIFY_Utils::get_reporting_property();
@@ -1325,6 +1383,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				$url = 'https://analyticsdata.googleapis.com/v1beta/properties/' . $property_id . ':runRealtimeReport';
 
 				$token = $this->analytify_get_google_token();
+				
+				// Validate that token is an array and has the expected structure.
+				if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+					error_log('Error: Invalid or missing Google Analytics token in runRealtimeReport.');
+					return array();
+				}
+				
 				$access_token = $token['access_token'];
 		
 				$response = wp_remote_post($url, array(
@@ -1434,6 +1499,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param integer $property_id Reporting property ID to associate dimension, default is current reporting property.
 		 * 
 		 * @return array
+		 * @version 7.0.1
 		 */
 		public function analytify_create_dimension( $parameter_name, $display_name, $scope, $description = '', $property_id = '' ) {
 
@@ -1445,6 +1511,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			}
 		
 			$token = $this->analytify_get_google_token();
+		
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				error_log('Error: Invalid or missing Google Analytics token in analytify_create_custom_dimension.');
+				return;
+			}
+			
 			$access_token = $token['access_token']; // You should have a method to retrieve the access token
 		
 			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/properties/' . $property_id . '/customDimensions';
@@ -1627,6 +1700,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param $limit limit
 		 * 
 		 * @since 5.0.0
+		 * @version 7.0.1
 		 */
 		public function get_search_console_stats($transient_name, $dates = [], $limit = 10) {
 			$response = [
@@ -1634,6 +1708,13 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			];
 			$logger = analytify_get_logger();
 			$token = $this->analytify_get_google_token();
+			
+			// Validate that token is an array and has the expected structure.
+			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
+				error_log('Error: Invalid or missing Google Analytics token in set_stream_enhanced_measurement.');
+				return [ 'error' => ['Invalid or missing Google Analytics token.'] ];
+			}
+			
 			$access_token = $token['access_token'];
 
 		

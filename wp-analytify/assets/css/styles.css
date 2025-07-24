@@ -3337,6 +3337,10 @@ div.wp_analytify_pager span.wp_analytify_active, div.wp_analytify_pager span:hov
     color: #444;
 } 
 
+.analytify_page_analytify-settings:has(#setting-error-settings_updated) .wp-analytify-refresh-stats.wp-analytify-notification{
+    display:none;
+}
+
 
 /* --------------------------- Analytfy Add-ons End --------------------------- */
 
@@ -4272,7 +4276,7 @@ div.wp_analytify_pager span.wp_analytify_active, div.wp_analytify_pager span:hov
 }
 
 #analytify-dashboard-addon .analytify_info_stats{
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 /* 

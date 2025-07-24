@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 7.0.0
+Stable tag: 7.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,10 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 7.0.1 - 2025-07-24 =
+* Bug Fix: Fixed a critical bug where the plugin would throw a PHP fatal error (Uncaught TypeError: Cannot access offset of type string on string) if the Google Analytics token was invalid or missing.
+* Enhancement: Chart legend and data labels now support translations, ensuring correct display for localized label names.
 
 = 7.0.0 - 2025-07-22 =
 * Enhancement: Discarding Google Analytics 4 SDK and rolling out our own library for GA4 API calls. This would help in resolving conflicts with other plugins that were using the same library.
@@ -1084,7 +1088,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 7.0.0 =
+= 7.0.1 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

@@ -648,19 +648,4 @@ jQuery(document).ready(function ($) {
   $(".stats").each(function () {
     $(this).css("min-height", height3);
   });
-
-  // Persistent dismissal for 'Analytify statistics refreshed' notice
-  (function() {
-      if (localStorage.getItem('analytify_stats_refreshed_dismissed') === '1') {
-          var notice = document.querySelector('.wp-analytify-notification.wp-analytify-success');
-          if (notice) {
-              notice.style.display = 'none';
-          }
-      }
-  })();
-
-  // When the user clicks the refresh stats button, clear the dismissed flag
-  jQuery(document).on('click', '#analytify-refresh-stats, #refresh-realtime-stats', function() {
-      localStorage.removeItem('analytify_stats_refreshed_dismissed');
-  });
 });

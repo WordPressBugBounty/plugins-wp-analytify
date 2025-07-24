@@ -3,12 +3,12 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 7.0.0
+ * Version: 7.0.1
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
  * Text Domain: wp-analytify
- * Tested up to: 6.7
+ * Tested up to: 6.8
  * Domain Path: /languages
  * GitHub Plugin URI: https://github.com/WPBrigade/wp-analytify
  * @package WP_ANALYTIFY
@@ -2020,7 +2020,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			}
 		
 			$notice_message = esc_html__( 'Analytify statistics refreshed', 'wp-analytify' );
-			$class = 'wp-analytify-success';
+			$class = 'wp-analytify-success wp-analytify-refresh-stats';
 			
 			analytify_notice( $notice_message, $class );
 		}
@@ -2271,19 +2271,21 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		 *  Check and Dismiss review message.
 		 *
 		 *  @since 1.3
+		 *  @version 7.0.1
 		 */
 		private function review_dismissal() {
 			if ( ! is_admin() || ! current_user_can( 'manage_options' ) || ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'analytify-review-nonce' ) || ! isset( $_GET['wp_analytify_review_dismiss'] ) ) {
 				return;
 			}
 
-			add_site_option( 'wp_analytify_review_dismiss_4_1_8', 'yes' );
+			add_site_option( 'wp_analytify_review_dismiss_4_1_8', 'yes_v7' );
 		}
 
 		/**
 		 * Ask users to review our plugin on .org
 		 *
 		 * @since 1.3
+		 * @version 7.0.1
 		 * @return boolean false
 		 */
 		public function analytify_review_notice() {
@@ -2293,7 +2295,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			$activation_time  = get_site_option( 'wp_analytify_active_time' );
 			$review_dismissal = get_site_option( 'wp_analytify_review_dismiss_4_1_8' );
 
-			if ( 'yes' == $review_dismissal ) {
+			if ( 'yes_v7' == $review_dismissal ) {
 				return;
 			}
 
@@ -2326,10 +2328,11 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		 * Review notice message
 		 *
 		 * @since  1.3
+		 * @version 7.0.1
 		 */
 		public function analytify_review_notice_message() {
 			$scheme      = ( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY ) ) ? '&' : '?';
-			$url         = $_SERVER['REQUEST_URI'] . $scheme . 'wp_analytify_review_dismiss=yes';
+			$url         = $_SERVER['REQUEST_URI'] . $scheme . 'wp_analytify_review_dismiss=yes_v7';
 			$dismiss_url = wp_nonce_url( $url, 'analytify-review-nonce' );
 
 			$_later_link = $_SERVER['REQUEST_URI'] . $scheme . 'wp_analytify_review_later=yes';

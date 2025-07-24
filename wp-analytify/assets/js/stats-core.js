@@ -301,24 +301,49 @@ jQuery(function ($) {
 	}
 
 	/**
-	* Builds charts for the 'General Stats' section.
-	*/
+	 * Builds charts for the 'General Stats' section.
+	 */
 	const es_chart_stats_general = () => {
+
+		const analytifyGetKeyByLabel = (statsObj, label) => {
+			if (!statsObj) return null;
+			for (const key in statsObj) {
+				if (statsObj[key] && statsObj[key].label === label) {
+					return key;
+				}
+			}
+			return null;
+		};
+
+
 		if ($('#analytify_chart_new_vs_returning_visitors').length) {
 			const setting_title = $('#analytify_chart_new_vs_returning_visitors').attr('data-chart-title');
 			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-stats')));
 			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-colors')));
-	
-			if (setting_stats.new.number > 0 && setting_stats.returning.number > 0) {
+
+
+			if (!setting_stats || !setting_stats.new || !setting_stats.returning) {
+				console.error('Setting stats or required properties are undefined.');
+				return;
+			}
+
+			if (parseInt(setting_stats.new.number) > 0 && parseInt(setting_stats.returning.number) > 0) {
 				const new_returning_graph_options = {
 					color: setting_colors,
-					legend: { 
-						orient: 'horizontal', 
-						bottom: '5%', 
+					legend: {
+						orient: 'horizontal',
+						bottom: '5%',
 						textStyle: { fontSize: 14, fontWeight: '500' },
-						formatter: function(name) {
-							const value = setting_stats[name.toLowerCase()].number;
-							return `${name}: ${value}`;
+						formatter: function (name) {
+							// Try to find the key by label
+							const key = analytifyGetKeyByLabel(setting_stats, name);
+							if (key && setting_stats[key] && !isNaN(parseInt(setting_stats[key].number))) {
+								const value = parseInt(setting_stats[key].number);
+								return `${name}: ${value}`;
+							}
+							// If not found, log an error and return fallback
+							console.error('Could not find key for legend label:', name, setting_stats);
+							return `${name}: 0`;
 						},
 						data: [setting_stats.new.label, setting_stats.returning.label]
 					},
@@ -326,60 +351,62 @@ jQuery(function ($) {
 						name: setting_title,
 						type: 'pie',
 						center: ['50%', '43%'],
-						label: { 
+						label: {
 							show: false
 						},
 						labelLine: {
 							show: false
 						},
 						data: [
-							{ name: setting_stats.returning.label, value: setting_stats.returning.number },
-							{ name: setting_stats.new.label, value: setting_stats.new.number }
+							{ name: setting_stats.returning.label, value: parseInt(setting_stats.returning.number) },
+							{ name: setting_stats.new.label, value: parseInt(setting_stats.new.number) }
 						]
 					}]
 				};
-	
+
 				const new_returning_graph = echarts.init(document.getElementById('analytify_chart_new_vs_returning_visitors'));
 				new_returning_graph.setOption(new_returning_graph_options);
-	
+
 				window.onresize = () => new_returning_graph.resize();
 			} else {
 				$('#analytify_chart_new_vs_returning_visitors').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
 			}
 		}
-	
+
 		if ($('#analytify_chart_visitor_devices').length) {
 			const setting_title = $('#analytify_chart_visitor_devices').attr('data-chart-title');
 			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-stats')));
 			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-colors')));
-	
+
+
+			if (!setting_stats || !setting_stats.mobile || !setting_stats.tablet || !setting_stats.desktop) {
+				console.error('Setting stats or required properties are undefined.');
+				return;
+			}
+
 			if (setting_stats.desktop.number > 0 || setting_stats.mobile.number > 0 || setting_stats.tablet.number > 0) {
 				const user_device_graph_options = {
-					// tooltip: { 
-					// 	trigger: 'item', 
-					// 	formatter: "{b}: {c} ({d}%)" 
-					// },
 					color: setting_colors,
-					legend: { 
-						orient: 'horizontal', 
-						bottom: '5%', 
+					legend: {
+						orient: 'horizontal',
+						bottom: '5%',
 						textStyle: { fontSize: 13, fontWeight: '500' },
 						itemGap: 4,
-						formatter: function(name) {
-							let value = setting_stats[name.toLowerCase()].number;
+						formatter: function (name) {
+							const key = analytifyGetKeyByLabel(setting_stats, name);
+							let value = key && setting_stats[key] ? setting_stats[key].number : 0;
 							if (value >= 1000) {
 								value = (value / 1000).toFixed(1) + 'k';
 							}
 							return `${name}: ${value}`;
 						},
-						data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label] 
+						data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label]
 					},
 					series: [{
 						name: setting_title,
 						type: 'pie',
-						// radius: ['40%', '70%'],
 						center: ['50%', '43%'],
-						label: { 
+						label: {
 							show: false
 						},
 						labelLine: {
@@ -388,20 +415,20 @@ jQuery(function ($) {
 						data: [
 							{ name: setting_stats.mobile.label, value: setting_stats.mobile.number },
 							{ name: setting_stats.tablet.label, value: setting_stats.tablet.number },
-							{ name: setting_stats.desktop.label, value: setting_stats.desktop.number },
+							{ name: setting_stats.desktop.label, value: setting_stats.desktop.number }
 						]
 					}]
 				};
-	
+
 				const user_device_graph = echarts.init(document.getElementById('analytify_chart_visitor_devices'));
 				user_device_graph.setOption(user_device_graph_options);
-	
+
 				window.onresize = () => user_device_graph.resize();
 			} else {
 				$('#analytify_chart_visitor_devices').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
 			}
 		}
-	}	
+	}
 
 	/**
 	* Builds map for the 'Geographic' section.
