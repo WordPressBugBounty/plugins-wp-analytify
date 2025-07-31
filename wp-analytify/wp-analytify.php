@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 7.0.1
+ * Version: 7.0.2
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -2271,14 +2271,14 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		 *  Check and Dismiss review message.
 		 *
 		 *  @since 1.3
-		 *  @version 7.0.1
+		 *  @version 7.0.2
 		 */
 		private function review_dismissal() {
 			if ( ! is_admin() || ! current_user_can( 'manage_options' ) || ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'analytify-review-nonce' ) || ! isset( $_GET['wp_analytify_review_dismiss'] ) ) {
 				return;
 			}
 
-			add_site_option( 'wp_analytify_review_dismiss_4_1_8', 'yes_v7' );
+			update_site_option( 'wp_analytify_review_dismiss_4_1_8', 'yes_v7' );
 		}
 
 		/**

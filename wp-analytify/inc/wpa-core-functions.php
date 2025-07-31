@@ -395,7 +395,7 @@ function analytify_notice_script() {
 add_action( 'wp_ajax_dismiss_analytify_notice', 'dismiss_analytify_notice' );
 function dismiss_analytify_notice() {
 	if ( isset( $_POST['notice_id'] ) ) {
-		set_transient( $notice_id . '_dismissed', time(), 86400 );
+		set_transient( $_POST['notice_id'] . '_dismissed', time(), 86400 );
 		wp_send_json_success();
 	} else {
 		wp_send_json_error();
