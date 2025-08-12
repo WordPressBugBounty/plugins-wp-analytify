@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 7.0.2
+ * Version: 7.0.3
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -2019,7 +2019,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				return;
 			}
 		
-			$notice_message = esc_html__( 'Analytify statistics refreshed', 'wp-analytify' );
+			$notice_message = esc_html__( 'Analytify statistics refreshed.', 'wp-analytify' );
 			$class = 'wp-analytify-success wp-analytify-refresh-stats';
 			
 			analytify_notice( $notice_message, $class );
@@ -2777,8 +2777,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					$message  = '<p> ';
 					$message .= sprintf(	// translators: Black friday deal
 						__(
-							'<strong>Biggest Black Friday Deal</strong> in the WordPress Analytics Universe! Everything is <strong>50%% OFF</strong> for <strong>Analytify</strong> [Limited Availability].<a href="https://analytify.io/in/thanks2018" target="_blank" style="text-decoration: none;"><span class="dashicons dashicons-smiley" style="margin-left: 10px;"></span> Grab The Deal</a>
-						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version</a>' , 'wp-analytify'
+							'<strong>Biggest Black Friday Deal</strong> in the WordPress Analytics Universe! Everything is <strong>50%% OFF</strong> for <strong>Analytify</strong> [Limited Availability].<a href="https://analytify.io/in/thanks2018" target="_blank" style="text-decoration: none;"><span class="dashicons dashicons-smiley" style="margin-left: 10px;"></span> Grab The Deal.</a>
+						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version.</a>' , 'wp-analytify'
 						),
 						admin_url( 'admin.php?page=analytify-dashboard&analytify_bf_nag_ignore_1=0' )
 					);
@@ -2816,8 +2816,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					$message  = '<p> ';
 					$message .= sprintf(	// translators: New year deal
 						__(
-							'<strong>The Biggest New Year Deal</strong> in the WordPress Universe! Everything is <strong>50%% OFF</strong> for <strong>Analytify</strong> [Limited Availability].<a href="https://analytify.io/in/winter2019" target="_blank" style="text-decoration: none;"><span class="dashicons dashicons-smiley" style="margin-left: 10px;"></span> Grab The Deal</a>
-						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version</a>' , 'wp-analytify'
+							'<strong>The Biggest New Year Deal</strong> in the WordPress Universe! Everything is <strong>50%% OFF</strong> for <strong>Analytify</strong> [Limited Availability].<a href="https://analytify.io/in/winter2019" target="_blank" style="text-decoration: none;"><span class="dashicons dashicons-smiley" style="margin-left: 10px;"></span> Grab The Deal.</a>
+						<a href="%1$s" style="text-decoration: none; margin-left: 10px;"><span class="dashicons dashicons-dismiss"></span> I\'m good with free version.</a>' , 'wp-analytify'
 						),
 						admin_url( 'admin.php?page=analytify-dashboard&analytify_winter_nag_ignore=0' )
 					);

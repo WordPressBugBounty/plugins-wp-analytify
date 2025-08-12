@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '7.0.2' );
+define( 'ANALYTIFY_VERSION', '7.0.3' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -906,33 +906,59 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * associated with the given access token. It is used to display or process the accounts
 		 * linked to the authenticated user.
 		 * @since 7.0.0
+		 * @version 7.0.3
 		 * @param string $access_token The access token for authenticating with the Google Analytics API.
-		 * @return void Outputs or processes the list of accounts.
+		 * @return array List of accounts.
 		 */
 		private function analytify_list_accounts( $access_token ) {
-			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/accounts';
-		
-			$response = wp_remote_get( $url, array(
-				'headers' => array(
-					'Authorization' => 'Bearer ' . $access_token,
-				),
-			) );
-		
-			if ( is_wp_error( $response ) ) {
-				error_log( 'Error fetching accounts: ' . $response->get_error_message() );
+			// Early bail if access_token is empty
+			if ( empty( $access_token ) ) {
+				error_log( 'Error: Access token is empty in analytify_list_accounts.' );
 				return array();
 			}
-		
-			$raw_body = wp_remote_retrieve_body( $response );
-		
-			$body = json_decode( $raw_body, true );
-		
-			if ( isset( $body['accounts'] ) ) {
-				return $body['accounts'];
-			} else {
-				return array();
-			}
+
+			$url      = ANALYTIFY_GA_ADMIN_API_BASE . '/accounts';
+			$accounts = array();
+			$pageToken = '';
+
+			do {
+				// Build URL with pageToken if needed
+				$request_url = $url;
+				if ( ! empty( $pageToken ) ) {
+					$request_url .= '?pageToken=' . urlencode( $pageToken );
+				}
+
+				$response = wp_remote_get( $request_url, array(
+					'headers' => array(
+						'Authorization' => 'Bearer ' . $access_token,
+					),
+				) );
+
+				if ( is_wp_error( $response ) ) {
+					error_log( 'Error fetching accounts: ' . $response->get_error_message() );
+					return $accounts;
+				}
+
+				if ( ! is_array( $response ) ) {
+					error_log( 'Error fetching accounts: Invalid response format. Raw response: ' . print_r( $response, true ) );
+					return $accounts;
+				}
+
+				$raw_body = wp_remote_retrieve_body( $response );
+				$body     = json_decode( $raw_body, true );
+
+				if ( isset( $body['accounts'] ) && is_array( $body['accounts'] ) ) {
+					$accounts = array_merge( $accounts, $body['accounts'] );
+				}
+
+				// If nextPageToken exists, loop again
+				$pageToken = isset( $body['nextPageToken'] ) ? $body['nextPageToken'] : '';
+
+			} while ( ! empty( $pageToken ) );
+
+			return $accounts;
 		}
+
 		
 		
 
@@ -947,42 +973,58 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param string $account_name The name of the Google Analytics account.
 		 *
 		 * @since 7.0.0
+		 * @version 7.0.3
 		 */
 		private function analytify_list_properties( $access_token, $account_name ) {
-			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/properties?filter=parent:' . $account_name;
-		
-			$response = wp_remote_get( $url, array(
+			$url = ANALYTIFY_GA_ADMIN_API_BASE . '/properties?filter=parent:' . $account_name. '&pageSize=1000';
+
+			$all_properties = array();
+			$page_token     = '';
+
+			do {
+			$final_url = $url;
+			if ( $page_token ) {
+				$final_url .= '&pageToken=' . $page_token;
+			}
+
+			$response = wp_remote_get( $final_url, array(
 				'headers' => array(
 					'Authorization' => 'Bearer ' . $access_token,
 				),
 			));
-		
-			// Check for errors in the response
+
 			if ( is_wp_error( $response ) ) {
 				error_log( 'Error fetching properties: ' . $response->get_error_message() );
-				return array();
+				break;
 			}
-		
-			// Log the response code for better debugging
+
+			if ( ! is_array( $response ) ) {
+				error_log( 'Error fetching properties: Invalid response format' );
+				break;
+			}
+
 			$response_code = wp_remote_retrieve_response_code( $response );
-		
-			// Check if response code is 200 (OK)
-			if ( $response_code != 200 ) {
+			if ( $response_code !== 200 ) {
 				error_log( 'Response Message: ' . wp_remote_retrieve_response_message( $response ) );
 				error_log( 'Raw Body: ' . wp_remote_retrieve_body( $response ) );
-				return array();
+				break;
 			}
-		
-			// Decode the response body
+
 			$body = json_decode( wp_remote_retrieve_body( $response ), true );
-		
-			// Check if 'properties' exists in the response
-			if ( isset( $body['properties'] ) ) {
-				return $body['properties'];
-			} else {
-				error_log( 'Error: Properties not found in response.' );
-				return array();
+
+			if ( isset( $body['properties'] ) && is_array( $body['properties'] ) ) {
+				$all_properties = array_merge( $all_properties, $body['properties'] );
 			}
+
+			$page_token = isset( $body['nextPageToken'] ) ? $body['nextPageToken'] : '';
+
+			} while ( $page_token );
+
+			if ( empty( $all_properties ) ) {
+				error_log( 'Error: No properties found in response.' );
+			}
+
+			return $all_properties;
 		}
 	
 

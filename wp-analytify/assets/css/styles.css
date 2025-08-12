@@ -4902,7 +4902,6 @@ body.analytify_page_analytify-settings .notice-dismiss{
 }
 body.analytify_page_analytify-settings .notice-dismiss:before{
     font-size: 18px;
-    color: rgb(17, 16, 16);
     content:"×";
     font-weight: bold;
     margin-right: -3px;
