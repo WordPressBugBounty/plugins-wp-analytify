@@ -2128,9 +2128,51 @@ transition: all .25s ease-in;
 .analytify_td_error_msg{
     padding: 0 !important;
 }
+
+/* Fix table border issue when no activity message is displayed - ONLY for system statistics */
+.analytify_section_system_stats .analytify_one_tree_table .analytify_data_tables .analytify-stats-error-msg {
+    padding: 15px 20px !important;
+    margin: 0;
+    border: 1px solid #e2e5e8;
+    border-top: 0;
+    background: #f9fafa;
+    vertical-align: middle;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    min-height: 120px; /* Ensure it spans multiple rows like OS stats */
+}
+
+.analytify_section_system_stats .analytify_one_tree_table .analytify_data_tables .analytify-stats-error-msg .wpb-error-box {
+    border: none;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Ensure table structure is maintained for system statistics (three tables side by side) */
+.analytify_section_system_stats .analytify_one_tree_table .analytify-stats-error-msg {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    height: 100%;
+    min-height: 120px; /* Span multiple rows like OS stats */
+}
+
+.analytify_section_system_stats .analytify_one_tree_table .analytify-stats-error-msg .wpb-error-box {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    height: 100%;
+    min-height: 120px; /* Match the height of multiple table rows */
+}
 .analytify-stats-error-msg {
     padding: 20px !important;
 }
+
 .analytify-stats-error-msg .blk {
     background: #ffbc00;
 }
@@ -2798,7 +2840,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 }
 
 .analytify_tooltip .analytify_tooltiptext {
-        visibility: hidden;
+    visibility: hidden;
     width: 220px;
     background-color: #555;
     color: #fff;
@@ -2814,6 +2856,37 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     transition: opacity 1s;
     font-size: 12px;
 }
+
+.analytify_tooltip[data-tooltip]:hover::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent
+}
+
+.analytify_tooltip[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    white-space: nowrap;
+    width: 220px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    position: absolute;
+    padding: 7px 0;
+    z-index: 1000;
+    font-weight: 400;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 1s;
+    font-size: 12px;
+}
+
 .analytify_tp_btn .analytify-export-loader{
     position: absolute;
     top: 0px;

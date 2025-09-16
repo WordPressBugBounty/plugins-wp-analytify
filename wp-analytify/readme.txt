@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 7.0.3
+Stable tag: 7.0.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,10 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 7.0.4 - 2025-09-16 =
+* Bug Fix: Resolved a conflict with the "WP Accessibility" plugin.
+* Bug Fix: Corrected tooltip behavior in PDF reports.
 
 = 7.0.3 - 2025-08-12 =
 * Bug Fix: Resolved an issue with retrieving the Google Analytics 4 properties values from user GA4 account.
@@ -1096,7 +1100,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 7.0.3 =
+= 7.0.4 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

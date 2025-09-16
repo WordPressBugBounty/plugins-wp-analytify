@@ -56,10 +56,13 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 							<div class="analytify_main_title_section">
 								<div class="analytify_dashboard_title">
 									<h1 class="analytify_pull_left analytify_main_title"><?php esc_html_e( 'Overview Dashboard', 'wp-analytify' ); ?> <?php if (class_exists('WP_Analytify_Pro_Base') && isset($_GET['page']) && $_GET['page'] === 'analytify-dashboard' && count($_GET) === 1) { ?>
-									<button name="generate_dashboard_pdf" class="analytify_export_pdf_btn analytify_tooltip">
-										<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/pdf-btn.png' ?>" class="analytify_pdf_logo" alt="<?php _e('Export PDF Report', 'wp-analytify') ?>" />
-										<span class="analytify_tooltiptext">Export PDF Report!</span>								
-									</button>
+										<button name="generate_dashboard_pdf" 
+											class="analytify_export_pdf_btn analytify_tooltip"
+											data-tooltip="<?php _e('Export PDF Report', 'wp-analytify') ?>">
+										<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/pdf-btn.png' ?>" 
+											class="analytify_pdf_logo" 
+											alt="<?php _e('Export PDF Report', 'wp-analytify') ?>" />
+										</button>
 									<?php } ?></h1>
 									<?php WPANALYTIFY_Utils::dashboard_subtitle_section(); ?>
 									

@@ -94,7 +94,7 @@ if ( !function_exists('bccomp') ) {
  *
  * @param string $code
  */
-function wpa_enqueue_js( $code ) {
+function wp_analytify_enqueue_js( $code ) {
 	global $wpa_queued_js;
 
 	if ( empty( $wpa_queued_js ) ) {
@@ -150,7 +150,7 @@ function wpa_admin_rate_footer_text( $footer_text ) {
 				$rate_text = sprintf( 
 							// translators: Analytify rating
 					esc_html__( 'If you like %1$s Analytify %2$s please leave us a %5$s %3$s %6$s rating. %4$s A huge thank you from %1$s WPBrigade %2$s in advance!', 'wp-analytify' ), '<strong>', '</strong>', '&#9733;&#9733;&#9733;&#9733;&#9733;', '<br />', '<a href="https://analytify.io/go/rate-analytify" target="_blank" class="wpa-rating-footer" data-rated="Thanks dude ;)">', '</a>' );
-					wpa_enqueue_js( "
+					wp_analytify_enqueue_js( "
                         jQuery('a.wpa-rating-footer').on('click', function() {
                             jQuery.post( '" . admin_url( 'admin-ajax.php' ) . "', { action: 'analytify_rated' } );
                             jQuery(this).parent().text( jQuery(this).data( 'rated' ) );

@@ -1225,6 +1225,19 @@ body div.mycalander .ui-datepicker-calendar tr:last-child .ui-state-active {
     color: #fff;
 }
 
+[data-endpoint-pro="custom-dimensions"] .analytify_column {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 20px;
+}
+
+[data-endpoint-pro="custom-dimensions"] .analytify_status_box_wraper {
+    border: 1px solid #e2e5e8;
+    background: #fff;
+    clear: both;
+    margin: 0;
+    height: 100%;
+}
 #wpbody {
     padding-right: 10px;
 }

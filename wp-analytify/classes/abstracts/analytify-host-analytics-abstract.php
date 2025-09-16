@@ -77,7 +77,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics_Abstract' ) ) {
 
 				$logger->warning( sprintf( 'Error occured while downloading analytics file: %1$s - %2$s', $file_contents->get_error_code(), $file_contents->get_error_message() ), array( 'source' => 'analytify_analytics_file_errors' ) );
 
-				return $file_contents->get_error_code() . ': ' . $this->file_contents->get_error_message();
+				return $file_contents->get_error_code() . ': ' . $file_contents->get_error_message();
 
 			}
 

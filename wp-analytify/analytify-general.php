@@ -15,7 +15,7 @@ define( 'ANALYTIFY_LIB_PATH', dirname( __FILE__ ) . '/lib/' );
 define( 'ANALYTIFY_ID', 'wp-analytify-options' );
 define( 'ANALYTIFY_NICK', 'Analytify' );
 define( 'ANALYTIFY_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_VERSION', '7.0.3' );
+define( 'ANALYTIFY_VERSION', '7.0.4' );
 define( 'ANALYTIFY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ANALYTIFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -407,9 +407,7 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				}
 				
 				$access_token = $token['access_token'];
-		
-				// Log the access token for debugging purposes
-				error_log('Access token retrieved: ' . $access_token);
+
 		
 				// Set the headers for the API request
 				$headers = [
@@ -420,8 +418,6 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 				// Define the base API URL for Google Analytics Admin API
 				$api_base_url = ANALYTIFY_GA_ADMIN_API_BASE;
 		
-				// Log the API base URL for debugging purposes
-				error_log('API base URL: ' . $api_base_url);
 		
 				return [
 					'api_base_url' => $api_base_url,

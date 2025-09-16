@@ -571,7 +571,7 @@ class Analytify_Email_Core {
   		<input type="submit" value="' . __( 'Send Email Report', 'wp-analytify' ) . '" name="send_email" class="analytify_submit_date_btn"  id="send_single_analytics">';
 
 		if ( apply_filters( 'wpa_display_email_single_input_field', $display = false ) ) {
-			echo '<input type="email" name="recipient_email" placeholder="' . esc_attr__( 'Enter Recipient Email', 'wp-analytify' ) . '" id="recipient_email" style="min-height: 46px; min-width: 250px;">';
+			echo '<input type="email" name="recipient_email" placeholder="' . esc_attr__( 'Enter Recipient Email', 'wp-analytify' ) . '" id="recipient_email" style="min-height: 46px; min-width: 250px; margin-left: 4px;">';
 		}
 
 		echo '<span style=\'min-height:30px;min-width:150px;display:none\' class=\'send_email stats_loading\'></span></div>';
