@@ -1,19 +1,26 @@
 <?php
+/**
+ * View of scroll depth statistics for single page.
+ *
+ * @package WP_Analytify
+ */
+
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) { exit; }
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; }
 
 /**
  * View of scroll depth statistics for single page.
  *
- * @param WP_Analytify $wp_analytify
- * @param array $stats
- * 
+ * @param WP_Analytify         $wp_analytify Main plugin instance.
+ * @param array<string, mixed> $stats Statistics data.
+ *
  * @return void
  */
 function wpa_include_ga_single_depth( $wp_analytify, $stats ) {
 
-	$rows = $stats['rows'];
-	$total_visits =  $stats['aggregations']['eventCount'];
+	$rows         = $stats['rows'];
+	$total_visits = $stats['aggregations']['eventCount'];
 	?>
 
 	<div class="analytify_general_status analytify_status_box_wraper">
@@ -28,28 +35,28 @@ function wpa_include_ga_single_depth( $wp_analytify, $stats ) {
 			<tbody>
 				<?php
 				if ( ! empty( $rows ) ) {
-					$total_visits =  $stats['aggregations']['eventCount'];
-						
+					$total_visits = $stats['aggregations']['eventCount'];
+
 					foreach ( $rows as $row ) {
 						?>
 						<tr>
 							<td>
-								<?php	echo $row['customEvent:link_label'] . '%'; ?>
+								<?php	echo esc_html( $row['customEvent:link_label'] ) . '%'; ?>
 								<span class="analytify_bar_graph">
-									<span style="width: <?php echo ( $row['eventCount'] / $total_visits ) * 100 ?>%"></span>
+									<span style="width: <?php echo esc_attr( ( $row['eventCount'] / $total_visits ) * 100 ); ?>%"></span>
 								</span>
 							</td>
-							<td class="analytify_txt_center analytify_value_row"><?php echo WPANALYTIFY_Utils::pretty_numbers( $row['eventCount'] ); ?></td>
+							<td class="analytify_txt_center analytify_value_row"><?php echo esc_html( WPANALYTIFY_Utils::pretty_numbers( $row['eventCount'] ) ); ?></td>
 						</tr>
-						<?php 
-					}	
+						<?php
+					}
 				} else {
-					echo $wp_analytify->no_records();
+					echo wp_kses_post( method_exists( $wp_analytify, 'no_records' ) ? $wp_analytify->no_records() : '<p>' . esc_html__( 'No records found', 'wp-analytify' ) . '</p>' );
 				}
 				?>
 			</tbody>
 		</table>
 	</div>
 
-<?php
+	<?php
 }

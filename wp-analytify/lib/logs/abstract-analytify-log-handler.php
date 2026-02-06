@@ -39,15 +39,19 @@ abstract class ANALYTIFY_Log_Handler implements ANALYTIFY_Log_Handler_Interface 
 	 * @return string Formatted log entry.
 	 */
 	protected static function format_entry( $timestamp, $level, $message, $context ) {
-		$time_string = self::format_time( $timestamp );
+		$time_string  = self::format_time( $timestamp );
 		$level_string = strtoupper( $level );
-		$entry = "{$time_string} {$level_string} {$message}";
+		$entry        = "{$time_string} {$level_string} {$message}";
 
-		return apply_filters( 'analytify_format_log_entry', $entry, array(
-			'timestamp' => $timestamp,
-			'level' => $level,
-			'message' => $message,
-			'context' => $context,
-		) );
+		return apply_filters(
+			'analytify_format_log_entry',
+			$entry,
+			array(
+				'timestamp' => $timestamp,
+				'level'     => $level,
+				'message'   => $message,
+				'context'   => $context,
+			)
+		);
 	}
 }

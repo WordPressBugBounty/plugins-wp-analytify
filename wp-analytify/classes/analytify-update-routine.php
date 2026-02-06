@@ -1,11 +1,34 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File naming is acceptable
+/**
+ * Update routine class.
+ *
+ * This class handles plugin update routines and version-specific updates.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
+ */
+
+// phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File name follows project convention
+
+/**
+ * Update routine class.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
+ */
 class Analytify_Update_Routine {
 
+	/**
+	 * Current version.
+	 *
+	 * @var string
+	 */
 	private $current_version = '';
 
 	/**
-	 * Private constructor for singleton class.
-	 * 
+	 * Constructor.
+	 *
+	 * @param string $current_version The current version.
 	 */
 	public function __construct( $current_version ) {
 		$this->current_version = $current_version;
@@ -25,7 +48,7 @@ class Analytify_Update_Routine {
 		}
 
 		// Update version to latest release.
-		update_option( 'analytify_current_version', ANALYTIFY_VERSION );
+		update_option( 'analytify_current_version', defined( 'ANALYTIFY_VERSION' ) ? ANALYTIFY_VERSION : '1.0.0' );
 	}
 
 	/**

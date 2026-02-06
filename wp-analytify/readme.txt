@@ -2,9 +2,9 @@
 Contributors: hiddenpearls
 Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
-Requires at least: 5.0
-Tested up to: 6.8
-Stable tag: 7.0.4
+Requires at least: 4.0
+Tested up to: 6.9
+Stable tag: 8.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,46 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 8.0.1 - 2026-01-07 =
+* Bug Fix: Google Analytics Authentication broke for some users i.e Stats appeared 0 Zeros after recent 8.0.0 update.
+
+= 8.0.0 - 2026-01-06 =
+* Major update: Applied coding standards and optimized the codebase for improved performance and faster loading times.
+* New Feature: Added reset button for complete cleanup of plugin settings and cache.
+* New Feature: Added Sessions (30 Days) column to the Post list.
+* Enhancement: Improved settings tabs and JSON output for cleaner UI and enhanced security.
+* Enhancement: Enhanced diagnostic logging with improved completeness, security, and error handling.
+* Enhancement: Added browser breakdown statistics to the dashboard.
+* Enhancement: Added a toggle in the Advanced tab to send email alerts when Google re-authentication fails.
+* Enhancement: Added a Tools section in the Help tab for improved user experience.
+* Enhancement: Improved Analytify notification layout for better readability.
+* Bug Fix: Disabled extra error logging for cleaner logs.
+* Compatibility: Compatible with WordPress 6.9
+
+= 7.1.3 - 2025-11-20 =
+* Bug Fix: Fix Custom Dimensions Reporting.
+* Enhancement: Remove extra scripts.
+* Enhancement: Remove extra console logs.
+
+= 7.1.2 - 2025-11-14 =
+* Enhancement: Updated the logic to handle GA4 refresh token requests errors.
+
+= 7.1.1 - 2025-11-11 =
+* Bug Fix: Fix Analytify Notice Error on failing GA4 refresh token.
+
+= 7.1.0 - 2025-11-11 =
+* New Feature: Introduced a new dimension for Archives statistics.
+* Enhancement: Removed deprecated JavaScript code.
+* Enhancement: Removed unnecessary error logs.
+* Enhancement: Updated the logic to handle refresh token requests.
+* Enhancement: Limited admin notices to Analytify-specific pages only.
+* Enhancement: Corrected bar chart color display in the "What happens when users come to your site" widget.
+* Bug Fix: Resolved gtag script compatibility issue with browser extensions.
+* Bug Fix: Fixed New vs Returning visitors calculation and display.
+* Bug Fix: Fixed profile ID mismatch issue.
+* Bug Fix: Fixed duplicate script tag for custom JavaScript scripts.
+
 
 = 7.0.4 - 2025-09-16 =
 * Bug Fix: Resolved a conflict with the "WP Accessibility" plugin.
@@ -1100,7 +1140,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 7.0.4 =
+= 8.0.0 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

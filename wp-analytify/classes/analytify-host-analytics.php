@@ -1,6 +1,15 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File naming is acceptable for this plugin structure
+/**
+ * Analytify Host Analytics Class
+ *
+ * This class handles locally hosted analytics files for the Analytify plugin,
+ * providing functionality to serve Google Analytics files from the local server.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
+ */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -12,31 +21,18 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 	 */
 	class Analytify_Host_Analytics extends Analytify_Host_Analytics_Abstract {
 
-		/**
-		 * Tracking mode.
-		 *
-		 * @var $tracking_mode by default gtag.
-		 */
-		public $tracking_mode;
-
-		/**
-		 * Tracking ID.
-		 *
-		 * @var $tracking_id GA4 stream measurement id.
-		 */
-		public $tracking_id;
 
 		/**
 		 * Gtag file alias.
 		 *
-		 * @var $file_aliases database saved alias for gtag file.
+		 * @var array<string, mixed>|false
 		 */
 		public $file_aliases;
 
 		/**
 		 * Host Analytics Locally option Off or On.
 		 *
-		 * @var $host_analytics_locally holds the user saved option.
+		 * @var mixed
 		 */
 		private $host_analytics_locally;
 
@@ -55,26 +51,26 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 
 			$this->file_aliases = get_option( 'analytics_file_aliases' );
 
-            // TODO: Need to change the function name its GA4 but title of function is UA
+			// TODO: Need to change the function name its GA4 but title of function is UA.
 			$this->tracking_id = WP_ANALYTIFY_FUNCTIONS::get_UA_code();
 
 			$this->host_analytics_locally = WPANALYTIFY_Utils::get_option( 'locally_host_analytics', 'wp-analytify-advanced', false );
 
-			$this->host_analytics_locally = $this->host_analytics_locally === false || $this->host_analytics_locally === 'off' ? false : $this->host_analytics_locally;
+			$this->host_analytics_locally = false === $this->host_analytics_locally || 'off' === $this->host_analytics_locally ? false : $this->host_analytics_locally;
 
 			if ( ! $this->host_analytics_locally && $this->file_already_exist() ) {
 
-				$file_alias_path = ANALYTIFY_LOCAL_DIR . $this->get_file_alias();
-				$gtag_path = ANALYTIFY_LOCAL_DIR . 'gtag.js';
+				$file_alias_path = WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias();
+				$gtag_path       = WP_ANALYTIFY_LOCAL_DIR . 'gtag.js';
 
-				if ( file_exists( $file_alias_path) && is_file( $file_alias_path ) ) {
+				if ( file_exists( $file_alias_path ) && is_file( $file_alias_path ) ) {
 
-					unlink( ANALYTIFY_LOCAL_DIR . $this->get_file_alias() );
+					unlink( WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Direct file operations needed for analytics file hosting
 
-				}  elseif ( file_exists( $gtag_path ) && is_file( $gtag_path ) ) {
+				} elseif ( file_exists( $gtag_path ) && is_file( $gtag_path ) ) {
 
-    				unlink( $gtag_path );
-				
+					unlink( $gtag_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Direct file operations needed for analytics file hosting
+
 				}
 
 				return;
@@ -94,7 +90,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 		 */
 		public function file_already_exist() {
 
-			if ( file_exists( ANALYTIFY_LOCAL_DIR . 'gtag.js' ) || file_exists( ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ) ) {
+			if ( file_exists( WP_ANALYTIFY_LOCAL_DIR . 'gtag.js' ) || file_exists( WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ) ) {
 				return true;
 			}
 
@@ -112,7 +108,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 				return null;
 			}
 
-			$url = content_url() . str_replace( WP_CONTENT_DIR, '', ANALYTIFY_LOCAL_DIR ) . 'gtag.js';
+			$url = content_url() . str_replace( WP_CONTENT_DIR, '', WP_ANALYTIFY_LOCAL_DIR ) . 'gtag.js';
 
 			if ( strpos( home_url(), 'https://' ) !== false && ! is_ssl() ) {
 				$url = str_replace( 'http://', 'https://', $url );
@@ -127,7 +123,6 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 			$url = str_replace( 'gtag.js', $file_alias, $url );
 
 			return $url;
-
 		}
 
 		/**
@@ -152,7 +147,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 		 * @return boolean
 		 */
 		public function set_file_alias( $key, $alias ) {
-			if ($this->file_aliases === false) {
+			if ( false === $this->file_aliases ) {
 				$this->file_aliases = array();
 			}
 			$this->file_aliases[ $key ] = $alias;

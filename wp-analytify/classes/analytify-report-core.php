@@ -1,10 +1,22 @@
-<?php
-// Exit if accessed directly
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File naming is acceptable
+/**
+ * Generates and returns reports.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
+ */
+
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+// phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File name follows project convention
 /**
- * Generates and returns reports
+ * Report class.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
  */
 class Analytify_Report extends Analytify_Report_Abstract {
 
@@ -12,43 +24,43 @@ class Analytify_Report extends Analytify_Report_Abstract {
 	 * Hold numbers of general stats only.
 	 * Can be used for generating footers.
 	 *
-	 * @var array
+	 * @var mixed
 	 */
 	private $general_stats_num = null;
 
 	/**
 	 * Undocumented function
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	public function get_general_stats() {
+	public function get_general_stats(): array {
 
-		$cache_key = $this->cache_key( 'general-stats' );
+		$cache_key        = $this->cache_key( 'general-stats' );
 		$device_cache_key = $this->cache_key( 'device-stats' );
 
-        return $this->general_stats_ga4( $cache_key , $device_cache_key );
-
+		return $this->general_stats_ga4( $cache_key, $device_cache_key );
 	}
 
 	/**
 	 * Generates browser stats - GA4.
 	 *
 	 * @param string $cache_key Cache key.
-	 * @return array
+	 * @param string $device_cache_key Device cache key.
+	 * @return array<string, mixed>
 	 */
-	protected function general_stats_ga4( $cache_key , $device_cache_key ) {
+	protected function general_stats_ga4( $cache_key, $device_cache_key ): array {
 
-		$boxes = $this->general_stats_boxes();
+		$boxes                 = $this->general_stats_boxes();
 		$send_email_total_time = $this->total_time_for_send_email();
 		unset( $boxes['new_sessions'] );
 		$new_vs_returning_boxes = $this->new_vs_returning();
-		$device_visitors_boxes = $this->visitor_devices();
-		$dimensions = array();
-		$device_dimensions = array(
+		$device_visitors_boxes  = $this->visitor_devices();
+		$dimensions             = array();
+		$device_dimensions      = array(
 			'deviceCategory',
 		);
-		$filters    = array();
-		$raw = $this->wp_analytify->get_reports(
+		$filters                = array();
+		$raw                    = $this->wp_analytify && method_exists( $this->wp_analytify, 'get_reports' ) ? $this->wp_analytify->get_reports(
 			$cache_key,
 			array(
 				'sessions',
@@ -69,7 +81,7 @@ class Analytify_Report extends Analytify_Report_Abstract {
 				'logic'   => 'AND',
 				'filters' => $this->attach_post_url_filter( $filters ),
 			)
-		);
+		) : array();
 		if ( isset( $raw['aggregations']['sessions'] ) ) {
 			$boxes['sessions']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['aggregations']['sessions'] );
 			$general_stats_num['sessions'] = $raw['aggregations']['sessions'];
@@ -96,39 +108,38 @@ class Analytify_Report extends Analytify_Report_Abstract {
 		}
 
 		if ( isset( $raw['aggregations']['newUsers'] ) ) {
-			$new_vs_returning_boxes['new_vs_returning_visitors']['stats']['new']['number'] = WPANALYTIFY_Utils::pretty_numbers($raw['aggregations']['newUsers']);
+			$new_vs_returning_boxes['new_vs_returning_visitors']['stats']['new']['number'] = WPANALYTIFY_Utils::pretty_numbers( $raw['aggregations']['newUsers'] );
 		}
 		if ( isset( $raw['aggregations']['activeUsers'] ) ) {
-			$new_vs_returning_boxes['new_vs_returning_visitors']['stats']['returning']['number'] = WPANALYTIFY_Utils::pretty_numbers($raw['aggregations']['activeUsers']);
+			$new_vs_returning_boxes['new_vs_returning_visitors']['stats']['returning']['number'] = WPANALYTIFY_Utils::pretty_numbers( $raw['aggregations']['activeUsers'] );
 		}
-		
-		$device_stats = $this->wp_analytify->get_reports(
+
+		$device_stats = $this->wp_analytify && method_exists( $this->wp_analytify, 'get_reports' ) ? $this->wp_analytify->get_reports(
 			$device_cache_key,
-			array('sessions'),
+			array( 'sessions' ),
 			$this->get_dates(),
-			$this->attach_post_url_dimension($device_dimensions),
+			$this->attach_post_url_dimension( $device_dimensions ),
 			array(),
 			array(
-				'logic' => 'AND',
-				'filters' => $this->attach_post_url_filter($filters),
+				'logic'   => 'AND',
+				'filters' => $this->attach_post_url_filter( $filters ),
 			)
-		);
+		) : array();
 		if ( isset( $device_stats['rows'] ) && $device_stats['rows'] ) {
 			foreach ( $device_stats['rows'] as $device ) {
 				$device_visitors_boxes['visitor_devices']['stats'][ $device['deviceCategory'] ]['number'] = $device['sessions'];
 			}
 		}
-    
-    if (isset($raw['aggregations']['userEngagementDuration'])) {
-			$send_email_total_time['total_time']['value']    = WPANALYTIFY_Utils::pretty_time($raw['aggregations']['userEngagementDuration']);
+
+		if ( isset( $raw['aggregations']['userEngagementDuration'] ) ) {
+			$send_email_total_time['total_time']['value'] = WPANALYTIFY_Utils::pretty_time( $raw['aggregations']['userEngagementDuration'] );
 		}
 
-
 		return array(
-			'boxes' => $boxes,
+			'boxes'                  => $boxes,
 			'new_vs_returning_boxes' => $new_vs_returning_boxes,
-			'device_visitors_boxes' => $device_visitors_boxes,
-      'total_time_spent' => $send_email_total_time
+			'device_visitors_boxes'  => $device_visitors_boxes,
+			'total_time_spent'       => $send_email_total_time,
 		);
 	}
 
@@ -136,7 +147,7 @@ class Analytify_Report extends Analytify_Report_Abstract {
 	 * Returns the simple stats for general stats.
 	 * This is intended to be used for the footer or in some calculation.
 	 *
-	 * @return array
+	 * @return array<string, mixed>|null
 	 */
 	public function get_general_stats_num() {
 		return $this->general_stats_num;
@@ -145,24 +156,26 @@ class Analytify_Report extends Analytify_Report_Abstract {
 	/**
 	 * Returns scroll depth stats.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	public function get_scroll_depth_stats() {
+	public function get_scroll_depth_stats(): array {
 
 		$cache_key = $this->cache_key( 'scroll-depth' );
 
 		if ( $this->is_ga4 ) {
 			return $this->scroll_depth_ga4( $cache_key );
 		}
+
+		return array();
 	}
 
 	/**
 	 * Generates scroll depth stats - GA4.
 	 *
 	 * @param string $cache_key Cache key.
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	protected function scroll_depth_ga4( $cache_key ) {
+	protected function scroll_depth_ga4( $cache_key ): array {
 
 		$stats = array();
 
@@ -186,7 +199,7 @@ class Analytify_Report extends Analytify_Report_Abstract {
 			),
 		);
 
-		$raw = $this->wp_analytify->get_reports(
+		$raw = $this->wp_analytify && method_exists( $this->wp_analytify, 'get_reports' ) ? $this->wp_analytify->get_reports(
 			$cache_key,
 			array(
 				'eventCount',
@@ -198,7 +211,7 @@ class Analytify_Report extends Analytify_Report_Abstract {
 				'logic'   => 'AND',
 				'filters' => $this->attach_post_url_filter( $filters ),
 			)
-		);
+		) : array();
 
 		$total = 1;
 		if ( isset( $raw['aggregations']['eventCount'] ) && $raw['aggregations']['eventCount'] > 0 ) {
@@ -225,5 +238,4 @@ class Analytify_Report extends Analytify_Report_Abstract {
 			'stats' => $stats,
 		);
 	}
-
 }

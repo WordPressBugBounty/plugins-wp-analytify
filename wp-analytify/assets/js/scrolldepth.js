@@ -1,6 +1,3 @@
-const scrollTrackingMode = analytifyScroll.tracking_mode;
-const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
-
 (function ($) {
 
 	(function (factory) {
@@ -16,40 +13,43 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 		}
 	}(function ($) {
 
-		"use strict";
+		'use strict';
 
-		let defaults = {
+		const defaults = {
 			percentage: true
 		};
 
-		let $window = $(window),
-			cache = [],
-			scrollEventBound = false,
-			lastPixelDepth = 0;
+		const $window = $(window);
+
+		// Change these from const to let so they can be reassigned
+		let cache = [];
+		let scrollEventBound = false;
+		let lastPixelDepth = 0;
 
 		$.scrollDepth = function (options) {
 
-			let startTime = +new Date();
+			const startTime = +new Date();
 
 			options = $.extend({}, defaults, options);
 
 			function sendEvent( page_link, percentage, scrollDistance, timing ) {
-				if ( 'gtag' === scrollTrackingMode ) {
+				// Always use gtag for GA4 (since UA is deprecated)
+				if ( typeof gtag !== 'undefined' ) {
+					// Send scroll depth event for GA4
+					gtag('event', 'scroll_depth', {
+						'wpa_category': 'Analytify Scroll Depth',
+						'wpa_percentage': percentage,
+						'non_interaction': true
+					});
 
-						gtag('event', 'scroll_depth', {
-							'wpa_category': 'Analytify Scroll Depth',
-							'wpa_percentage': percentage,
-							'non_interaction': true
-						});
-
-					if ( arguments.length > 3 ) {
-						gtag('event', 'timing_complete', {
-							'event_category': 'Analytify Scroll Depth',
-							'event_label': page_link,
-							'value': timing,
-							'non_interaction': true
-						});
-					}
+					// Send timing event - always include timing data
+					const eventTiming = timing || (+new Date - startTime);
+					gtag('event', 'timing_complete', {
+						'event_category': 'Analytify Scroll Depth',
+						'event_label': page_link + ' - ' + percentage + '%',
+						'value': eventTiming,
+						'non_interaction': true
+					});
 				}
 			}
 
@@ -64,12 +64,11 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 			}
 
 			function checkMarks(marks, scrollDistance, timing) {
-				// analytifyScroll.title
-
 				/* Check each active mark */
 				$.each(marks, function (key, val) {
 					if ($.inArray(key, cache) === -1 && scrollDistance >= val) {
-						sendEvent(analytifyScroll.permalink, key, scrollDistance, timing);
+						const permalink = ( typeof analytifyScroll !== 'undefined' && analytifyScroll.permalink ) ? analytifyScroll.permalink : window.location.href;
+						sendEvent(permalink, key, scrollDistance, timing);
 						cache.push(key);
 					}
 				});
@@ -82,6 +81,19 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 
 			function init() {
 				bindScrollDepth();
+
+				// Fire 100% event on load when content fits in the viewport
+				const docHeight = $(document).height();
+				const winHeight = window.innerHeight ? window.innerHeight : $window.height();
+				if (winHeight >= docHeight) {
+					const timing = +new Date - startTime;
+					const permalink = ( typeof analytifyScroll !== 'undefined' && analytifyScroll.permalink ) ? analytifyScroll.permalink : window.location.href;
+					// Avoid duplicate 100% event
+					if ($.inArray('100', cache) === -1) {
+						sendEvent(permalink, '100', docHeight, timing);
+						cache.push('100');
+					}
+				}
 			}
 
 
@@ -96,14 +108,14 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 			/* Add DOM elements to be tracked */
 			$.scrollDepth.addElements = function (elems) {
 
-				if (typeof elems == "undefined" || !$.isArray(elems)) {
+				if (typeof elems == 'undefined' || ! $.isArray(elems)) {
 					return;
 				}
 
 				$.merge(options.elements, elems);
 
 				/* If scroll event has been unbound from window, rebind */
-				if (!scrollEventBound) {
+				if (! scrollEventBound) {
 					bindScrollDepth();
 				}
 
@@ -112,14 +124,14 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 			/* Remove DOM elements currently tracked */
 			$.scrollDepth.removeElements = function (elems) {
 
-				if (typeof elems == "undefined" || !$.isArray(elems)) {
+				if (typeof elems == 'undefined' || ! $.isArray(elems)) {
 					return;
 				}
 
 				$.each(elems, function (index, elem) {
 
-					let inElementsArray = $.inArray(elem, options.elements);
-					let inCacheArray = $.inArray(elem, cache);
+					const inElementsArray = $.inArray(elem, options.elements);
+					const inCacheArray = $.inArray(elem, cache);
 
 					if (inElementsArray != -1) {
 						options.elements.splice(inElementsArray, 1);
@@ -134,31 +146,27 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 			};
 
 			function throttle(func, wait) {
-				let context, args, result;
 				let timeout = null;
 				let previous = 0;
-				let later = function () {
-					previous = new Date;
-					timeout = null;
-					// console.log(result);
-					result = func.apply(context, args);
-
-				};
 				return function () {
-					let now = new Date;
-					if (!previous) previous = now;
-					let remaining = wait - (now - previous);
-					context = this;
-					args = arguments;
+					const context = this;
+					const args = arguments;
+					const now = new Date;
+					if (! previous) { previous = now; }
+					const remaining = wait - (now - previous);
+
 					if (remaining <= 0) {
 						clearTimeout(timeout);
 						timeout = null;
 						previous = now;
-						result = func.apply(context, args);
-					} else if (!timeout) {
-						timeout = setTimeout(later, remaining);
+						func.apply(context, args);
+					} else if (! timeout) {
+						timeout = setTimeout(function () {
+							previous = new Date;
+							timeout = null;
+							func.apply(context, args);
+						}, remaining);
 					}
-					return result;
 				};
 			}
 
@@ -171,12 +179,12 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 				scrollEventBound = true;
 
 				$window.on('scroll.scrollDepth', throttle(function () {
-					/*
-					* We calculate document and window height on each scroll event to
-					* account for dynamic DOM changes.
-					*/
+				/*
+				* We calculate document and window height on each scroll event to
+				* account for dynamic DOM changes.
+				*/
 
-					let docHeight = $(document).height(),
+					const docHeight = $(document).height(),
 						winHeight = window.innerHeight ? window.innerHeight : $window.height(),
 						scrollDistance = $window.scrollTop() + winHeight,
 
@@ -199,6 +207,35 @@ const isTrackingModeGA4  = analytifyScroll.ga4_tracking;
 
 	}));
 
-	$.scrollDepth();
+	// Wait for gtag to be available before initializing scroll depth tracking
+	function initScrollDepth() {
 
-})(jQuery)
+		// Check if gtag is available (either directly or via dataLayer)
+		if ( typeof gtag !== 'undefined' || ( typeof window.dataLayer !== 'undefined' && typeof window.dataLayer.push === 'function' ) ) {
+			$.scrollDepth();
+		} else {
+			// Retry after a short delay if gtag is not yet available (max 5 seconds)
+			const maxRetries = 50;
+			let retryCount = 0;
+			const checkInterval = setInterval( function () {
+				retryCount++;
+				if ( typeof gtag !== 'undefined' || ( typeof window.dataLayer !== 'undefined' && typeof window.dataLayer.push === 'function' ) ) {
+					clearInterval( checkInterval );
+					$.scrollDepth();
+				} else if ( retryCount >= maxRetries ) {
+					clearInterval( checkInterval );
+					// Initialize anyway - gtag might be loaded later
+					$.scrollDepth();
+				}
+			}, 100 );
+		}
+	}
+
+	// Initialize when DOM is ready
+	if ( document.readyState === 'loading' ) {
+		document.addEventListener( 'DOMContentLoaded', initScrollDepth );
+	} else {
+		initScrollDepth();
+	}
+
+})(jQuery);

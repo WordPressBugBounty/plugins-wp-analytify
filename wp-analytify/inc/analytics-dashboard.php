@@ -5,7 +5,7 @@
  * @package WP_Analytify
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -15,10 +15,12 @@ $selected_stats = $wp_analytify->settings->get_option( 'show_analytics_panels_da
 
 $dashboard_profile_id = WPANALYTIFY_Utils::get_reporting_property();
 $access_token         = get_option( 'post_analytics_token' );
-$version              = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION : ANALYTIFY_VERSION;
+	$version          = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION : ( defined( 'ANALYTIFY_VERSION' ) ? ANALYTIFY_VERSION : '1.0.0' );
 
-//Get the start date and end date from wpa-core-functions
-extract( analytify_datepicker_dates() );
+// Get the start date and end date from wpa-core-functions.
+$date_picker_dates = analytify_datepicker_dates();
+$start_date        = $date_picker_dates['start_date'] ?? '';
+$end_date          = $date_picker_dates['end_date'] ?? '';
 
 // Get compare dates for legacy version (before v5.0.0).
 $date_diff          = WPANALYTIFY_Utils::calculate_date_diff( $start_date, $end_date );
@@ -42,7 +44,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 					<a href="https://analytify.io/changelog/?utm-source=main-dashboard" target="_blank" class="btn"><?php echo esc_html__( 'View Changelog', 'wp-analytify' ); ?></a>
 				</div>
 				<div class="wpb_plugin_header_logo">
-					<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/logo.svg'?>" alt="Analytify">
+					<img src="<?php echo esc_url( ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/logo.svg' ); ?>" alt="Analytify">
 				</div>
 			</div>
 		</div>
@@ -50,18 +52,18 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 		<div class="analytify-dashboard-body-container">
 			<div class="wpb_plugin_body_wraper">
 				<div class="wpb_plugin_body">
-					<div class="wpa-tab-wrapper"><?php echo $wp_analytify->dashboard_navigation(); ?></div>
+					<div class="wpa-tab-wrapper"><?php $wp_analytify->dashboard_navigation(); ?></div>
 					<div class="wpb_plugin_tabs_content analytify-dashboard-content">
 						<div class="analytify_wraper <?php echo esc_attr( implode( ' ', $selected_stats ) ); ?>">
 							<div class="analytify_main_title_section">
 								<div class="analytify_dashboard_title">
-									<h1 class="analytify_pull_left analytify_main_title"><?php esc_html_e( 'Overview Dashboard', 'wp-analytify' ); ?> <?php if (class_exists('WP_Analytify_Pro_Base') && isset($_GET['page']) && $_GET['page'] === 'analytify-dashboard' && count($_GET) === 1) { ?>
+									<h1 class="analytify_pull_left analytify_main_title"><?php esc_html_e( 'Overview Dashboard', 'wp-analytify' ); ?> <?php if ( class_exists( 'WP_Analytify_Pro_Base' ) && isset( $_GET['page'] ) && 'analytify-dashboard' === $_GET['page'] && 1 === count( $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes. ?>
 										<button name="generate_dashboard_pdf" 
 											class="analytify_export_pdf_btn analytify_tooltip"
-											data-tooltip="<?php _e('Export PDF Report', 'wp-analytify') ?>">
-										<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/pdf-btn.png' ?>" 
+											data-tooltip="<?php esc_attr_e( 'Export PDF Report', 'wp-analytify' ); ?>">
+										<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL . '/assets/img/pdf-btn.png' ); ?>" 
 											class="analytify_pdf_logo" 
-											alt="<?php _e('Export PDF Report', 'wp-analytify') ?>" />
+											alt="<?php esc_attr_e( 'Export PDF Report', 'wp-analytify' ); ?>" />
 										</button>
 									<?php } ?></h1>
 									<?php WPANALYTIFY_Utils::dashboard_subtitle_section(); ?>
@@ -77,7 +79,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 							</div>
 
 							<?php
-							//Show notice if the user is using UA or has'nt selected any property yet.
+							// Show notice if the user is using UA or has'nt selected any property yet.
 							if ( WP_ANALYTIFY_FUNCTIONS::wpa_check_ga_version() && ! WP_ANALYTIFY_FUNCTIONS::wpa_check_profile_selection( 'Analytify' ) ) {
 								/*
 								* Check with roles assigned at dashboard settings.
@@ -85,7 +87,8 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 								$is_access_level = $wp_analytify->settings->get_option( 'show_analytics_roles_dashboard', 'wp-analytify-dashboard' );
 
 								// Show dashboard to admin incase of empty access roles.
-								if ( empty( $is_access_level ) ) { $is_access_level = array( 'administrator' ); }
+								if ( empty( $is_access_level ) ) {
+									$is_access_level = array( 'administrator' ); }
 
 								if ( $wp_analytify->pa_check_roles( $is_access_level ) ) {
 									if ( $access_token ) {
@@ -109,7 +112,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 														<a href="#" class="analytify-export-data analytify_tooltip" data-stats-type="general-stats">
 															<span class="analytify_tooltiptext"><?php esc_html_e( 'Export General Stats', 'wp-analytify' ); ?></span>
 														</a>
-														<img src="<?php echo admin_url( 'images/spinner.gif' ); ?>" class='analytify-export-loader' style="display:none">
+														<img src="<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>" class='analytify-export-loader' style="display:none">
 													<?php } ?>
 													</h3>
 												</div>
@@ -142,7 +145,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 												<div class="analytify_status_header">
 													<h3>
 														<?php esc_html_e( 'Top pages by views', 'wp-analytify' ); ?>
-														<a href="javascript: return false;" data-ga-dashboard-link="<?php echo WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'top_pages', false ); ?>" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext"><?php _e( 'View All Top Pages', 'wp-analytify' ); ?></span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>
+														<a href="javascript: return false;" data-ga-dashboard-link="<?php echo esc_url( WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'top_pages', false ) ); ?>" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext"><?php esc_html_e( 'View All Top Pages', 'wp-analytify' ); ?></span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>
 														<?php do_action( 'analytify_after_top_page_text' ); ?>
 													</h3>
 													<div class="analytify_top_page_detials analytify_tp_btn"></div>
@@ -252,24 +255,25 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 											<?php
 										}
 
-										// Free vs Pro comparison gif
+										// Free vs Pro comparison gif.
 										if ( ! class_exists( 'WP_Analytify_Pro' ) && 'yes' !== get_option( 'analytify_remove_comparison_gif' ) ) {
 											?>
 											<div class="analytify_general_status analytify_general_status-gif">
-												<span class="dashicons dashicons-no-alt analytify_general_status-icon"><?php _e( 'Dismiss', 'wp-analytify' ); ?></span>
+												<span class="dashicons dashicons-no-alt analytify_general_status-icon"><?php esc_html_e( 'Dismiss', 'wp-analytify' ); ?></span>
 												<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=overview-dashboard&utm_campaign=pro-upgrade&utm_content=Upgrade-Banner-CTA" class="analytify_block" target="_blank">
-													<img src="<?php echo plugins_url( '../assets/img/analytify_compare.gif', __FILE__ ); ?>" alt="<?php _e( 'Upgrade to Pro', 'wp-analytify' ); ?>" style="width:100%">
+													<img src="<?php echo esc_url( plugins_url( '../assets/img/analytify_compare.gif', __FILE__ ) ); ?>" alt="<?php esc_attr_e( 'Upgrade to Pro', 'wp-analytify' ); ?>" style="width:100%">
 												</a>
 												<a href="https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=overview-dashboard&utm_campaign=pro-upgrade&utm_content=Upgrade-Banner-CTA" class="analytify_go_pro_overlay" target="_blank">
 													<span class="analytify_go_pro_overlay_inner">
-														<span class="analytify_h2"><?php _e( 'Premium feature', 'wp-analytify' ); ?></span>
-														<span class="analytify_btn" target="_blank"><?php _e( 'Upgrade Now', 'wp-analytify' ); ?></span>
+														<span class="analytify_h2"><?php esc_html_e( 'Premium feature', 'wp-analytify' ); ?></span>
+														<span class="analytify_btn" target="_blank"><?php esc_html_e( 'Upgrade Now', 'wp-analytify' ); ?></span>
 													</span>
 												</a>
 											</div>
 											<?php
 										}
 
+										// phpcs:ignore Squiz.PHP.CommentedOutCode.Found -- Kept for reference.
 										/*if ( 'ga4' === WPANALYTIFY_Utils::get_ga_mode()  ) { ?><div class="analytify_column"><div class="analytify_half analytify_left_flow"><?php }*/
 
 										// 'Keywords' section.
@@ -311,7 +315,6 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 											<?php
 										}
 
-										//if ( 'ga3' === WPANALYTIFY_Utils::get_ga_mode() && in_array( 'show-social-dashboard', $selected_stats, true ) ) {
 										if ( in_array( 'show-social-dashboard', $selected_stats, true ) ) {
 											?>
 											<div class="analytify_column"><div class="analytify_half analytify_left_flow">
@@ -349,7 +352,9 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 											<?php
 										}
 
-										?></div><div class="analytify_half analytify_right_flow"><?php
+										?>
+										</div><div class="analytify_half analytify_right_flow">
+										<?php
 
 										if ( in_array( 'show-referrer-dashboard', $selected_stats, true ) ) {
 											?>
@@ -357,8 +362,8 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 												<div class="analytify_status_header analytify_header_adj">
 													<h3>
 														<?php esc_html_e( 'Top Referrers', 'wp-analytify' ); ?>
-														<a href="javascript: return false;" data-ga-dashboard-link="<?php echo WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'referer', false ); ?>" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext"><?php _e( 'View All Top Referrers', 'wp-analytify' ); ?></span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>
-														<?php do_action( 'analytify_after_top_reffers_text' ); ?>
+														<a href="javascript: return false;" data-ga-dashboard-link="<?php echo esc_url( WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'referer', false ) ); ?>" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext"><?php esc_html_e( 'View All Top Referrers', 'wp-analytify' ); ?></span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>
+											<?php do_action( 'analytify_after_top_reffers_text' ); ?>
 													</h3>
 													<div class="analytify_top_keywords_detials analytify_tp_btn"></div>
 													<div class="analytify_status_header_value reffers_total empty-on-loading title-total-wrapper"></div>
@@ -375,7 +380,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 															</tr>
 														</thead>
 														<tbody>
-															<?php for ( $i = 0; $i < 10; $i++ ) { ?>
+											<?php for ( $i = 0; $i < 10; $i++ ) { ?>
 															<tr>
 																<td><p class="skt-loading"></p></td>
 																<td class="analytify_txt_center"><p class="skt-loading"></p></td>
@@ -388,7 +393,9 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 											<?php
 										}
 
-										?></div><?php
+										?>
+										</div>
+										<?php
 
 										if ( in_array( 'show-page-stats-dashboard', $selected_stats, true ) ) {
 											?>
@@ -411,7 +418,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 															</tr>
 														</thead>
 														<tbody>
-															<?php for ( $i = 0; $i < 5; $i++ ) { ?>
+											<?php for ( $i = 0; $i < 5; $i++ ) { ?>
 															<tr>
 																<td class="analytify_txt_center"><p class="skt-loading"></p></td>
 																<td class="analytify_txt_center"><p class="skt-loading"></p></td>

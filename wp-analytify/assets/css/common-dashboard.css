@@ -46,7 +46,7 @@ p.skt-loading.large:empty {
 	min-height: 45px;
 }
 
-p.skt-loading:empty:before {
+p.skt-loading:empty::before {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -59,7 +59,7 @@ p.skt-loading:empty:before {
 	background: linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 50%,rgba(255,255,255,0) 100%);
 }
 
-p.skt-loading.light-gray:empty:before {
+p.skt-loading.light-gray:empty::before {
 	background: linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,0.3) 50%,rgba(255,255,255,0) 100%);
 }
 

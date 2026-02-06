@@ -1,16 +1,32 @@
-<?php
-
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File naming is acceptable
 /**
  * Factory Reset Class for Analytify Plugin.
  *
  * This class is responsible for deleting settings added by the Analytify Plugin.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
+ */
+
+// phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File name follows project convention
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Factory Reset class.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
  */
 class Analytify_Factory_Reset {
 
 	/**
 	 * Array to store the names of settings to be deleted.
 	 *
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	public array $settings;
 
@@ -24,9 +40,9 @@ class Analytify_Factory_Reset {
 	/**
 	 * Retrieve an array of settings to be deleted.
 	 *
-	 * @return array An array of setting names.
+	 * @return array<string, mixed> An array of setting names.
 	 */
-	private function get_all_settings() {
+	private function get_all_settings(): array {
 
 		$settings = array(
 			'wp_analytify_modules',
@@ -95,19 +111,36 @@ class Analytify_Factory_Reset {
 			'profiles_list_summary',
 			'pa_google_token',
 			'post_analytics_token',
+			'analytify_token_refresh_failed_email_sent',
 		);
 
-		return $settings;
-
+		// Convert to associative array with meaningful keys.
+		$result = array();
+		foreach ( $settings as $index => $value ) {
+			$result[ 'setting_' . $index ] = $value;
+		}
+		return $result;
 	}
 
 	/**
 	 * Remove the specified settings.
+	 *
+	 * @return void
 	 */
 	public function remove_settings() {
 		foreach ( $this->settings as $setting ) {
 			delete_option( $setting );
 		}
-	}
 
+		// Delete known transients.
+		delete_transient( 'profiles_list' );
+		delete_transient( 'analytify_token_request_error_logged' );
+		delete_transient( 'analytify_token_error_logged' );
+		delete_transient( 'analytify_quota_exception' );
+
+		// Delete dynamic transients (cache).
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query needed for wildcard deletion of transients.
+		$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_analytify_%' OR option_name LIKE '_transient_timeout_analytify_%'" );
+	}
 }

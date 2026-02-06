@@ -1,5 +1,15 @@
-<?php
-// Exit if accessed directly
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- File naming is acceptable for this plugin structure
+/**
+ * Analytify Report Abstract Class
+ *
+ * This abstract class provides the base functionality for generating and returning
+ * analytics reports in the Analytify plugin.
+ *
+ * @package WP_Analytify
+ * @since 1.0.0
+ */
+
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -63,12 +73,13 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		/**
 		 * Class constructor.
 		 *
-		 * @param array $args Arguments.
+		 * @version 7.0.5
+		 * @param array<string, mixed> $args Arguments.
 		 * @return void
 		 */
 		public function __construct( $args = array() ) {
 			$this->wp_analytify = $GLOBALS['WP_ANALYTIFY'];
-			$this->is_ga4       = method_exists( 'WPANALYTIFY_Utils', 'get_ga_mode' ) ? 'ga4' === WPANALYTIFY_Utils::get_ga_mode() : false;
+			$this->is_ga4       = class_exists( 'WPANALYTIFY_Utils' ) ? 'ga4' === WPANALYTIFY_Utils::get_ga_mode() : false;
 
 			/**
 			 * Setting default args.
@@ -77,15 +88,15 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 			$this->dashboard_type = isset( $args['dashboard_type'] ) && in_array( $args['dashboard_type'], array( 'dashboard', 'csv', 'single_post', 'email' ), true ) ? $args['dashboard_type'] : 'dashboard';
 
 			// Dates.
-			$this->start_date = isset( $args['start_date'] ) ? $args['start_date'] : wp_date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) );
-			$this->end_date   = isset( $args['end_date'] ) ? $args['end_date'] : wp_date( 'Y-m-d', current_time( 'timestamp' ) );
+			$this->start_date = isset( $args['start_date'] ) ? $args['start_date'] : wp_date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- current_time is acceptable for date calculations
+			$this->end_date   = isset( $args['end_date'] ) ? $args['end_date'] : wp_date( 'Y-m-d', current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- current_time is acceptable for date calculations
 
 			// Post ID and URL.
 			if ( 'single_post' === $this->dashboard_type ) {
-				$this->post_id  = isset( $args['post_id'] ) ? $args['post_id'] : null;
+				$this->post_id = isset( $args['post_id'] ) ? $args['post_id'] : null;
 
 				// URL.
-				$permalink      = get_permalink( $this->post_id );
+				$permalink = get_permalink( $this->post_id );
 
 				$this->post_url = apply_filters( 'analytify_single_post_stats_url', $permalink, $this->post_id );
 			}
@@ -94,7 +105,8 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		/**
 		 * Text holder for general stat boxes.
 		 *
-		 * @return array
+		 * @version 7.0.5
+		 * @return array<string, mixed>
 		 */
 		protected function general_stats_boxes() {
 			return array(
@@ -143,11 +155,17 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 			);
 		}
 
-		protected function new_vs_returning(){
+		/**
+		 * Get new vs returning visitors data
+		 *
+		 * @version 7.0.5
+		 * @return array<string, mixed>
+		 */
+		protected function new_vs_returning() {
 			return array(
 				'new_vs_returning_visitors' => array(
-					'title'  => esc_html__( 'New vs Returning Visitors', 'wp-analytify' ),
-					'stats'  => array(
+					'title' => esc_html__( 'New vs Returning Visitors', 'wp-analytify' ),
+					'stats' => array(
 						'new'       => array(
 							'label'  => esc_html__( 'New', 'wp-analytify' ),
 							'number' => 0,
@@ -159,13 +177,18 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 					),
 				),
 			);
-	
 		}
+		/**
+		 * Get visitor devices data
+		 *
+		 * @version 7.0.5
+		 * @return array<string, mixed>
+		 */
 		protected function visitor_devices() {
 			return array(
 				'visitor_devices' => array(
-					'title'  => esc_html__( 'Devices of Visitors', 'wp-analytify' ),
-					'stats'  => array(
+					'title' => esc_html__( 'Devices of Visitors', 'wp-analytify' ),
+					'stats' => array(
 						'mobile'  => array(
 							'label'  => esc_html__( 'Mobile', 'wp-analytify' ),
 							'number' => 0,
@@ -179,15 +202,20 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 							'number' => 0,
 						),
 					),
-				)
+				),
 			);
-		}	
+		}
 
-		protected function total_time_for_send_email()
-		{
+		/**
+		 * Get total time for email sending
+		 *
+		 * @version 7.0.5
+		 * @return array<string, mixed>
+		 */
+		protected function total_time_for_send_email() {
 			return array(
-				'total_time'         => array(
-					'title'       => esc_html__('Total Time Spent', 'wp-analytify'),
+				'total_time' => array(
+					'title'       => esc_html__( 'Total Time Spent', 'wp-analytify' ),
 					'value'       => '0',
 					'description' => '',
 					'append'      => false,
@@ -199,32 +227,40 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		 * Attaches post URL dimension.
 		 * Only if the dashboard type is 'single_post'.
 		 *
-		 * @param array $dimensions Dimensions.
-		 * @return array
+		 * @version 7.0.5
+		 * @param array<string, mixed> $dimensions Dimensions.
+		 * @return array<string, mixed>
 		 */
-		protected function attach_post_url_dimension($dimensions = array()) {
-			if ($this->dashboard_type === 'single_post') {
+		protected function attach_post_url_dimension( $dimensions = array() ) {
+			if ( 'single_post' === $this->dashboard_type ) {
 				$dimensions[] = 'pagePath';
 			}
-			return $dimensions;
+			// Convert to associative array with string keys.
+			$result = array();
+			foreach ( $dimensions as $key => $value ) {
+				$result[ is_string( $key ) ? $key : (string) $key ] = $value;
+			}
+			return $result;
 		}
 
 		/**
 		 * Attaches post URL filter to filters array.
 		 * Only if the dashboard type is 'single_post'.
 		 *
-		 * @param array $filters Filters.
-		 * @return array
+		 * @version 7.0.5
+		 * @param array<string, mixed> $filters Filters.
+		 * @return array<string, mixed>
 		 */
 		protected function attach_post_url_filter( $filters = array() ) {
-			$link = apply_filters( 'analytify_sinlge_stats_permalink', $this->post_url );
-			$u_post = parse_url( urldecode( $link ) );
-			$filter = $u_post['path'];
+			$link   = apply_filters( 'analytify_sinlge_stats_permalink', $this->post_url );
+			$link   = is_string( $link ) ? $link : '';
+			$u_post = wp_parse_url( urldecode( $link ) );
+			$filter = is_array( $u_post ) && isset( $u_post['path'] ) ? $u_post['path'] : '';
 			// change the page poth filter for site that use domain mapping.
 			$filter = apply_filters( 'analytify_page_path_filter', $filter, $u_post );
 
 			// Url have query string incase of WPML.
-			if ( isset( $u_post['query'] )  ) {
+			if ( isset( $u_post['query'] ) ) {
 				$filter .= '?' . $u_post['query'];
 			}
 
@@ -249,6 +285,7 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		/**
 		 * Generates the cache key based on what type of dashboard is being displayed.
 		 *
+		 * @version 7.0.5
 		 * @param string $key Cache Key.
 		 * @return string
 		 */
@@ -271,22 +308,27 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		/**
 		 * Removes keys from sub-arrays.
 		 *
-		 * @param array $stats Stats.
-		 * @return array
+		 * @version 7.0.5
+		 * @param array<string, mixed> $stats Stats.
+		 * @return array<string, mixed>
 		 */
 		protected function strip_child_keys( $stats ) {
-			return array_map(
-				function ( $item ) {
-					return array_values( $item );
-				},
-				array_values( $stats )
-			);
+			$result = array();
+			foreach ( $stats as $key => $item ) {
+				if ( is_array( $item ) ) {
+					$result[ $key ] = array_values( $item );
+				} else {
+					$result[ $key ] = $item;
+				}
+			}
+			return $result;
 		}
 
 		/**
 		 * Returns start and end date as an array to be used for GA4's get_reports()
 		 *
-		 * @return array
+		 * @version 7.0.5
+		 * @return array<string, mixed>
 		 */
 		protected function get_dates() {
 			return array(
@@ -298,11 +340,12 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		/**
 		 * Get profile related data based on the key (option) provided.
 		 *
+		 * @version 7.0.5
 		 * @param string $key Option name.
 		 * @return string|null
 		 */
 		protected function get_profile_info( $key ) {
-			$dashboard_profile_id = $this->wp_analytify->settings->get_option( 'profile_for_dashboard', 'wp-analytify-profile' );
+			$dashboard_profile_id = $this->wp_analytify && isset( $this->wp_analytify->settings ) ? $this->wp_analytify->settings->get_option( 'profile_for_dashboard', 'wp-analytify-profile' ) : '';
 			switch ( $key ) {
 				case 'profile_id':
 					return $dashboard_profile_id;

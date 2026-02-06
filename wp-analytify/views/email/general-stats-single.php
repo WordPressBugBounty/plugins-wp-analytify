@@ -1,35 +1,59 @@
 <?php
+/**
+ * General Stats Single Email View.
+ *
+ * @package WP_Analytify
+ */
+
 if ( ! function_exists( 'get_compared_colors' ) ) {
 
-	function get_compared_colors( $results, $compare_results, $date_different ) {
-		if ( $compare_results != 0 ) {
+	/**
+	 * Get compared colors for stats.
+	 *
+	 * @param mixed $results Current results.
+	 * @param mixed $compare_results Comparison results.
+	 * @param mixed $date_different Date difference (unused).
+	 * @return array<string, string>
+	 */
+	function get_compared_colors( $results, $compare_results, $date_different ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Parameter kept for consistency
+		if ( 0 !== $compare_results ) {
 			$compare = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . '%';
 		} else {
 			return array(
-				'#000000',  // default color code for positive difference
-				'#ffffff',   // default color code for lighter color
+				'color'    => '#000000',  // Default color code for positive difference.
+				'bg_color' => '#ffffff',   // Default color code for lighter color.
 			);
 		}
-   
+
 		return array(
-			$compare > 0 ? '#00c853' : '#fa5825',
-			$compare > 0 ? '#4ed98817' : '#ffffff',
+			'color'    => $compare > 0 ? '#00c853' : '#fa5825',
+			'bg_color' => $compare > 0 ? '#4ed98817' : '#ffffff',
 		);
 	}
 }
 if ( ! function_exists( 'pa_email_include_single_general' ) ) {
 
-function pa_email_include_single_general( $current, $stats, $old_stats, $date_different, $total_time_spent ) {
+	/**
+	 * Include single general stats for email.
+	 *
+	 * @param mixed $current Current data.
+	 * @param mixed $stats Statistics data.
+	 * @param mixed $old_stats Old statistics data.
+	 * @param mixed $date_different Date difference.
+	 * @param mixed $total_time_spent Total time spent.
+	 * @return void
+	 */
+	function pa_email_include_single_general( $current, $stats, $old_stats, $date_different, $total_time_spent ) {
 
-	ob_start();
-	?>
+		ob_start();
+		?>
 
 
 	<!-- <tr>
 		<td valign="top" style="border: 1px solid #e2e5e8;">
 			<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" bgcolor="#f9fafa">
 				<tr>
-					<td style="font: normal 16px 'Roboto slab', Arial, Helvetica, sans-serif; padding: 11px 20px;"><font color="#444444"><?php // analytify_e( 'General Statistics', 'wp-analytify' ) ?></font></td>
+					<td style="font: normal 16px 'Roboto slab', Arial, Helvetica, sans-serif; padding: 11px 20px;"><font color="#444444"><?php // phpcs:ignore Squiz.PHP.CommentedOutCode.Found,Squiz.Commenting.InlineComment.InvalidEndChar -- Intentionally commented out code for future reference. ?></font></td>
 				</tr>
 			</table>
 		</td>
@@ -49,7 +73,7 @@ function pa_email_include_single_general( $current, $stats, $old_stats, $date_di
 									<td width="45" ></td><td align="center"><hr style="margin:0;border:0;border-top: 1px solid #e5e5e5;"/></td><td width="45"></td>
 								</tr>
 								<tr>
-									<td align="center" colspan="3" style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444444"><?php echo $stat['value']; ?></font></td>
+									<td align="center" colspan="3" style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444444"><?php echo esc_html( $stat['value'] ); ?></font></td>
 								</tr>
 							</table>
 						</td>
@@ -63,14 +87,14 @@ function pa_email_include_single_general( $current, $stats, $old_stats, $date_di
 		<td>
 			<table cellpadding="0" cellspacing="16px" border="0" width="100%" bgcolor="#f9fafa">
 				<tr>
-					<td width="32" style="text-align: right;"><img src="<?php echo ANALYTIFY_IMAGES_PATH . "anlytify_about_icon.png" ?>"></td>
-					<td style="font: normal 13px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444444"><?php analytify_e( 'Did you know that total time on your page is' ); ?> <?php echo $total_time_spent['total_time']['value']; ?></font></td>
+					<td width="32" style="text-align: right;"><img src="<?php echo esc_url( ANALYTIFY_IMAGES_PATH . 'anlytify_about_icon.png' ); ?>"></td>
+					<td style="font: normal 13px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444444"><?php analytify_e( 'Did you know that total time on your page is' ); ?> <?php echo esc_html( $total_time_spent['total_time']['value'] ); ?></font></td>
 				</tr>
 			</table>
 		</td>
 	</tr>
 
-		<?php if ( ! class_exists( 'WP_Analytify_Email' ) && ! class_exists('WP_Analytify_Addon_Email') ) : ?>
+		<?php if ( ! class_exists( 'WP_Analytify_Email' ) && ! class_exists( 'WP_Analytify_Addon_Email' ) ) : ?>
 		<tr>
 			<td valign="top" class="analytify-promo-inner-table" style="padding: 30px 45px;">
 				<table style="margin: 0 auto;" cellspacing="0" cellpadding="0" width="100%" align="center">
@@ -127,6 +151,6 @@ function pa_email_include_single_general( $current, $stats, $old_stats, $date_di
 	</tr>
 		<?php
 		$message = ob_get_clean();
-		return $message;
+		echo wp_kses_post( $message );
 	}
 }

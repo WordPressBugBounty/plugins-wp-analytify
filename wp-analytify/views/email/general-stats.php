@@ -1,34 +1,57 @@
 <?php
+/**
+ * General Stats Email View.
+ *
+ * @package WP_Analytify
+ */
 
+/**
+ * Get compared colors for stats.
+ *
+ * @param mixed  $results Current results.
+ * @param mixed  $compare_results Comparison results.
+ * @param mixed  $date_different Date difference.
+ * @param string $stats_for Stats type.
+ * @return array<string, string>
+ */
 function get_compared_colors( $results, $compare_results, $date_different, $stats_for = '' ) {
 
-	if ( 0 == $compare_results ) {
+	if ( 0 === $compare_results ) {
 		return array(
-			'#000000',
-			'#ffffff',
+			'color'    => '#000000',
+			'bg_color' => '#ffffff',
 		);
 	}
 
-	$compare = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . "%";
+	$compare = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . '%';
 
 	// Invert results for bounce rate.
 	if ( ! empty( $stats_for ) && 'bounce_rate' === $stats_for ) {
 		return array(
-			$compare < 0 ? '#00c853' : '#fa5825',
-			$compare < 0 ? '#4ed98817' : '#ffffff'
+			'color'    => $compare < 0 ? '#00c853' : '#fa5825',
+			'bg_color' => $compare < 0 ? '#4ed98817' : '#ffffff',
 		);
 	}
 
 	return array(
-		$compare > 0 ? '#00c853' : '#fa5825',
-		$compare > 0 ? '#4ed98817' : '#ffffff'
+		'color'    => $compare > 0 ? '#00c853' : '#fa5825',
+		'bg_color' => $compare > 0 ? '#4ed98817' : '#ffffff',
 	);
 }
 
+/**
+ * Get compare email stats.
+ *
+ * @param mixed  $results Current results.
+ * @param mixed  $compare_results Comparison results.
+ * @param mixed  $date_different Date difference.
+ * @param string $stats_for Stats type.
+ * @return string
+ */
 function get_compare_email_stats( $results, $compare_results, $date_different, $stats_for = '' ) {
 
-	if ( 0 == $compare_results ) {
-		return;
+	if ( 0 === $compare_results ) {
+		return '';
 	}
 
 	$compare    = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . '%';
@@ -45,9 +68,9 @@ function get_compare_email_stats( $results, $compare_results, $date_different, $
 		<td colspan="3">
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tbody>
-				<tr>
-					<td valign="bottom" style="padding: 10px 10px 3px; font: 700 16px "Roboto", Arial, Helvetica, sans-serif;" align="center"><font color=" ' . $color . ' "><img src="' . ANALYTIFY_IMAGES_PATH  . $image_name. '" alt="'. $image_name.'" style="padding-right:10px; width:10px">' . $compare . '</font></td>
-				</tr>
+			<tr>
+				<td valign="bottom" style="padding: 10px 10px 3px; font: 700 16px "Roboto", Arial, Helvetica, sans-serif;" align="center"><font color=" ' . esc_attr( $color ) . ' "><img src="' . esc_url( ANALYTIFY_IMAGES_PATH . $image_name ) . '" alt="' . esc_attr( $image_name ) . '" style="padding-right:10px; width:10px">' . esc_html( $compare ) . '</font></td>
+			</tr>
 				<tr>
 					<td style="padding: 3px 10px 10px; font: 700 10px "Roboto", Arial, Helvetica, sans-serif;text-transform:uppercase;" align="center"><font color="#909090">' . $date_different . ' ago</font></td>
 				</tr>
@@ -60,10 +83,10 @@ function get_compare_email_stats( $results, $compare_results, $date_different, $
 /**
  * Generates the main TDs in the email.
  *
- * @param array  $current        Analytify's main object.
- * @param array  $stats          Stats for the current period.
- * @param array  $old_stats      Stats from the previous period.
- * @param string $date_different The time difference between the two dates.
+ * @param array<string, mixed> $current        Analytify's main object.
+ * @param array<string, mixed> $stats          Stats for the current period.
+ * @param array<string, mixed> $old_stats      Stats from the previous period.
+ * @param string               $date_different The time difference between the two dates.
  *
  * @return string
  */
@@ -108,7 +131,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 	$formatted_td_stats = array(
 
 		// Sessions.
-		'sessions' => array(
+		'sessions'           => array(
 			'label'  => analytify__( 'Sessions', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__sessions_current, $__sessions_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_numbers( $__sessions_current ),
@@ -116,7 +139,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 		),
 
 		// Visitors.
-		'visitors' => array(
+		'visitors'           => array(
 			'label'  => analytify__( 'Visitors', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__total_users_current, $__total_users_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_numbers( $__total_users_current ),
@@ -124,15 +147,15 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 		),
 
 		// Bounce Rate.
-		'bounce_rate' => array(
+		'bounce_rate'        => array(
 			'label'  => analytify__( 'Bounce Rate', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__bounce_rate_current, $__bounce_rate_old, $date_different, 'bounce_rate' ),
-			'value'  => WPANALYTIFY_Utils::fraction_to_percentage( $__bounce_rate_current, 2 ) . '%',
+			'value'  => WPANALYTIFY_Utils::fraction_to_percentage( $__bounce_rate_current ) . '%',
 			'old'    => $old_stats ? get_compare_email_stats( $__bounce_rate_current, $__bounce_rate_old, $date_different, 'bounce_rate' ) : '',
 		),
 
 		// Average time on site.
-		'avg_time_on_site' => array(
+		'avg_time_on_site'   => array(
 			'label'  => analytify__( 'Avg time on site', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__avg_time_on_site_current, $__avg_time_on_site_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_time( $__avg_time_on_site_current ),
@@ -140,7 +163,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 		),
 
 		// Pages/Session.
-		'pages_per_session' => array(
+		'pages_per_session'  => array(
 			'label'  => analytify__( 'Pages/Session', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__pages_per_session_current, $__pages_per_session_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_numbers( $__pages_per_session_current ),
@@ -148,23 +171,23 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 		),
 
 		// Page Views.
-		'page_views' => array(
+		'page_views'         => array(
 			'label'  => analytify__( 'Page Views', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__page_views_current, $__page_views_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_numbers( $__page_views_current ),
 			'old'    => $old_stats ? get_compare_email_stats( $__page_views_current, $__page_views_old, $date_different ) : '',
 		),
 
-		// Engaged Sessions. 
-		'engaged_sessions' => array(
+		// Engaged Sessions.
+		'engaged_sessions'   => array(
 			'label'  => analytify__( 'Engaged Sessions', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__engaged_sessions_current, $__engaged_sessions_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_numbers( $__engaged_sessions_current ),
 			'old'    => $old_stats ? get_compare_email_stats( $__engaged_sessions_current, $__engaged_sessions_old, $date_different ) : '',
 		),
- 
+
 		// New visitors.
-		'new_visitors' => array(
+		'new_visitors'       => array(
 			'label'  => analytify__( 'New Visitors', 'wp-analytify' ),
 			'colors' => get_compared_colors( $__new_visitors_current, $__new_visitors_old, $date_different ),
 			'value'  => WPANALYTIFY_Utils::pretty_numbers( $__new_visitors_current ),
@@ -187,7 +210,7 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 		<td bgcolor="#ffffff" class="session-table">
 			<table cellspacing="20" cellpadding="0" border="0" align="center" bgcolor="#ffffff" width="100%" class="box-table">
 				<tr>
-					<td style="border: 1px solid <?php echo $formatted_td_stats['sessions']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['sessions']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['sessions']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['sessions']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
@@ -204,16 +227,16 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color="#444444"><?php echo $formatted_td_stats['sessions']['value']; ?></font>
+									<font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['sessions']['value'] ); ?></font>
 								</td>
 							</tr>
-								<?php if ( $formatted_td_stats['sessions']['old'] ): ?>
-									<?php echo $formatted_td_stats['sessions']['old']; ?>
+							<?php if ( $formatted_td_stats['sessions']['old'] ) : ?>
+								<?php echo wp_kses_post( $formatted_td_stats['sessions']['old'] ); ?>
 								<?php endif; ?>
 						</table>
 					</td>
 
-					<td style="border: 1px solid <?php echo $formatted_td_stats['visitors']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['visitors']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['visitors']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['visitors']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
@@ -232,18 +255,18 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color="#444444"><?php echo $formatted_td_stats['visitors']['value'] ?></font>
+									<font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['visitors']['value'] ); ?></font>
 								</td>
 							</tr>
 
-							<?php if ( $formatted_td_stats['visitors']['old'] ): ?>
-								<?php echo $formatted_td_stats['visitors']['old']; ?>
+						<?php if ( $formatted_td_stats['visitors']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['visitors']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
 					</td>
 
-					<td style="border: 1px solid <?php echo $formatted_td_stats['bounce_rate']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['bounce_rate']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['bounce_rate']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['bounce_rate']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
@@ -260,11 +283,11 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							</tr>
 							<tr>
 								<td align="center" colspan="3"
-									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444444"><?php echo $formatted_td_stats['bounce_rate']['value']; ?></font></td>
+									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['bounce_rate']['value'] ); ?></font></td>
 							</tr>
 
-							<?php if ( $formatted_td_stats['bounce_rate']['old']) : ?>
-								<?php echo $formatted_td_stats['bounce_rate']['old']; ?>
+						<?php if ( $formatted_td_stats['bounce_rate']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['bounce_rate']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
@@ -272,12 +295,12 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 				</tr>
 
 				<tr>
-					<td style="border: 1px solid <?php echo $formatted_td_stats['avg_time_on_site']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['avg_time_on_site']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['avg_time_on_site']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['avg_time_on_site']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'Avg time on site', 'wp-analytify' ); ?></font>
+									<font color="#848484"><?php esc_html_e( 'Avg time on site', 'wp-analytify' ); ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -287,24 +310,24 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							</td>
 							<td width="45"></td>
 						</tr>
-						<tr>
-							<td align="center" colspan="3" style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-								<font color="#444444"><?php echo $formatted_td_stats['avg_time_on_site']['value']; ?></font>
-							</td>
-						</tr>
+					<tr>
+						<td align="center" colspan="3" style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
+							<font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['avg_time_on_site']['value'] ); ?></font>
+						</td>
+					</tr>
 
-							<?php if ( $formatted_td_stats['avg_time_on_site']['old'] ) :  ?>
-								<?php echo $formatted_td_stats['avg_time_on_site']['old']; ?>
+						<?php if ( $formatted_td_stats['avg_time_on_site']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['avg_time_on_site']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
 					</td>
-					<td style="border: 1px solid <?php echo $formatted_td_stats['pages_per_session']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['pages_per_session']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['pages_per_session']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['pages_per_session']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'Pages/Session', 'wp-analytify' ) ?></font>
+									<font color="#848484"><?php esc_html_e( 'Pages/Session', 'wp-analytify' ); ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -317,21 +340,21 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color="#444444"><?php echo $formatted_td_stats['pages_per_session']['value']; ?></font></td>
+									<font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['pages_per_session']['value'] ); ?></font></td>
 							</tr>
-							<?php if ( $formatted_td_stats['pages_per_session']['old'] ): ?>
-								<?php echo $formatted_td_stats['pages_per_session']['old']; ?>
+						<?php if ( $formatted_td_stats['pages_per_session']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['pages_per_session']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
 					</td>
 
-					<td style="border: 1px solid <?php echo $formatted_td_stats['page_views']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['page_views']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['page_views']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['page_views']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php analytify_e( 'Page Views', 'wp-analytify' ) ?></font></td>
+									<font color="#848484"><?php analytify_e( 'Page Views', 'wp-analytify' ); ?></font></td>
 							</tr>
 							<tr>
 								<td width="45"></td>
@@ -343,23 +366,23 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color="#444444"><?php echo $formatted_td_stats['page_views']['value']; ?></font></td>
+									<font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['page_views']['value'] ); ?></font></td>
 							</tr>
 
-							<?php if ( $formatted_td_stats['page_views']['old'] ) : ?>
-								<?php echo $formatted_td_stats['page_views']['old']; ?>
+						<?php if ( $formatted_td_stats['page_views']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['page_views']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
 					</td>
 				</tr>
 				<tr>
-					<td style="border: 1px solid <?php echo $formatted_td_stats['engaged_sessions']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['engaged_sessions']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['engaged_sessions']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['engaged_sessions']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php analytify_e( 'Engaged Sessions', 'wp-analytify' ) ?></font>
+									<font color="#848484"><?php analytify_e( 'Engaged Sessions', 'wp-analytify' ); ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -372,21 +395,21 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color=""><?php echo $formatted_td_stats['engaged_sessions']['value']; ?></font></td>
+									<font color=""><?php echo wp_kses_post( $formatted_td_stats['engaged_sessions']['value'] ); ?></font></td>
 							</tr>
 
-							<?php if ( $formatted_td_stats['engaged_sessions']['old'] ): ?>
-								<?php echo $formatted_td_stats['engaged_sessions']['old']; ?>
+						<?php if ( $formatted_td_stats['engaged_sessions']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['engaged_sessions']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
 					</td>
-					<td style="border: 1px solid <?php echo $formatted_td_stats['new_visitors']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['new_visitors']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['new_visitors']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['new_visitors']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php analytify_e( 'New Visitors', 'wp-analytify' ) ?></font>
+									<font color="#848484"><?php analytify_e( 'New Visitors', 'wp-analytify' ); ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -399,22 +422,22 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color=""><?php echo $formatted_td_stats['new_visitors']['value']; ?></font></td>
+									<font color=""><?php echo wp_kses_post( $formatted_td_stats['new_visitors']['value'] ); ?></font></td>
 							</tr>
 
-							<?php if ( $formatted_td_stats['new_visitors']['old'] ): ?>
-								<?php echo $formatted_td_stats['new_visitors']['old']; ?>
+						<?php if ( $formatted_td_stats['new_visitors']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['new_visitors']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
 					</td>
 
-					<td style="border: 1px solid <?php echo $formatted_td_stats['returning_visitors']['colors'][0]; ?>; background-color: <?php echo $formatted_td_stats['returning_visitors']['colors'][1]; ?>" width="33.333%">
+					<td style="border: 1px solid <?php echo esc_attr( $formatted_td_stats['returning_visitors']['colors']['color'] ); ?>; background-color: <?php echo esc_attr( $formatted_td_stats['returning_visitors']['colors']['bg_color'] ); ?>" width="33.333%">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td align="center" colspan="3"
 									style="font: 500 14px 'Roboto', Arial, Helvetica, sans-serif;padding: 16px 5px 5px; text-transform: uppercase; letter-spacing: 0.01em;">
-									<font color="#848484"><?php _e( 'Returning visitors', 'wp-analytify' ) ?></font>
+									<font color="#848484"><?php esc_html_e( 'Returning visitors', 'wp-analytify' ); ?></font>
 								</td>
 							</tr>
 							<tr>
@@ -427,12 +450,12 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 							<tr>
 								<td align="center" colspan="3"
 									style="padding: 13px 5px 10px; font: 400 24px 'Roboto', Arial, Helvetica, sans-serif;">
-									<font color="#444444"><?php echo $formatted_td_stats['returning_visitors']['value']; ?></font>
+									<font color="#444444"><?php echo wp_kses_post( $formatted_td_stats['returning_visitors']['value'] ); ?></font>
 								</td>
 							</tr>
 
-							<?php if ( $formatted_td_stats['returning_visitors']['old'] ): ?>
-								<?php echo $formatted_td_stats['returning_visitors']['old']; ?>
+						<?php if ( $formatted_td_stats['returning_visitors']['old'] ) : ?>
+							<?php echo wp_kses_post( $formatted_td_stats['returning_visitors']['old'] ); ?>
 							<?php endif; ?>
 
 						</table>
@@ -444,15 +467,15 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 	<tr>
 		<td>
 			<table cellpadding="0" cellspacing="16" border="0" width="100%" bgcolor="#f9fafa">
-				<tr>
-					<td width="32" style="text-align: right;"><img src="<?php echo ANALYTIFY_IMAGES_PATH . 'anlytify_about_icon.png'; ?>" alt="About icon"></td>
-					<td style="font: normal 13px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444"><?php analytify_e( 'Total time visitors spent on your site: ', 'wp-analytify' ) ?> <?php echo WPANALYTIFY_Utils::pretty_time( $__total_time_on_site_current ); ?></font></td>
-				</tr>
+			<tr>
+				<td width="32" style="text-align: right;"><img src="<?php echo esc_url( ANALYTIFY_IMAGES_PATH . 'anlytify_about_icon.png' ); ?>" alt="About icon"></td>
+				<td style="font: normal 13px 'Roboto', Arial, Helvetica, sans-serif;"><font color="#444"><?php analytify_e( 'Total time visitors spent on your site: ', 'wp-analytify' ); ?> <?php echo wp_kses_post( WPANALYTIFY_Utils::pretty_time( $__total_time_on_site_current ) ); ?></font></td>
+			</tr>
 			</table>
 		</td>
 	</tr>
 
-	<?php if ( ! class_exists( 'WP_Analytify_Email' ) && ! class_exists('WP_Analytify_Addon_Email')) { ?>
+	<?php if ( ! class_exists( 'WP_Analytify_Email' ) && ! class_exists( 'WP_Analytify_Addon_Email' ) ) { ?>
 	<tr>
 		<td style="padding:15px;"></td>
 	</tr>
@@ -464,20 +487,20 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 						<td valign="top" colspan="2" style="font-size: 26px; font-family: 'Roboto'; font-weight: bold; line-height: 26px; padding-bottom: 24px;" align="center" class="analytify-promo-heading"><font color="#313133"><?php analytify_e( 'Customize weekly and monthly reports' ); ?></font> </td>
 					</tr>
 					<tr>
-						<td valign="top" colspan="2" style="font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px; padding-bottom: 15px;"><font color="#383b3d"><?php analytify_e( 'Email notifications add-on extends the Analytify Pro, and enables more control on customizing Analytics Email reports for your websites, delivers Analytics summaries straight in your inbox weekly and monthly.'); ?></font></td>
+						<td valign="top" colspan="2" style="font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px; padding-bottom: 15px;"><font color="#383b3d"><?php analytify_e( 'Email notifications add-on extends the Analytify Pro, and enables more control on customizing Analytics Email reports for your websites, delivers Analytics summaries straight in your inbox weekly and monthly.' ); ?></font></td>
 					</tr>
 					<tr>
 						<td valign="top" class="analytify-promo-lists" width="40%">
 							<table cellspacing="0" cellpadding="0" width="100%" align="center">
 								<tbody>
 									<tr>
-										<td valign="top" style="padding-top: 6px; padding-right: 5px;" width="15"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/bef57c22-a546-4d5e-b209-f028a24a1642.png" alt="<?php esc_attr_e( 'checkmark', 'wp-analytify' ); ?>"></td><td style="padding-bottom: 5px;font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px;"><font color="#383b3d"><?php analytify_e( 'Add your logo'); ?></font></td>
+										<td valign="top" style="padding-top: 6px; padding-right: 5px;" width="15"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/bef57c22-a546-4d5e-b209-f028a24a1642.png" alt="<?php esc_attr_e( 'checkmark', 'wp-analytify' ); ?>"></td><td style="padding-bottom: 5px;font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px;"><font color="#383b3d"><?php analytify_e( 'Add your logo' ); ?></font></td>
 									</tr>
 									<tr>
-										<td valign="top" style="padding-top: 6px; padding-right: 5px;" width="15"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/bef57c22-a546-4d5e-b209-f028a24a1642.png" alt="<?php esc_attr_e( 'checkmark', 'wp-analytify' ); ?>"></td><td style="padding-bottom: 5px;font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px;"><font color="#383b3d"><?php analytify_e( 'Edit Email Subject'); ?></font></td>
+										<td valign="top" style="padding-top: 6px; padding-right: 5px;" width="15"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/bef57c22-a546-4d5e-b209-f028a24a1642.png" alt="<?php esc_attr_e( 'checkmark', 'wp-analytify' ); ?>"></td><td style="padding-bottom: 5px;font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px;"><font color="#383b3d"><?php analytify_e( 'Edit Email Subject' ); ?></font></td>
 									</tr>
 									<tr>
-										<td valign="top" style="padding-top: 6px; padding-right: 5px;" width="15"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/bef57c22-a546-4d5e-b209-f028a24a1642.png" alt="<?php esc_attr_e( 'checkmark', 'wp-analytify' ); ?>"></td><td style="padding-bottom: 5px;font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px;"><font color="#383b3d"><?php analytify_e( 'Choose your own metrics to display in reports'); ?></font></td>
+										<td valign="top" style="padding-top: 6px; padding-right: 5px;" width="15"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/bef57c22-a546-4d5e-b209-f028a24a1642.png" alt="<?php esc_attr_e( 'checkmark', 'wp-analytify' ); ?>"></td><td style="padding-bottom: 5px;font-size: 14px; font-family: 'Segoe UI'; font-weight: normal; line-height: 20px;"><font color="#383b3d"><?php analytify_e( 'Choose your own metrics to display in reports' ); ?></font></td>
 									</tr>
 								</tbody>
 							</table>
@@ -511,8 +534,8 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 			</table>
 		</td>
 	</tr>
-	<?php
+		<?php
 	}
 	$message = ob_get_clean();
-	return $message;
+	return $message ? $message : '';
 }

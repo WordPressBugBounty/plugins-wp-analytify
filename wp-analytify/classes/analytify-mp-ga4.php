@@ -1,17 +1,23 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName,Universal.Files.SeparateFunctionsFromOO.Mixed -- File naming is acceptable and mixed structure is acceptable
 /**
  * This file contains the class that makes the gtag api calls.
  *
+ * @package WP_Analytify
+ * @since 1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 	/**
 	 * Class that makes the gtag api calls.
+	 *
 	 * Use for server-side calls.
+	 *
+	 * @package WP_Analytify
+	 * @since 1.0.0
 	 */
 	class Analytify_MP_GA4 {
 
@@ -23,9 +29,9 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 		/**
 		 * The single instance of the class.
 		 *
-		 * @var object
+		 * @var self|null
 		 */
-		private static $instance;
+		private static $instance = null;
 
 		/**
 		 * Client ID
@@ -50,16 +56,17 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 
 		/**
 		 * Analytify global object.
+		 *
+		 * @var mixed
 		 */
-
 		private $wp_analytify = null;
 
 		/**
 		 * Returns the single instance of the class.
 		 *
-		 * @return object Class instance
+		 * @return self Class instance
 		 */
-		public static function get_instance() {
+		public static function get_instance(): self {
 			if ( empty( self::$instance ) ) {
 				self::$instance = new self();
 			}
@@ -69,7 +76,6 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 
 		/**
 		 * Class constructor.
-		 *
 		 */
 		private function __construct() {
 			$this->wp_analytify = $GLOBALS['WP_ANALYTIFY'];
@@ -79,25 +85,28 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 			$this->client_id      = $this->get_client_id();
 		}
 
-		private function get_client_id(){
+		/**
+		 * Get client ID.
+		 *
+		 * @return string
+		 */
+		private function get_client_id(): string {
 
 			$client_id = '';
 
-			if( isset( $_COOKIE['_ga'] ) ) {
+			if ( isset( $_COOKIE['_ga'] ) ) {
 
-				$client_id_raw  = $_COOKIE['_ga'];
-				$parts = explode( "." , $client_id_raw );
-				$client_id = "{$parts[2]}.{$parts[3]}";
+				$client_id_raw = wp_unslash( $_COOKIE['_ga'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is sanitized with wp_unslash
+				$parts         = explode( '.', $client_id_raw );
+				$client_id     = "{$parts[2]}.{$parts[3]}";
 
 			} else {
 
-				$client_id = ( 'on' === $this->wp_analytify->settings->get_option( 'user_advanced_keys','wp-analytify-advanced' ) ) ? $this->wp_analytify->settings->get_option( 'client_id','wp-analytify-advanced' ) : ANALYTIFY_CLIENTID;
+				$client_id = ( 'on' === $this->wp_analytify->settings->get_option( 'user_advanced_keys', 'wp-analytify-advanced' ) ) ? $this->wp_analytify->settings->get_option( 'client_id', 'wp-analytify-advanced' ) : WP_ANALYTIFY_CLIENTID;
 
 			}
 
 			return $client_id;
-
-			
 		}
 
 		/**
@@ -119,10 +128,10 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 		/**
 		 * Send data to Google Analytics.
 		 *
-		 * @param array $events Data to send.
+		 * @param array<string, mixed> $events Data to send.
 		 * @return bool
 		 */
-		public function send_hit( $events ) {
+		public function send_hit( $events ): bool {
 
 			$url = $this->api_url();
 
@@ -136,32 +145,39 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 
 			$events = apply_filters( 'analytify_ga4_events_for_mp_api_call', $events );
 
-			$body = array(
+			$body      = array(
 				'client_id' => $this->client_id,
 				'events'    => $events,
 			);
-			$response = wp_remote_post($url, array(
+			$json_body = wp_json_encode( $body );
+			$response  = wp_remote_post(
+				$url,
+				array(
 					'timeout' => 5,
-					'body'    => wp_json_encode( $body ),
-				));
+					'body'    => $json_body ? $json_body : '',
+				)
+			);
 			if ( is_wp_error( $response ) ) {
 				return false;
 			}
 
 			return true;
-
 		}
-
 	}
 }
+
+// phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed -- Function is part of the class API
 
 /**
  * Uses the singleton pattern to call the api.
  *
- * @param array $events Parameters to send to the API.
+ * @param array<string, mixed> $events Parameters to send to the API.
  *
  * @return bool
+ *
+ * @phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
  */
-function analytify_mp_ga4( $events ) {
-	return Analytify_MP_GA4::get_instance()->send_hit( $events );
+function analytify_mp_ga4( $events ): bool {
+	$instance = Analytify_MP_GA4::get_instance();
+	return $instance->send_hit( $events );
 }

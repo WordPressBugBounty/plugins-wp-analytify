@@ -1,8 +1,17 @@
 <?php
-$WP_ANALYTIFY	= $GLOBALS['WP_ANALYTIFY'];
-$version		= defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION : ANALYTIFY_VERSION;
-$addon			= isset( $_GET['addon'] ) ? $_GET['addon'] : '';
-$addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
+/**
+ * Addons Promo View
+ *
+ * @package WP_Analytify
+ */
+
+// phpcs:ignore WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase -- Global variable naming is intentional
+$WP_ANALYTIFY = $GLOBALS['WP_ANALYTIFY'];
+$version      = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION : ANALYTIFY_VERSION;
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes
+$addon = isset( $_GET['addon'] ) ? sanitize_text_field( wp_unslash( $_GET['addon'] ) ) : '';
+// phpcs:ignore WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase -- Global variable naming is intentional
+$addon_state = $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 
 <div class="wpanalytify analytify-dashboard-nav">
 	<div class="wpb_plugin_wraper">
@@ -13,8 +22,8 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 				<div class="wpb_plugin_header_info">
 					<a href="https://analytify.io/changelog/" target="_blank" class="btn"><?php echo esc_html__( 'View Changelog', 'wp-analytify' ); ?></a>
 				</div>
-				<div class="wpb_plugin_header_logo">
-					<img src="<?php echo ANALYTIFY_PLUGIN_URL . '/assets/img/logo.svg' ?>" alt="Analytify">
+			<div class="wpb_plugin_header_logo">
+				<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL . '/assets/img/logo.svg' ); ?>" alt="Analytify">
 				</div>
 			</div>
 		</div>
@@ -22,16 +31,24 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 		<div class="analytify-dashboard-body-container">
 			<div class="wpb_plugin_body_wraper">
 				<div class="wpb_plugin_body">
-					<div class="wpa-tab-wrapper"> <?php echo $WP_ANALYTIFY->dashboard_navigation(); ?> </div>
+					<div class="wpa-tab-wrapper"> 
+					<?php
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase -- Global variable naming is intentional
+					if ( is_object( $WP_ANALYTIFY ) && method_exists( $WP_ANALYTIFY, 'dashboard_navigation' ) ) {
+						// phpcs:ignore WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase -- Global variable naming is intentional
+						$WP_ANALYTIFY->dashboard_navigation(); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
+					}
+					?>
+					</div>
 					<div class="wpb_plugin_tabs_content analytify-dashboard-content">
 						<div class="analytify_wraper">
 
-							<?php if ('wp-analytify-forms' === $addon) { ?>
+							<?php if ( 'wp-analytify-forms' === $addon ) { ?>
 
 
 								<div class="analytify-email-dashboard-wrapper">
 
-									<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+									<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 									<div class="analytify-email-promo-contianer">
 										<div class="analytify-email-premium-overlay">
@@ -53,12 +70,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 										</div>
 									</div>
 
-								<?php } elseif ('events-tracking' === $addon) { ?>
+								<?php } elseif ( 'events-tracking' === $addon ) { ?>
 
 
 									<div class="analytify-email-dashboard-wrapper">
 
-										<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+										<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 										<div class="analytify-email-promo-contianer">
 											<div class="analytify-email-premium-overlay">
@@ -82,12 +99,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 											</div>
 										</div>
 
-									<?php } elseif ('wp-analytify-campaigns' === $addon) { ?>
+									<?php } elseif ( 'wp-analytify-campaigns' === $addon ) { ?>
 
 
 										<div class="analytify-email-dashboard-wrapper">
 
-											<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+											<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 											<div class="analytify-email-promo-contianer">
 												<div class="analytify-email-premium-overlay">
@@ -118,12 +135,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 												</div>
 											</div>
 
-										<?php } elseif ('wp-analytify-goals' === $addon) { ?>
+										<?php } elseif ( 'wp-analytify-goals' === $addon ) { ?>
 
 
 											<div class="analytify-email-dashboard-wrapper">
 
-												<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+												<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 												<div class="analytify-email-promo-contianer">
 													<div class="analytify-email-premium-overlay">
@@ -154,12 +171,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 													</div>
 												</div>
 
-											<?php } elseif ('wp-analytify-woocommerce' === $addon) { ?>
+											<?php } elseif ( 'wp-analytify-woocommerce' === $addon ) { ?>
 
 
 												<div class="analytify-email-dashboard-wrapper">
 
-													<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+													<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 													<div class="analytify-email-promo-contianer">
 														<div class="analytify-email-premium-overlay">
@@ -190,12 +207,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 														</div>
 													</div>
 
-												<?php } elseif ('wp-analytify-edd' === $addon) { ?>
+												<?php } elseif ( 'wp-analytify-edd' === $addon ) { ?>
 
 
 													<div class="analytify-email-dashboard-wrapper">
 
-														<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+														<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 														<div class="analytify-email-promo-contianer">
 															<div class="analytify-email-premium-overlay">
@@ -228,12 +245,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 														</div>
 
 
-													<?php } elseif ('wp-analytify-authors' === $addon) { ?>
+													<?php } elseif ( 'wp-analytify-authors' === $addon ) { ?>
 
 
 														<div class="analytify-email-dashboard-wrapper">
 
-															<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+															<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 															<div class="analytify-email-promo-contianer">
 																<div class="analytify-email-premium-overlay">
@@ -254,12 +271,12 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																</div>
 															</div>
 
-														<?php } elseif ('detail-demographic' === $addon) { ?>
+														<?php } elseif ( 'detail-demographic' === $addon ) { ?>
 
 
 															<div class="analytify-email-dashboard-wrapper">
 
-																<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-geographics-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
+																<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/promo-geographics-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
 
 																<div class="analytify-email-promo-contianer">
 																	<div class="analytify-email-premium-overlay">
@@ -290,13 +307,13 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																	</div>
 																</div>
 
-															<?php } elseif ('search-terms' === $addon) { ?>
+															<?php } elseif ( 'search-terms' === $addon ) { ?>
 
 
 
 																<div class="analytify-email-dashboard-wrapper">
 
-																	<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-search-terms-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
+																	<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/promo-search-terms-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
 
 																	<div class="analytify-email-promo-contianer">
 																		<div class="analytify-email-premium-overlay">
@@ -328,13 +345,13 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																		</div>
 																	</div>
 
-																<?php } elseif ('search-console-report' === $addon) { ?>
+																<?php } elseif ( 'search-console-report' === $addon ) { ?>
 
 
 
 																		<div class="analytify-email-dashboard-wrapper">
 
-																			<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-search-console-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
+																			<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/promo-search-console-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
 
 																			<div class="analytify-email-promo-contianer">
 																				<div class="analytify-email-premium-overlay">
@@ -367,11 +384,11 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																			</div>
 																
 
-																	<?php } elseif ('custom-dimensions' === $addon) { ?>
+																	<?php } elseif ( 'custom-dimensions' === $addon ) { ?>
 
 																		<div class="analytify-email-dashboard-wrapper">
 
-																			<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
+																			<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/analytify_compare.gif" alt="Upgrade to Pro" style="width:100%">
 
 																			<div class="analytify-email-promo-contianer">
 																				<div class="analytify-email-premium-overlay">
@@ -393,11 +410,11 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																				</div>
 																			</div>
 
-																		<?php } elseif ('detail-realtime' === $addon) { ?>
+																		<?php } elseif ( 'detail-realtime' === $addon ) { ?>
 
 																			<div class="analytify-email-dashboard-wrapper">
 
-																				<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/promo-realtime-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
+																				<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/promo-realtime-dashboard.jpg" alt="Upgrade to Pro" style="width:100%">
 
 																				<div class="analytify-email-promo-contianer">
 																					<div class="analytify-email-premium-overlay">
@@ -428,11 +445,11 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																						</div>
 																					</div>
 																				</div>
-																				<?php }  elseif ('page-speed' === $addon) { ?>
+																				<?php } elseif ( 'page-speed' === $addon ) { ?>
 
 																					<div class="analytify-email-dashboard-wrapper">
 
-																					<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/page-speed.png" alt="Upgrade to Pro" style="width:100%">
+																					<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/page-speed.png" alt="Upgrade to Pro" style="width:100%">
 
 																					<div class="analytify-email-promo-contianer">
 																						<div class="analytify-email-premium-overlay">
@@ -460,11 +477,11 @@ $addon_state	= $WP_ANALYTIFY->analytify_module_state( $addon ); ?>
 																							</div>
 																						</div>
 																					</div>	
-																				<?php }  elseif ('video-tracking' === $addon) { ?>
+																				<?php } elseif ( 'video-tracking' === $addon ) { ?>
 
 																				<div class="analytify-email-dashboard-wrapper">
 
-																				<img src="<?php echo ANALYTIFY_PLUGIN_URL; ?>/assets/img/video-tracking.png" alt="Upgrade to Pro" style="width:100%">
+																				<img src="<?php echo esc_url( ANALYTIFY_PLUGIN_URL ); ?>/assets/img/video-tracking.png" alt="Upgrade to Pro" style="width:100%">
 
 																				<div class="analytify-email-promo-contianer">
 																					<div class="analytify-email-premium-overlay">

@@ -1,20 +1,47 @@
 'use strict';
 
 /**
- * 
+ *
  * This file handles all the ajax requests for the core dashboard.
  * This also includes generating charts and populating the data into a view.
- * 
+ *
  */
 
 jQuery(function ($) {
+	const equalizeSystemStatsTables = (target) => {
+		const containers = target.find('.analytify_status_body .analytify_one_tree_table');
+		let maxHeight = 0;
+		containers.each(function () {
+			const h = $(this).outerHeight();
+			if (h > maxHeight) {
+				maxHeight = h;
+			}
+		});
+		containers.css('min-height', maxHeight);
+		containers.each(function () {
+			const table = $(this).find('table.analytify_data_tables');
+			const headH = table.find('thead').outerHeight() || 0;
+			const msg = table.find('.analytify-stats-error-msg');
+			if (msg.length) {
+				msg.css({ 'min-height': Math.max(0, maxHeight - headH) });
+				msg.find('.wpb-error-box').css({ display: 'flex', 'align-items': 'center', 'justify-content': 'center' });
+			}
+		});
+	};
+
+	$(window).on('resize', function () {
+		const section = $('.analytify_section_system_stats');
+		if (section.length) {
+			equalizeSystemStatsTables(section);
+		}
+	});
 	function removeHtmlTags(inputString) {
 		if (typeof inputString !== 'string') {
 			// If inputString is not a string, return it as is
 			return inputString;
 		}
-	
-		return inputString.replace(/<\/?[^>]+(>|$)/g, "");
+
+		return inputString.replace(/<\/?[^>]+(>|$)/g, '');
 	}
 
 	/**
@@ -22,7 +49,7 @@ jQuery(function ($) {
 	 *
 	 * @param {string} endpoint The API endpoint.
 	 * @param {object} data     The data to send in the request.
-	 * 
+	 *
 	 * @returns {object}
 	 */
 	const fetch_stats = async (endpoint, data = {}) => {
@@ -46,19 +73,19 @@ jQuery(function ($) {
 
 		const URL = `${analytify_stats_core.url + endpoint + '/' + analytify_stats_core.delimiter}${params.toString()}`;
 
-		let request = await fetch(URL, {
-			method: "GET",
+		const request = await fetch(URL, {
+			method: 'GET',
 			headers: {
-				"X-WP-Nonce": analytify_stats_core.nonce,
-			},
+				'X-WP-Nonce': analytify_stats_core.nonce
+			}
 		});
 		return request.json();
-	}
+	};
 
 	/**
 	 * Sets the target element to 'loading' state.
 	 * Also clear the element's contents.
-	 * 
+	 *
 	 * @param {element} target The target element.
 	 */
 	const prepare_section = (target) => {
@@ -66,54 +93,54 @@ jQuery(function ($) {
 		target.find('.analytify_status_body .stats-wrapper').html('');
 		target.find('.analytify_status_footer').remove();
 		target.find('.empty-on-loading').html('');
-	}
+	};
 
 	/**
 	 * Element should not be loading.
-	 * 
+	 *
 	 * @param {element} target The target element.
 	 */
 	const should_not_be_loading = (target) => {
 		target.find('.analytify_stats_loading').hide();
-	}
+	};
 
 	/**
 	 * Sets the content for the element.
 	 * Removes the 'loading' state.
-	 * 
+	 *
 	 * @param {element} target     The target element.
 	 * @param {string}  markup     The markup to be set (should be HTML).
 	 * @param {string}  footer     The footer markup to be set.
 	 * @param {boolean} pagination Whether to show the pagination or not.
 	 */
-	const set_section = (target, markup, footer = false, pagination = false) => {
+	function set_section(target, markup, footer = false, pagination = false) {
 		should_not_be_loading(target);
 		target.find('.analytify_status_body .stats-wrapper').html(markup);
 
+		// Ensure only one footer exists per section (prevents double footers).
+		target.find('.analytify_status_footer').remove();
+
 		if (footer || pagination) {
-			let footer_markup = `<div class="analytify_status_footer">
+			const footer_markup = `<div class="analytify_status_footer">
 				${footer ? `<span class="analytify_info_stats">${footer}</span>` : ''}
 				${pagination ? `<div class="wp_analytify_pagination"></div>` : ''}
 			</div>`;
 			target.find('.analytify_status_body').after(footer_markup);
 		}
 
-		jQuery('.analytify_data_tables thead th').each(function() {
+		jQuery('.analytify_data_tables thead th').each(function () {
 			var index = jQuery(this).index();
 			var value = $(this).clone();
 			value = value.find('*').remove().end().html();
-			// var value = removeHtmlTags(jQuery(this).text());	
-			jQuery(this).closest('.analytify_data_tables').find('tbody tr').each(function() {
-				// Find the corresponding td in each row and set the data attribute
+			jQuery(this).closest('.analytify_data_tables').find('tbody tr').each(function () {
 				jQuery(this).find('td').eq(index).attr('data-heading', value);
 			});
 		});
-		
-	}
+	};
 
 	/**
 	 * Generates the empty stats message.
-	 * 
+	 *
 	 * @param {element} target       The target element.
 	 * @param {string}  message      The message to be shown.
 	 * @param {object}  table_header The table header, if the message needs to be shown in a table.
@@ -137,18 +164,18 @@ jQuery(function ($) {
 				}
 			}
 
-			markup = `<table class="${table_class}">${'' !== thead ? `<thead><tr>${thead}</tr></thead>` : ''}<tbody><tr><td class="analytify_td_error_msg" colspan="${Object.keys(table_header).length}">${markup}</td></tr></tbody></table>`;
+			markup = `<table class="${table_class}">${thead !== '' ? `<thead><tr>${thead}</tr></thead>` : ''}<tbody><tr><td class="analytify_td_error_msg" colspan="${Object.keys(table_header).length}">${markup}</td></tr></tbody></table>`;
 		}
 
-		if (!target) {
+		if (! target) {
 			return markup;
 		}
 		set_section(target, markup, false, false);
-	}
+	};
 
 	/**
 	 * Generates the red message box.
-	 * 
+	 *
 	 * @param {element} target       The target element.
 	 * @param {string}  message      The message to be shown.
 	 * @param {object}  table_header The table header, if the message needs to be shown in a table.
@@ -174,19 +201,19 @@ jQuery(function ($) {
 				}
 			}
 
-			markup = `<table class="${table_class}">${'' !== thead ? `<thead><tr>${thead}</tr></thead>` : ''}<tbody><tr><td class="analytify_td_error_msg" colspan="${Object.keys(table_header).length}">${markup}</td></tr></tbody></table>`;
+			markup = `<table class="${table_class}">${thead !== '' ? `<thead><tr>${thead}</tr></thead>` : ''}<tbody><tr><td class="analytify_td_error_msg" colspan="${Object.keys(table_header).length}">${markup}</td></tr></tbody></table>`;
 		}
 
-		if (!target) {
+		if (! target) {
 			return markup;
 		}
 		set_section(target, markup, false, false);
-	}
+	};
 	/**
 	 * Generates table from object.
 	 * {headers} is to generate <thead> tag and content.
 	 * {stats} is to generate <tbody> tag and content.
-	 * 
+	 *
 	 * @param {object} headers       The headers.
 	 * @param {object} stats         The stats to be shown.
 	 * @param {string} table_classes Table classes
@@ -206,7 +233,7 @@ jQuery(function ($) {
 				thead += `<th class="${td.th_class ? td.th_class : ``}">${td.label}</th>`;
 			}
 		}
-		if ('' !== thead) {
+		if (thead !== '') {
 			markup += `<thead><tr>${thead}</tr></thead>`;
 		}
 
@@ -220,7 +247,7 @@ jQuery(function ($) {
 
 				let __label = '';
 
-				if (row[td_key] === null && headers[td_key].type && 'counter' === headers[td_key].type) {
+				if (row[td_key] === null && headers[td_key].type && headers[td_key].type === 'counter') {
 					__label = i;
 				} else if (row[td_key].label) {
 					__label = row[td_key].label;
@@ -250,11 +277,11 @@ jQuery(function ($) {
 
 		return markup;
 
-	}
+	};
 
 	/**
 	* Generates the markup for the 'General Stats' section.
-	* 
+	*
 	* @param {object}  response The response from the API.
 	* @param {element} target   The target element.
 	*/
@@ -298,7 +325,7 @@ jQuery(function ($) {
 
 		set_section(target, markup, response.footer, false);
 
-	}
+	};
 
 	/**
 	 * Builds charts for the 'General Stats' section.
@@ -306,7 +333,7 @@ jQuery(function ($) {
 	const es_chart_stats_general = () => {
 
 		const analytifyGetKeyByLabel = (statsObj, label) => {
-			if (!statsObj) return null;
+			if (! statsObj) {return null;}
 			for (const key in statsObj) {
 				if (statsObj[key] && statsObj[key].label === label) {
 					return key;
@@ -322,12 +349,12 @@ jQuery(function ($) {
 			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_new_vs_returning_visitors').attr('data-colors')));
 
 
-			if (!setting_stats || !setting_stats.new || !setting_stats.returning) {
-				console.error('Setting stats or required properties are undefined.');
+			if (! setting_stats || ! setting_stats.new || ! setting_stats.returning) {
+				// console.error('Setting stats or required properties are undefined.');
 				return;
 			}
 
-			if (parseInt(setting_stats.new.number) > 0 && parseInt(setting_stats.returning.number) > 0) {
+			if (parseInt(setting_stats.new.number) > 0 || parseInt(setting_stats.returning.number) > 0) {
 				const new_returning_graph_options = {
 					color: setting_colors,
 					legend: {
@@ -337,12 +364,12 @@ jQuery(function ($) {
 						formatter: function (name) {
 							// Try to find the key by label
 							const key = analytifyGetKeyByLabel(setting_stats, name);
-							if (key && setting_stats[key] && !isNaN(parseInt(setting_stats[key].number))) {
+							if (key && setting_stats[key] && ! isNaN(parseInt(setting_stats[key].number))) {
 								const value = parseInt(setting_stats[key].number);
 								return `${name}: ${value}`;
 							}
 							// If not found, log an error and return fallback
-							console.error('Could not find key for legend label:', name, setting_stats);
+							// console.error('Could not find key for legend label:', name, setting_stats);
 							return `${name}: 0`;
 						},
 						data: [setting_stats.new.label, setting_stats.returning.label]
@@ -379,8 +406,8 @@ jQuery(function ($) {
 			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_visitor_devices').attr('data-colors')));
 
 
-			if (!setting_stats || !setting_stats.mobile || !setting_stats.tablet || !setting_stats.desktop) {
-				console.error('Setting stats or required properties are undefined.');
+			if (! setting_stats || ! setting_stats.mobile || ! setting_stats.tablet || ! setting_stats.desktop) {
+				// console.error('Setting stats or required properties are undefined.');
 				return;
 			}
 
@@ -428,18 +455,92 @@ jQuery(function ($) {
 				$('#analytify_chart_visitor_devices').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
 			}
 		}
-	}
+
+		if ($('#analytify_chart_browser_breakdown').length) {
+			const setting_title = $('#analytify_chart_browser_breakdown').attr('data-chart-title');
+			const setting_stats = JSON.parse(decodeURIComponent($('#analytify_chart_browser_breakdown').attr('data-stats')));
+			const setting_colors = JSON.parse(decodeURIComponent($('#analytify_chart_browser_breakdown').attr('data-colors')));
+
+			if (! setting_stats || Object.keys(setting_stats).length === 0) {
+				$('#analytify_chart_browser_breakdown').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
+				return;
+			}
+
+			// Check if there's any data
+			let hasData = false;
+			for (const key in setting_stats) {
+				if (setting_stats[key].number > 0) {
+					hasData = true;
+					break;
+				}
+			}
+
+			if (hasData) {
+				// Build legend data and series data dynamically
+				const legendData = [];
+				const seriesData = [];
+
+				for (const key in setting_stats) {
+					if (setting_stats[key].label && setting_stats[key].number) {
+						legendData.push(setting_stats[key].label);
+						seriesData.push({
+							name: setting_stats[key].label,
+							value: parseInt(setting_stats[key].number)
+						});
+					}
+				}
+
+				const browser_breakdown_graph_options = {
+					color: setting_colors,
+					legend: {
+						orient: 'horizontal',
+						bottom: '5%',
+						textStyle: { fontSize: 13, fontWeight: '500' },
+						itemGap: 4,
+						formatter: function (name) {
+							const key = analytifyGetKeyByLabel(setting_stats, name);
+							let value = key && setting_stats[key] ? setting_stats[key].number : 0;
+							if (value >= 1000) {
+								value = (value / 1000).toFixed(1) + 'k';
+							}
+							return `${name}: ${value}`;
+						},
+						data: legendData
+					},
+					series: [{
+						name: setting_title,
+						type: 'pie',
+						center: ['50%', '43%'],
+						label: {
+							show: false
+						},
+						labelLine: {
+							show: false
+						},
+						data: seriesData
+					}]
+				};
+
+				const browser_breakdown_graph = echarts.init(document.getElementById('analytify_chart_browser_breakdown'));
+				browser_breakdown_graph.setOption(browser_breakdown_graph_options);
+
+				window.onresize = () => browser_breakdown_graph.resize();
+			} else {
+				$('#analytify_chart_browser_breakdown').html(`<div class="analytify_general_stats_value">0</div><p>${analytify_stats_core.no_stats_message}</p>`);
+			}
+		}
+	};
 
 	/**
 	* Builds map for the 'Geographic' section.
-	* 
+	*
 	* @param {object} data Stats data for the map.
 	*/
 	function es_chart_map(data) {
 		const map_data = [];
 		for (const key in data.stats) {
 
-			let single_country = {};
+			const single_country = {};
 
 			single_country.name = data.stats[key].country;
 			single_country.value = data.stats[key].sessions;
@@ -454,20 +555,21 @@ jQuery(function ($) {
 		// Check if the CDN data loads successfully & Ensure the `world` map is available
 		if (typeof echarts.getMap('world') === 'undefined') {
 			fallbackToLocal();
-		}
-		else{
+		} else {
 			loadMapAndRender();
 		}
 
 		function fallbackToLocal() {
-            fetch(geoJsonData.geoJsonUrl)
-                .then(response => response.json())
-                .then(geoJson => {
-                    echarts.registerMap('world', geoJson);
-                    loadMapAndRender();
-                })
-                .catch(error => console.error('Error loading local GeoJSON:', error));
-        }
+			fetch(geoJsonData.geoJsonUrl)
+				.then(response => response.json())
+				.then(geoJson => {
+					echarts.registerMap('world', geoJson);
+					loadMapAndRender();
+				})
+				.catch(error => {
+					// console.error('Error loading local GeoJSON:', error);
+				});
+		}
 
 		function loadMapAndRender() {
 			const geographic_stats_graph = echarts.init(document.getElementById('analytify_geographic_stats_graph'));
@@ -498,15 +600,15 @@ jQuery(function ($) {
 				try {
 					geographic_stats_graph.resize();
 				} catch (err) {
-					console.log(err);
+					// console.log(err);
 				}
-			}
+			};
 		}
 	}
 
 	/**
 	 * Returns the compare start and end date based on given start and end date.
-	 * 
+	 *
 	 * @param {string} __start_date Start date.
 	 * @param {string} __end_date   End date.
 	 * @param {bool}   formatted    If true, returns formatted date to be used in the GA's dashboard url.
@@ -518,54 +620,54 @@ jQuery(function ($) {
 		const end_date = new Date(__end_date);
 
 		return `%26_u.date00%3D${__start_date.replaceAll('-', '')}%26_u.date01%3D${__end_date.replaceAll('-', '')}`;
-	}
+	};
 
 	/**
 	 * This function generate the complete GA report.
 	 *
-	 * @param {*} report_id 
-	 * @param {*} report_type 
-	 * @param {*} date_parameter 
+	 * @param {*} report_id
+	 * @param {*} report_type
+	 * @param {*} date_parameter
 	 * @returns
-	 * 
+	 *
 	 */
 	const generate_ga4_report_link = (report_id, report_type, date_parameter) => {
-		if (!report_id) {
-		  return;
+		if (! report_id) {
+			return;
 		}
-	
+
 		const report_link = `https://analytics.google.com/analytics/web/#/${report_id}/reports/explorer/?`;
-	
-		let link = "";
-	
+
+		let link = '';
+
 		switch (report_type) {
-		  case "top_pages":
-			link = `${report_link}params=_u..nav%3Dmaui${date_parameter}&r=all-pages-and-screens&ruid=all-pages-and-screens,life-cycle,engagement`;
-			break;
-		  case "top_countries":
-			link = `${report_link}params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22country%22%5D&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user`;
-			break;
-		  case "top_cities":
-			link = `${report_link}params=_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22city%22%5D%26_u..nav%3Dmaui${date_parameter}&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user`;
-			break;
-		  case "referer":
-			link = `${report_link}params=_u..nav%3Dmaui${date_parameter}&r=lifecycle-traffic-acquisition-v2&ruid=lifecycle-traffic-acquisition-v2,life-cycle,acquisition&collectionId=life-cycle`;
-			break;
-		  case "top_products":
-			link = `${report_link}params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22ecommercePurchases%22%5D%26_r.explorerCard..seldim%3D%5B%22itemInfoName%22%5D&r=ecomm-product&collectionId=life-cycle`;
-			break;
-		  case "source_medium":
-			link = `${report_link}params=_u..nav%3Dmaui${date_parameter}&r=lifecycle-traffic-acquisition-v2&ruid=lifecycle-traffic-acquisition-v2,3078873331,acquisition`;
-			break;
-		  case "top_countries_sales":
-			link = `${report_link}params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22country%22%5D&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user`;
-			break;
-		  default:
-			break;
+			case 'top_pages':
+				link = `${report_link}params=_u..nav%3Dmaui${date_parameter}&r=all-pages-and-screens&ruid=all-pages-and-screens,life-cycle,engagement`;
+				break;
+			case 'top_countries':
+				link = `${report_link}params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22country%22%5D&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user`;
+				break;
+			case 'top_cities':
+				link = `${report_link}params=_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22city%22%5D%26_u..nav%3Dmaui${date_parameter}&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user`;
+				break;
+			case 'referer':
+				link = `${report_link}params=_u..nav%3Dmaui${date_parameter}&r=lifecycle-traffic-acquisition-v2&ruid=lifecycle-traffic-acquisition-v2,life-cycle,acquisition&collectionId=life-cycle`;
+				break;
+			case 'top_products':
+				link = `${report_link}params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22ecommercePurchases%22%5D%26_r.explorerCard..seldim%3D%5B%22itemInfoName%22%5D&r=ecomm-product&collectionId=life-cycle`;
+				break;
+			case 'source_medium':
+				link = `${report_link}params=_u..nav%3Dmaui${date_parameter}&r=lifecycle-traffic-acquisition-v2&ruid=lifecycle-traffic-acquisition-v2,3078873331,acquisition`;
+				break;
+			case 'top_countries_sales':
+				link = `${report_link}params=_u..nav%3Dmaui${date_parameter}%26_r.explorerCard..selmet%3D%5B%22activeUsers%22%5D%26_r.explorerCard..seldim%3D%5B%22country%22%5D&r=user-demographics-detail&ruid=user-demographics-detail,user,demographics&collectionId=user`;
+				break;
+			default:
+				break;
 		}
-	
+
 		return link;
-	}
+	};
 
 	/**
 	 * Builds the GA dashboard link for sections.
@@ -580,17 +682,17 @@ jQuery(function ($) {
 		$('[data-ga-dashboard-link]').each(function (index, __element) {
 			const link = generate_ga4_report_link(
 				analytify_stats_core.ga4_report_url,
-				$(__element).attr("data-ga-dashboard-link"),
+				$(__element).attr('data-ga-dashboard-link'),
 				date_parameter
 			);
 
 			$(__element).attr('href', link);
 		});
-	}
+	};
 
 	/**
 	* Fetches the data and build the template for all endpoints.
-	* 
+	*
 	*/
 	const build_sections_free = () => {
 
@@ -621,14 +723,14 @@ jQuery(function ($) {
 									const country_stats_length = Object.keys(response.country.stats).length;
 									const city_stats_length = Object.keys(response.city.stats).length;
 
-									let markup = `
+									const markup = `
 									${map_stats_length > 0 ? `<div class="analytify_txt_center analytify_graph_wraper"><div id="analytify_geographic_stats_graph" style="height:600px"></div></div>` : ``
-										}
+}
 									<div class="analytify_clearfix">
 										${country_stats_length > 0 ? generate_stats_table(response.country.headers, response.country.stats, table_classes) : stats_message(false, false, response.country.headers, table_classes)
-										}
+}
 										${city_stats_length > 0 ? generate_stats_table(response.city.headers, response.city.stats, table_classes) : stats_message(false, false, response.city.headers, table_classes)
-										}
+}
 									</div>`;
 
 									set_section(element, markup, response.footer, false);
@@ -647,18 +749,18 @@ jQuery(function ($) {
 
 									const table_classes = 'analytify_data_tables';
 
-									let markup = `<div class="analytify_clearfix">
+									const markup = `<div class="analytify_clearfix">
 										<div class="analytify_one_tree_table">
 											${browser_stats_length > 0 ? generate_stats_table(response.browser.headers, response.browser.stats, table_classes) : stats_message(false, false, response.browser.headers, table_classes)
-										}
+}
 										</div>
 										<div class="analytify_one_tree_table">
 											${os_stats_length > 0 ? generate_stats_table(response.os.headers, response.os.stats, table_classes) : stats_message(false, false, response.os.headers, table_classes)
-										}
+}
 										</div>
 										<div class="analytify_one_tree_table">
 											${mobile_stats_length > 0 ? generate_stats_table(response.mobile.headers, response.mobile.stats, table_classes) : stats_message(false, false, response.mobile.headers, table_classes)
-										}
+}
 										</div>
 									</div>`;
 
@@ -692,8 +794,8 @@ jQuery(function ($) {
 										case 'what-is-happening-stats':
 											table_classes = 'analytify_data_tables analytify_page_stats_table';
 											break;
-										case 'referer-stats': 
-										    table_classes = 'analytify_bar_tables';
+										case 'referer-stats':
+											table_classes = 'analytify_bar_tables';
 											if (response.pagination) {
 												table_classes += ' wp_analytify_paginated';
 												table_attr = ' data-product-per-page="10"';
@@ -737,16 +839,16 @@ jQuery(function ($) {
 					}
 
 				}).catch(function (error) {
-					console.log(error);
+					// console.log(error);
 				});
 
 			});
 		} catch (err) {
-			console.log('err');
+			// console.log('err');
 		}
 
 		$(window).trigger('resize');
-	}
+	};
 
 	build_sections_free();
 
@@ -754,7 +856,7 @@ jQuery(function ($) {
 	$('form.analytify_form_date').on('submit', function (e) {
 		if (analytify_stats_core.load_via_ajax) {
 			e.preventDefault();
-			let customEvent = new Event('analytify_form_date_submitted');
+			const customEvent = new Event('analytify_form_date_submitted');
 			document.dispatchEvent(customEvent);
 			build_sections_free();
 			build_ga_dashboard_link();

@@ -255,8 +255,8 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 		$handle  = sanitize_title( $handle );
 
 		if ( isset( $logs[ $handle ] ) && $logs[ $handle ] ) {
-			$file = realpath( trailingslashit( ANALYTIFY_LOG_DIR ) . $logs[ $handle ] );
-			if ( 0 === stripos( $file, trailingslashit( ANALYTIFY_LOG_DIR ) ) && is_file( $file ) && is_writable( $file ) ) { // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_is_writable
+			$file = realpath( trailingslashit( WP_ANALYTIFY_LOG_DIR ) . $logs[ $handle ] );
+			if ( 0 === stripos( $file, trailingslashit( WP_ANALYTIFY_LOG_DIR ) ) && is_file( $file ) && is_writable( $file ) ) { // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_is_writable
 				$this->close( $file ); // Close first to be certain no processes keep it alive after it is unlinked.
 				$removed = unlink( $file ); // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_unlink
 			}
@@ -338,7 +338,6 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
@@ -349,7 +348,7 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 	 */
 	public static function get_log_file_path( $handle ) {
 		if ( function_exists( 'wp_hash' ) ) {
-			return trailingslashit( ANALYTIFY_LOG_DIR ) . self::get_log_file_name( $handle );
+			return trailingslashit( WP_ANALYTIFY_LOG_DIR ) . self::get_log_file_name( $handle );
 		}
 	}
 
@@ -364,7 +363,7 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 	 */
 	public static function get_log_file_name( $handle ) {
 		if ( function_exists( 'wp_hash' ) ) {
-			$date_suffix = date( 'Y-m-d', current_time( 'timestamp', true ) );
+			$date_suffix = date( 'Y-m-d', time() );
 			$hash_suffix = wp_hash( $handle );
 			return sanitize_file_name( implode( '-', array( $handle, $date_suffix, $hash_suffix ) ) . '.log' );
 		}
@@ -406,10 +405,10 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 		$log_files = self::get_log_files();
 
 		foreach ( $log_files as $log_file ) {
-			$last_modified = filemtime( trailingslashit( ANALYTIFY_LOG_DIR ) . $log_file );
+			$last_modified = filemtime( trailingslashit( WP_ANALYTIFY_LOG_DIR ) . $log_file );
 
 			if ( $last_modified < $timestamp ) {
-				@unlink( trailingslashit( ANALYTIFY_LOG_DIR ) . $log_file ); // @codingStandardsIgnoreLine.
+				@unlink( trailingslashit( WP_ANALYTIFY_LOG_DIR ) . $log_file ); // @codingStandardsIgnoreLine.
 			}
 		}
 	}
@@ -421,7 +420,7 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 	 * @return array
 	 */
 	public static function get_log_files() {
-		$files  = @scandir( ANALYTIFY_LOG_DIR ); // @codingStandardsIgnoreLine.
+		$files  = @scandir( WP_ANALYTIFY_LOG_DIR ); // @codingStandardsIgnoreLine.
 		$result = array();
 
 		if ( ! empty( $files ) ) {

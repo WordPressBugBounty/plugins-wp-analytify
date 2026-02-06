@@ -76,24 +76,24 @@
 		text-align: center;
 		clear: both;
 /*	    background-color: #ddeaff;
-	    border-top: 1px solid #ddeaff;
-	    border-bottom: 1px solid #ddeaff;*/
-	    padding:  40px 0;
-	    font: 300 22px 'Roboto', Arial, Helvetica, sans-serif;
-	    margin-bottom: 30px;
+		border-top: 1px solid #ddeaff;
+		border-bottom: 1px solid #ddeaff;*/
+		padding:  40px 0;
+		font: 300 22px 'Roboto', Arial, Helvetica, sans-serif;
+		margin-bottom: 30px;
 	}
 	.analytify_discount_code span{
 		font-weight: 700;
 		color: #00c853;
 	}
 	.analytify_btn_buy{
-	    font: 400 25px 'Roboto', Arial, Helvetica, sans-serif;
-	    line-height: 1.2;
-	    color: #fff;
-	    padding: 15px 24px;
-	    background: #00c853;
-	    box-shadow: 0 2px 3px rgba(0,0,0, .2);
-	    border: 0px;
+		font: 400 25px 'Roboto', Arial, Helvetica, sans-serif;
+		line-height: 1.2;
+		color: #fff;
+		padding: 15px 24px;
+		background: #00c853;
+		box-shadow: 0 2px 3px rgba(0,0,0, .2);
+		border: 0px;
 		margin: 0 auto 20px;
 		display: block;
 		width: 200px;
@@ -107,27 +107,35 @@
 	}
 </style>
 <div class="analytify_compair_wraper">
+	<?php
+	/**
+	 * Analytify Go Pro Page
+	 *
+	 * @package WP_Analytify
+	 */
+
+	?>
 	<div class="analytify_compair_inner">
 		<div class="analytify_features analytify_go_pro_features">
 			<div class="analytify_compair_logo_wraper">
-				<img src="<?php echo plugins_url( 'assets/img/logo_pro_section.png',dirname( __FILE__ )) ?>">
+				<img src="<?php echo esc_url( plugins_url( 'assets/img/logo_pro_section.png', __DIR__ ) ); ?>">
 			</div>
 			<ul class="analytify_compair_features">
-				<li><?php _e( 'Dashboards (Advanced)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Analytics under Posts (admin)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Email Notifications (addon)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Analytics under Pages (admin)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Comparison Stats (Visitors & Views monthly/yearly)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Real-Time Live Stats', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'ShortCodes', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Analytics under Custom Post Types (front/admin)', 'wp-analytify' ) ?></li>
-				<li><?php _e( '404 Page, Ajax & JS Error Stats', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Events Tracking', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Google AMP Support', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Custom Dimensions', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Authors Tracking (addon)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Forms Tracking (addon)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Priority Email Support', 'wp-analytify' ) ?></li>
+				<li><?php esc_html_e( 'Dashboards (Advanced)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Analytics under Posts (admin)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Email Notifications (addon)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Analytics under Pages (admin)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Comparison Stats (Visitors & Views monthly/yearly)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Real-Time Live Stats', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'ShortCodes', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Analytics under Custom Post Types (front/admin)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( '404 Page, Ajax & JS Error Stats', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Events Tracking', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Google AMP Support', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Custom Dimensions', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Authors Tracking (addon)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Forms Tracking (addon)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Priority Email Support', 'wp-analytify' ); ?></li>
 				
 			</ul>
 		</div>
@@ -141,39 +149,45 @@
 				</div> -->
 			</div>
 			<ul class="analytify_compair_features">
-				<li><?php _e( 'Similar but limited', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Similar but limited', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Similar but limited', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Similar but limited', 'wp-analytify' ) ?></li>
+				<li><?php esc_html_e( 'Similar but limited', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Similar but limited', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Similar but limited', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Similar but limited', 'wp-analytify' ); ?></li>
 			</ul>
 		</div>
 
 
 				<div class="analytify_features">
 			<div class="analytify_compair_logo_wraper">
-				<img src="<?php echo plugins_url( 'assets/img/logo_free_section.png',dirname( __FILE__ )) ?>">
+				<img src="<?php echo esc_url( plugins_url( 'assets/img/logo_free_section.png', __DIR__ ) ); ?>">
 			</div>
 			<ul class="analytify_compair_features">
-				<li><?php _e( 'Dashboards' , 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Analytics under Posts (admin)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Email Notifications', 'wp-analytify' ) ?></li>				
-				<li><?php _e( 'Analytics under Pages (admin)', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'No', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'No', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'No', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'No', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'No', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Only Tracking', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'Only Tracking', 'wp-analytify' ) ?></li>
-				<li><?php _e( 'WordPress.org Forum Support', 'wp-analytify' ) ?></li>
+				<li><?php esc_html_e( 'Dashboards', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Analytics under Posts (admin)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Email Notifications', 'wp-analytify' ); ?></li>				
+				<li><?php esc_html_e( 'Analytics under Pages (admin)', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'No', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'No', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'No', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'No', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'No', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Only Tracking', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'Only Tracking', 'wp-analytify' ); ?></li>
+				<li><?php esc_html_e( 'WordPress.org Forum Support', 'wp-analytify' ); ?></li>
 				
 
 
 			</ul>
 		</div>
 		<div class="analytify_discount_code">
-			<?php printf( 	// translators: Discount code
-				__( '%1$sUpgrade Now%2$s use %3$s discount code for 60&#37; OFF ' , 'wp-analytify' ) , '<a target="_blank" href="https://analytify.io/free-vs-pro/?utm_source=analytify-lite&utm_medium=pro-vs-free-page&utm_campaign=pro-upgrade&utm_content=Upgrade+Now+CTA" class="analytify_btn_buy">', '</a>' , '<span>BFCM60</span>' ); ?>
+			<?php
+			printf(   // translators: Discount code.
+				esc_html__( '%1$sUpgrade Now%2$s use %3$s discount code for 60&#37; OFF ', 'wp-analytify' ),
+				'<a target="_blank" href="https://analytify.io/free-vs-pro/?utm_source=analytify-lite&utm_medium=pro-vs-free-page&utm_campaign=pro-upgrade&utm_content=Upgrade+Now+CTA" class="analytify_btn_buy">',
+				'</a>',
+				'<span>BFCM60</span>'
+			);
+			?>
 		</div>
 
 	</div>

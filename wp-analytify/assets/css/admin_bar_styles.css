@@ -1,5 +1,5 @@
 #wpadminbar>#wp-toolbar>#wp-admin-bar-root-default #wp-admin-bar-analytify .ab-icon{
-	background:url("../img/wp-analytics-logo.png") no-repeat center 8px !important;
+	background:url(../img/wp-analytics-logo.png) no-repeat center 8px !important;
 	width :20px;
 	height :20px;
 	background-size :20px;
@@ -8,7 +8,7 @@
 }
 
 #wpadminbar>#wp-toolbar>#wp-admin-bar-root-default #wp-admin-bar-analytify:hover .ab-icon{
-	background-image:url("../img/wp-analytics-logo-blue.png") !important;
+	background-image:url(../img/wp-analytics-logo-blue.png) !important;
 }
 @media screen and (max-width: 782px) {
 	#wpadminbar>#wp-toolbar>#wp-admin-bar-root-default #wp-admin-bar-analytify {
