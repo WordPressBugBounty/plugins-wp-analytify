@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 8.0.1
+ * Version: 8.1.0
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -594,10 +594,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				);
 			}
 
-			$anonymize_ip           = ( 'on' === $this->settings->get_option( 'anonymize_ip', 'wp-analytify-advanced' ) ) ? 'true' : 'false';
-			$force_ssl              = ( 'on' === $this->settings->get_option( 'force_ssl', 'wp-analytify-advanced' ) ) ? 'true' : 'false';
-			$allow_display_features = ( 'on' === $this->settings->get_option( 'demographic_interest_tracking', 'wp-analytify-advanced' ) ) ? 'true' : 'false';
-
+			$allow_display_features       = ( 'on' === $this->settings->get_option( 'demographic_interest_tracking', 'wp-analytify-advanced' ) ) ? 'true' : 'false';
 			$linker_cross_domain_tracking = ( 'on' === $this->settings->get_option( 'linker_cross_domain_tracking', 'wp-analytify-advanced' ) ) ? true : false;
 			$linked_domains               = array();
 
@@ -630,8 +627,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			}
 
 			$configuration = array(
-				'anonymize_ip'           => $anonymize_ip,
-				'forceSSL'               => $force_ssl,
+
 				'allow_display_features' => $allow_display_features,
 			);
 
@@ -741,14 +737,6 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 					echo "ga('require', 'linker');";
 				} else {
 					echo "	ga('create', '" . esc_js( $ua_code ) . "', 'auto');";
-				}
-
-				if ( 'on' === $this->settings->get_option( 'anonymize_ip', 'wp-analytify-advanced' ) ) {
-					echo "ga('set', 'anonymizeIp', true);";
-				}
-
-				if ( 'on' === $this->settings->get_option( 'force_ssl', 'wp-analytify-advanced' ) ) {
-					echo "ga('set', 'forceSSL', true);";
 				}
 
 				if ( 'on' === $this->settings->get_option( 'track_user_id', 'wp-analytify-advanced' ) && is_user_logged_in() ) {
@@ -1010,6 +998,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		/**
 		 * Create Analytics menu at the left side of dashboard
 		 *
+		 * @version 8.1.0
 		 * @return void
 		 */
 		public function add_admin_menu() {
@@ -1017,7 +1006,15 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			$allowed_roles[] = 'administrator';
 
 			$current_user   = wp_get_current_user();
-			$is_author_only = $current_user && in_array( 'author', (array) $current_user->roles, true ) && ! in_array( 'administrator', (array) $current_user->roles, true );
+			$is_author_only = $current_user && in_array( 'author', $current_user->roles, true ) && ! in_array( 'administrator', $current_user->roles, true );
+
+			// Determine the capability to use for the dashboard.
+			// If the user has an allowed role, we use 'read' to ensure they can see the menu,
+			// since add_admin_menu already restricted registration to allowed roles.
+			$dashboard_cap = 'manage_options';
+			if ( array_intersect( $current_user->roles, $allowed_roles ) ) {
+				$dashboard_cap = 'read';
+			}
 
 			// Allow authors to see the menu (so they can access Authors dashboard submenu).
 			// But restrict them from accessing main dashboard content.
@@ -1037,7 +1034,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			add_menu_page(
 				ANALYTIFY_NICK,
 				'Analytify',
-				'manage_options',
+				$dashboard_cap,
 				'analytify-dashboard',
 				array(
 					$this,
@@ -1071,7 +1068,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				'analytify-dashboard',
 				ANALYTIFY_NICK . esc_html__( ' Dashboards', 'wp-analytify' ),
 				esc_html__( 'Dashboards', 'wp-analytify' ),
-				'manage_options',
+				$dashboard_cap,
 				'analytify-dashboard',
 				array(
 					$this,

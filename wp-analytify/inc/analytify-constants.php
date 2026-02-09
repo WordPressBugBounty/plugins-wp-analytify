@@ -6,7 +6,7 @@
  * Centralizing constants here makes them easier to manage and update.
  *
  * @package WP_Analytify
- * @since 8.0.1
+ * @since 8.1.0
  */
 
 // Exit if accessed directly.
@@ -19,11 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ============================================================================.
 
 if ( ! defined( 'ANALYTIFY_VERSION' ) ) {
-	define( 'ANALYTIFY_VERSION', '8.0.1' );
+	define( 'ANALYTIFY_VERSION', '8.1.0' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_PLUGIN_VERSION' ) ) {
-	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.0.1' );
+	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.1.0' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_ID' ) ) {
@@ -64,6 +64,14 @@ if ( ! defined( 'WP_ANALYTIFY_LOCAL_DIR' ) ) {
 
 if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
 	define( 'WP_PLUGIN_DIR', dirname( __DIR__ ) );
+}
+
+// ============================================================================.
+// EXTERNAL SERVICE URLs.
+// ============================================================================.
+
+if ( ! defined( 'ANALYTIFY_GOOGLE_SEARCH_CONSOLE_API_URL' ) ) {
+	define( 'ANALYTIFY_GOOGLE_SEARCH_CONSOLE_API_URL', 'https://www.googleapis.com/webmasters/v3/sites/' );
 }
 
 // ============================================================================.

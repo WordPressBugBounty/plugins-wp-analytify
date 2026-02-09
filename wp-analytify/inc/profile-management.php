@@ -13,6 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Include GA4 Property Management class for direct instantiation.
+require_once __DIR__ . '/ga4-property-management.php';
+
 /**
  * Profile Management Component Class
  */
@@ -60,22 +63,54 @@ class Analytify_Profile_Management {
 	 * @return void
 	 */
 	public function update_profiles_list_summary( $old_value, $new_value ) {
-		if ( isset( $new_value['profile_for_posts'] ) && ! empty( $new_value['profile_for_posts'] ) ) {
-			$profile_id = $new_value['profile_for_posts'];
+		if ( isset( $new_value['hide_profiles_list'] ) && 'on' === $new_value['hide_profiles_list'] && ( $new_value['hide_profiles_list'] !== $old_value['hide_profiles_list'] ) && isset( $new_value['profile_for_dashboard'] ) ) {
+			$accounts = get_option( 'profiles_list_summary' );
 
-			// Get profile details and update summary.
-			$profile_summary = $this->get_profile_summary( $profile_id );
-			if ( $profile_summary ) {
-				update_option( 'analytify_profile_summary', $profile_summary );
+			update_option( 'profiles_list_summary_backup', $accounts, 'no' );
+
+			$new_properties = array();
+			if ( ! empty( $accounts ) ) {
+				foreach ( $accounts->getItems() as $account ) {
+					foreach ( $account->getWebProperties() as  $property ) {
+						foreach ( $property->getProfiles() as $profile ) {
+							// Get Property ID i.e UA Code.
+							if ( $profile->getId() === $new_value['profile_for_dashboard'] ) {
+								$new_properties[ $account->getId() ] = $property;
+							}
+							if ( $profile->getId() === $new_value['profile_for_posts'] ) {
+								$new_properties[ $account->getId() ] = $property;
+							}
+						}
+					}
+				}
 			}
 
-			// Fetch GA4 streams for the selected property.
-			$this->fetch_ga4_streams_for_property( $profile_id );
+			update_option( 'profiles_list_summary', $new_properties );
+		}
+
+		// Update stream and save measurement id when user selects the GA4 property for tracking. (Profile for posts (Backend/Front-end)).
+		if ( isset( $new_value['profile_for_posts'] ) && $new_value['profile_for_posts'] && substr( $new_value['profile_for_posts'], 0, 3 ) === 'ga4' ) {
+			$property_id             = explode( ':', $new_value['profile_for_posts'] )[1];
+			$ga4_property_management = new Analytify_GA4_Property_Management( $this->analytify );
+			$ga4_property_management->setup_property( $property_id, 'tracking' );
+		}
+
+		// Update stream and save measurement id when user selects the GA4 property for reporting. (Profile for dashboard).
+		if ( isset( $new_value['profile_for_dashboard'] ) && $new_value['profile_for_dashboard'] && substr( $new_value['profile_for_dashboard'], 0, 3 ) === 'ga4' ) {
+			$ga4_update_number = wp_rand( 10, 100 );
+			update_option( 'ga4_update_number', 'updated_' . $ga4_update_number );
+			$property_id             = explode( ':', $new_value['profile_for_dashboard'] )[1];
+			$ga4_property_management = new Analytify_GA4_Property_Management( $this->analytify );
+			$ga4_property_management->setup_property( $property_id, 'reporting' );
+		} else {
+			$ua_update_number = wp_rand( 10, 100 );
+			update_option( 'ua_update_number', 'updated_' . $ua_update_number );
 		}
 	}
 
+
 	/**
-	 * Update selected profiles when advanced option is updated
+	 * Update selected profiles when advanced option is updated.
 	 *
 	 * @since 7.0.5
 	 * @version 7.0.5
@@ -84,172 +119,107 @@ class Analytify_Profile_Management {
 	 * @return void
 	 */
 	public function update_selected_profiles( $old_value, $new_value ) {
-		if ( isset( $new_value['gtag_tracking_mode'] ) && 'gtag' === $new_value['gtag_tracking_mode'] ) {
-			// Update tracking mode related settings.
-			update_option( 'analytify_gtag_tracking_enabled', true );
+
+		if ( isset( $new_value['google_analytics_version'] ) && ( isset( $old_value['google_analytics_version'] ) && $new_value['google_analytics_version'] !== $old_value['google_analytics_version'] ) ) {
+			$analytify_profile_section = get_option( 'wp-analytify-profile' );
+			if ( isset( $analytify_profile_section['profile_for_dashboard'] ) && $analytify_profile_section['profile_for_dashboard'] ) {
+				$analytify_profile_section['profile_for_dashboard'] = '';
+			}
+			if ( isset( $analytify_profile_section['profile_for_posts'] ) && $analytify_profile_section['profile_for_posts'] ) {
+				$analytify_profile_section['profile_for_posts'] = '';
+			}
+			update_option( 'wp-analytify-profile', $analytify_profile_section );
+			delete_option( 'analytify-ga-properties-summery' );
+			delete_option( 'analytify_ga4_exceptions' );
 		}
 
-		// Update reporting property info when data stream is selected.
-		if ( isset( $new_value['ga4_web_data_stream'] ) && ! empty( $new_value['ga4_web_data_stream'] ) ) {
-			$this->update_reporting_property_info( $new_value['ga4_web_data_stream'] );
+		// if user change the stream update the ua code and mp secret.
+		if ( isset( $new_value['ga4_web_data_stream'] ) && isset( $old_value['ga4_web_data_stream'] ) && $new_value['ga4_web_data_stream'] !== $old_value['ga4_web_data_stream'] ) {
+			// TODO: legacy code with wrong naming.
+			$ua_code = get_option( 'analytify_ua_code' );
+			// check if the ua code is same if it's then return.
+			if ( $ua_code === $new_value['ga4_web_data_stream'] ) {
+				return;
+			}
+			// Update the tracking code.
+			update_option( 'analytify_ua_code', $new_value['ga4_web_data_stream'] );
+
+			new Analytify_Host_Analytics( 'gtag', false, true ); // update the locally host analytics file.
+
+			// Get the stored data for currect property and stream.
+			$property_info = get_option( 'analytify_tracking_property_info' );
+			$all_streams   = get_option( 'analytify-ga4-streams' );
+
+			if ( ! empty( $property_info ) ) {
+				// Extract the current property id.
+				$property_id = $property_info['property_id'];
+
+				// get all the data for currently selected stream from the all streams array.
+				$stream_data = $all_streams[ $property_id ][ $new_value['ga4_web_data_stream'] ] ?? false;
+
+				// Set mp secret value initally to null.
+				$new_secret_value = null;
+
+				if ( isset( $stream_data['full_name'] ) ) {
+
+					$new_secret_value = $this->analytify->analytify_get_mp_secret( $stream_data['full_name'] );
+
+					if ( empty( $new_secret_value ) ) {
+						$new_secret_value = $this->analytify->analytify_create_mp_secret( $property_id, $stream_data['full_name'], $stream_data['measurement_id'] );
+					}
+					WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $new_secret_value );
+					update_option( 'analytify_tracking_property_info', $stream_data );
+					update_option( 'analytify_reporting_property_info', $stream_data );
+				}
+			}
 		}
 	}
 
 	/**
 	 * Update profile list summary on plugin update
 	 *
-	 * @since 7.0.5
-	 * @version 7.0.5
+	 * @since 7.1.1
+	 * @version 8.1.0
 	 * @return void
 	 */
 	public function update_profile_list_summary_on_update() {
-		$profile_id = get_option( 'pt_webprofile' );
-		if ( $profile_id ) {
-			$profile_summary = $this->get_profile_summary( $profile_id );
-			if ( $profile_summary ) {
-				update_option( 'analytify_profile_summary', $profile_summary );
-			}
-		}
-	}
+		if ( version_compare( ANALYTIFY_VERSION, get_option( 'WP_ANALYTIFY_PLUGIN_VERSION' ), '>' ) ) {
+			$option = get_option( 'wp-analytify-profile' );
 
-	/**
-	 * Get profile summary information
-	 *
-	 * @version 7.0.5
-	 * @param mixed $profile_id Profile ID.
-	 * @return mixed
-	 */
-	private function get_profile_summary( $profile_id ) {
-		// This would contain logic to get profile summary.
-		// For now, return a basic structure.
-		return array(
-			'profile_id' => $profile_id,
-			'updated_at' => current_time( 'mysql' ),
-		);
-	}
+			if ( isset( $option['hide_profiles_list'] ) && 'on' === $option['hide_profiles_list'] ) {
+				$accounts = get_option( 'profiles_list_summary' );
 
-	/**
-	 * Fetch GA4 streams for a specific property
-	 *
-	 * @since 7.0.5
-	 * @version 7.0.5
-	 * @param string $profile_id The profile ID (format: "property:property_id").
-	 * @return void
-	 */
-	private function fetch_ga4_streams_for_property( $profile_id ) {
-		// Extract property ID from profile format (property:property_id).
-		$property_id = explode( ':', $profile_id )[1] ?? false;
-
-		if ( ! $property_id ) {
-			return;
-		}
-
-		// Check if we already have streams for this property.
-		$existing_streams = get_option( 'analytify-ga4-streams', array() );
-		if ( isset( $existing_streams[ $property_id ] ) && ! empty( $existing_streams[ $property_id ] ) ) {
-			return;
-		}
-
-		// Initialize GA4 core to fetch streams.
-		if ( isset( $GLOBALS['WP_ANALYTIFY'] ) && method_exists( $GLOBALS['WP_ANALYTIFY'], 'analytify_get_ga_streams' ) ) {
-			$streams = $GLOBALS['WP_ANALYTIFY']->analytify_get_ga_streams( $property_id );
-
-			if ( ! empty( $streams ) ) {
-				// Store streams data.
-				$existing_streams[ $property_id ] = $streams;
-				update_option( 'analytify-ga4-streams', $existing_streams );
-			}
-		}
-	}
-
-	/**
-	 * Update reporting property info when data stream is selected
-	 *
-	 * @since 7.0.5
-	 * @version 7.0.5
-	 * @param string $stream_id The selected stream ID.
-	 * @return void
-	 */
-	private function update_reporting_property_info( $stream_id ) {
-		// Get the current profile to find the property ID.
-		$profile      = get_option( 'wp-analytify-profile' );
-		$post_profile = isset( $profile['profile_for_posts'] ) ? $profile['profile_for_posts'] : '';
-		$property_id  = explode( ':', $post_profile )[1] ?? false;
-
-		if ( ! $property_id ) {
-			return;
-		}
-
-		// Get streams data for this property.
-		$streams_data = get_option( 'analytify-ga4-streams', array() );
-		if ( ! isset( $streams_data[ $property_id ] ) || empty( $streams_data[ $property_id ] ) ) {
-			return;
-		}
-
-		// Find the selected stream in the streams data.
-		$selected_stream = null;
-		foreach ( $streams_data[ $property_id ] as $stream ) {
-			if ( isset( $stream['measurement_id'] ) && $stream['measurement_id'] === $stream_id ) {
-				$selected_stream = $stream;
-				break;
-			}
-		}
-
-		if ( ! $selected_stream ) {
-			return;
-		}
-
-		// Extract stream name from various possible fields.
-		$stream_name = 'Unknown Stream';
-		if ( isset( $selected_stream['stream_name'] ) && ! empty( $selected_stream['stream_name'] ) ) {
-			$stream_name = $selected_stream['stream_name'];
-		} elseif ( isset( $selected_stream['display_name'] ) && ! empty( $selected_stream['display_name'] ) ) {
-			$stream_name = $selected_stream['display_name'];
-		} elseif ( isset( $selected_stream['name'] ) && ! empty( $selected_stream['name'] ) ) {
-			$stream_name = $selected_stream['name'];
-		} elseif ( isset( $selected_stream['web_stream_data']['display_name'] ) && ! empty( $selected_stream['web_stream_data']['display_name'] ) ) {
-			$stream_name = $selected_stream['web_stream_data']['display_name'];
-		} else {
-			// Fallback: use measurement ID or stream ID as name.
-			$stream_name = $stream_id;
-		}
-
-		// Extract URL from various possible fields.
-		$stream_url = '';
-		if ( isset( $selected_stream['web_stream_data']['default_uri'] ) && ! empty( $selected_stream['web_stream_data']['default_uri'] ) ) {
-			$stream_url = $selected_stream['web_stream_data']['default_uri'];
-		} elseif ( isset( $selected_stream['url'] ) && ! empty( $selected_stream['url'] ) ) {
-			$stream_url = $selected_stream['url'];
-		} elseif ( isset( $selected_stream['web_stream_data']['site_url'] ) && ! empty( $selected_stream['web_stream_data']['site_url'] ) ) {
-			$stream_url = $selected_stream['web_stream_data']['site_url'];
-		}
-
-		// Prepare reporting property info.
-		$reporting_info = array(
-			'property_id'    => $property_id,
-			'stream_name'    => $stream_name,
-			'measurement_id' => $stream_id,
-			'url'            => $stream_url,
-			'full_name'      => isset( $selected_stream['full_name'] ) ? $selected_stream['full_name'] : '',
-		);
-
-		// Update the reporting property info.
-		update_option( 'analytify_reporting_property_info', $reporting_info );
-
-		// Also update tracking property info for Search Console integration.
-		update_option( 'analytify_tracking_property_info', $reporting_info );
-
-		// Fetch and update measurement protocol secret for the selected stream.
-		if ( ! empty( $reporting_info['full_name'] ) && isset( $GLOBALS['WP_ANALYTIFY'] ) && method_exists( $GLOBALS['WP_ANALYTIFY'], 'analytify_get_mp_secret' ) ) {
-			$mp_secret_data = $GLOBALS['WP_ANALYTIFY']->analytify_get_mp_secret( $reporting_info['full_name'] );
-			if ( ! empty( $mp_secret_data ) && isset( $mp_secret_data['secretValue'] ) ) {
-				WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $mp_secret_data['secretValue'] );
-			} elseif ( method_exists( $GLOBALS['WP_ANALYTIFY'], 'analytify_create_mp_secret' ) ) {
-				// If no secret exists, try to create one.
-				$created_secret = $GLOBALS['WP_ANALYTIFY']->analytify_create_mp_secret( $property_id, $reporting_info['full_name'], $stream_id );
-				if ( ! empty( $created_secret ) && isset( $created_secret['secretValue'] ) ) {
-					WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $created_secret['secretValue'] );
+				if ( ! $accounts ) {
+					return;
 				}
+
+				// Means that its run already.
+				if ( is_array( $accounts ) ) {
+					return;
+				}
+
+				update_option( 'profiles_list_summary_backup', $accounts, 'no' );
+
+				$new_value['profile_for_dashboard'] = $option['profile_for_dashboard'];
+				$new_value['profile_for_posts']     = $option['profile_for_posts'];
+
+				$new_properties = array();
+
+				foreach ( $accounts->getItems() as $account ) {
+					foreach ( $account->getWebProperties() as  $property ) {
+						foreach ( $property->getProfiles() as $profile ) {
+							// Get Property ID i.e UA Code.
+							if ( $profile->getId() === $new_value['profile_for_dashboard'] ) {
+								$new_properties[ $account->getId() ] = $property;
+							}
+							if ( $profile->getId() === $new_value['profile_for_posts'] ) {
+								$new_properties[ $account->getId() ] = $property;
+							}
+						}
+					}
+				}
+
+				update_option( 'profiles_list_summary', $new_properties );
 			}
 		}
 	}

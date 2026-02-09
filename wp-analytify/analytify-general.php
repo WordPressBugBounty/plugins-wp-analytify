@@ -794,58 +794,86 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @version 7.0.1
 		 */
 		public function get_search_console_stats( $transient_name, $dates = array(), $limit = 10 ) {
-			$response = array(
-				'error' => array(),
-			);
-			$logger   = analytify_get_logger();
+
+			$logger = analytify_get_logger();
+
 			if ( class_exists( 'QM' ) ) {
-				QM::info( 'Analytify: Getting Google Analytics token for stream enhanced measurement.' );
+				QM::info( 'Analytify: Getting Google Analytics token for Search Console stats.' );
 			}
+
 			$token = $this->analytify_get_google_token();
 
-			// Validate that token is an array and has the expected structure.
 			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
-
 				return array( 'error' => array( 'Invalid or missing Google Analytics token.' ) );
 			}
 
 			$access_token = $token['access_token'];
 
 			$tracking_stream_info = get_option( 'analytify_tracking_property_info' );
+
 			try {
 				$stream_url = ( isset( $tracking_stream_info['url'] ) && ! empty( $tracking_stream_info['url'] ) ) ? $tracking_stream_info['url'] : null;
 			} catch ( \Throwable $th ) {
-				$logger->warning( 'Error Fetching Stream URL: ' . $th->getMessage(), array( 'source' => 'analytify_fetch_stream_url' ) );
-				if ( class_exists( 'QM' ) ) {
-					QM::warning( 'Analytify: Error Fetching Stream URL: ' . $th->getMessage(), array( 'source' => 'analytify_fetch_stream_url' ) );
-				}
+				$logger->warning(
+					'Error fetching stream URL',
+					array(
+						'source'  => 'analytify_fetch_stream_url',
+						'message' => $th->getMessage(),
+					)
+				);
+
 				if ( empty( $stream_url ) ) {
-					$response['error'] = array(
-						'status'  => 'No Stats Available',
-						'message' => __( 'No URL found for the selected stream', 'wp-analytify' ),
+					return array(
+						'error' => array(
+							'status'  => 'No Stats Available',
+							'message' => __( 'No URL found for the selected stream', 'wp-analytify' ),
+						),
 					);
-					return $response;
 				}
 			}
 
-			$domain_stream_url_filtered = ! empty( $stream_url ) ? preg_replace( '/^(https?:\/\/)?(www\.)?([^\/]+)(\/.*)?$/i', '$3', $stream_url ) : '';
-			$domain_stream_url          = "sc-domain:$domain_stream_url_filtered";
+			// Validate stream URL.
+			if ( empty( $stream_url ) ) {
+				return array(
+					'error' => array(
+						'status'  => 'No Stats Available',
+						'message' => __( 'No URL found for the selected stream', 'wp-analytify' ),
+					),
+				);
+			}
 
+			// Sanitize URL.
+			$stream_url = trim( $stream_url );
+			$stream_url = esc_url_raw( $stream_url );
+
+			// Extract domain (handles ports and IPv6).
+			$domain_stream_url_filtered = preg_replace( '/^(https?:\/\/)?(www\.)?([^\/\s:]+(?::\d+)?|\[[^\]]+\])(\/.*)?$/i', '$3', $stream_url );
+			$domain_stream_url_filtered = preg_replace( '/:\d+$/', '', $domain_stream_url_filtered ); // Remove port.
+			$domain_stream_url_filtered = str_replace( array( '[', ']' ), '', $domain_stream_url_filtered ); // Remove IPv6 brackets.
+
+			// Build candidate URLs for Search Console API.
 			$urls = array(
-				$domain_stream_url,
-				'https://' . preg_replace( '(^(https?:\/\/([wW]{3}\.)?)?)', '', $domain_stream_url_filtered ),
-				'https://' . preg_replace( '(^(https?:\/\/([wW]{3}\.)?)?)', 'www.', $domain_stream_url_filtered ),
-				'http://' . preg_replace( '(^(https?:\/\/([wW]{3}\.)?)?)', '', $domain_stream_url_filtered ),
-				'http://' . preg_replace( '(^(https?:\/\/([wW]{3}\.)?)?)', 'www.', $domain_stream_url_filtered ),
+				'sc-domain:' . $domain_stream_url_filtered,
+				'https://' . $domain_stream_url_filtered,
+				'https://www.' . $domain_stream_url_filtered,
+				'http://' . $domain_stream_url_filtered,
+				'http://www.' . $domain_stream_url_filtered,
+				'https://' . rtrim( $domain_stream_url_filtered, '/' ) . '/', // URL-prefix format.
 			);
 
-			$base_url   = 'https://www.googleapis.com/webmasters/v3/sites/';
-			$start_date = isset( $dates['start'] ) ? $dates['start'] : 'yesterday';
-			$end_date   = isset( $dates['end'] ) ? $dates['end'] : 'today';
+			// Remove duplicates to avoid redundant API calls.
+			$urls = array_unique( $urls );
+
+			$base_url   = ANALYTIFY_GOOGLE_SEARCH_CONSOLE_API_URL;
+			$start_date = $dates['start'] ?? 'yesterday';
+			$end_date   = $dates['end'] ?? 'today';
+
+			// Track responses: prefer domains with data, fallback to any accepted domain.
+			$accepted_domains_with_data = array();
+			$accepted_domains_no_data   = array();
 
 			foreach ( $urls as $url ) {
 				try {
-					// Prepare the Search Analytics API query.
 					$query_data = array(
 						'startDate'  => $start_date,
 						'endDate'    => $end_date,
@@ -853,71 +881,154 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 						'rowLimit'   => $limit,
 					);
 
-					// Set up cURL request to the Search Console API.
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
-					$ch = curl_init();
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-					curl_setopt( $ch, CURLOPT_URL, $base_url . rawurlencode( $url ) . '/searchAnalytics/query' );
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-					curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-					curl_setopt(
-						$ch,
-						CURLOPT_HTTPHEADER,
+					// Make request to Search Console API using WordPress HTTP API.
+					$http_response = wp_remote_post(
+						$base_url . rawurlencode( $url ) . '/searchAnalytics/query',
 						array(
-							'Authorization: Bearer ' . $access_token,
-							'Content-Type: application/json',
+							'headers'   => array(
+								'Authorization' => 'Bearer ' . $access_token,
+								'Content-Type'  => 'application/json',
+							),
+							'body'      => wp_json_encode( $query_data ),
+							'timeout'   => 30,
+							'sslverify' => true, // Explicitly ensure SSL verification.
 						)
 					);
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-					curl_setopt( $ch, CURLOPT_POST, true );
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-					curl_setopt( $ch, CURLOPT_POSTFIELDS, wp_json_encode( $query_data ) );
 
-					// Execute the cURL request.
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
-					$result = curl_exec( $ch );
+					if ( is_wp_error( $http_response ) ) {
+						$logger->warning(
+							sprintf( 'HTTP request failed for domain "%s": %s', $url, $http_response->get_error_message() ),
+							array(
+								'source' => 'analytify_fetch_search_console_stats',
+								'domain' => $url,
+							)
+						);
+						continue; // Continue to next URL.
+					}
 
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
-					$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+					$http_code     = wp_remote_retrieve_response_code( $http_response );
+					$response_body = wp_remote_retrieve_body( $http_response );
 
-					// Handle the response.
+					// Log all HTTP responses for debugging, but categorize them.
 					if ( 200 === $http_code ) {
-						$response['response'] = json_decode( $result, true );
+						$decoded = json_decode( $response_body, true );
 
-						// Clear error if successful.
-						unset( $response['error'] );
-						// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
-						curl_close( $ch );
-						return $response;
-					} else {
-						$logger->warning( "Error querying $url: HTTP code $http_code", array( 'source' => 'analytify_fetch_search_console_stats' ) );
-						if ( class_exists( 'QM' ) ) {
-							QM::warning( "Analytify: Error querying $url: HTTP code $http_code", array( 'source' => 'analytify_fetch_search_console_stats' ) );
+						// Validate JSON decode result.
+						if ( json_last_error() !== JSON_ERROR_NONE ) {
+							$logger->error(
+								sprintf( 'JSON decode failed for domain "%s": %s', $url, json_last_error_msg() ),
+								array(
+									'source' => 'analytify_fetch_search_console_stats',
+									'domain' => $url,
+								)
+							);
+							continue;
 						}
-					}
 
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
-					curl_close( $ch );
+						// Ensure decoded result is an array.
+						if ( ! is_array( $decoded ) ) {
+							$logger->error(
+								sprintf( 'Unexpected JSON response for domain "%s": not an array', $url ),
+								array(
+									'source' => 'analytify_fetch_search_console_stats',
+									'domain' => $url,
+								)
+							);
+							continue;
+						}
+
+						$row_count = count( $decoded['rows'] ?? array() );
+
+						// Log domain check result for debugging.
+						$logger->info(
+							sprintf( 'Domain "%s" - HTTP %d, %d rows found', $url, $http_code, $row_count ),
+							array(
+								'source'    => 'analytify_fetch_search_console_stats',
+								'domain'    => $url,
+								'http_code' => $http_code,
+								'row_count' => $row_count,
+							)
+						);
+
+						// Store this response - prefer domains with data.
+						if ( $row_count > 0 ) {
+							$accepted_domains_with_data[] = array(
+								'url'  => $url,
+								'data' => $decoded,
+							);
+							$logger->info(
+								'Domain categorized as HAVING DATA',
+								array(
+									'source'    => 'analytify_fetch_search_console_stats',
+									'domain'    => $url,
+									'row_count' => $row_count,
+								)
+							);
+						} else {
+							$accepted_domains_no_data[] = array(
+								'url'  => $url,
+								'data' => $decoded,
+							);
+							$logger->info(
+								'Domain categorized as NO DATA',
+								array(
+									'source'    => 'analytify_fetch_search_console_stats',
+									'domain'    => $url,
+									'row_count' => $row_count,
+								)
+							);
+						}
+					} else {
+						// Log non-200 responses for debugging.
+						$logger->warning(
+							sprintf( 'Domain "%s" returned HTTP %d: %s', $url, $http_code, wp_trim_words( $response_body, 20 ) ),
+							array(
+								'source'    => 'analytify_fetch_search_console_stats',
+								'domain'    => $url,
+								'http_code' => $http_code,
+							)
+						);
+					}
 				} catch ( \Throwable $th ) {
-					// Log error with context.
-					$logger->warning( "Error querying $url: " . $th->getMessage(), array( 'source' => 'analytify_fetch_search_console_stats' ) );
-					if ( class_exists( 'QM' ) ) {
-						QM::warning( "Analytify: Error querying $url: " . $th->getMessage(), array( 'source' => 'analytify_fetch_search_console_stats' ) );
-					}
-
-					// Continue to next URL if error is transient.
+					// Continue to next URL on exception.
 					continue;
 				}
 			}
 
-			// Set error response if all URLs failed.
-			$response['error'] = array(
-				'status'  => "No Stats Available for $domain_stream_url_filtered",
-				'message' => __( "Analytify gets GA4 Keyword stats from Search Console. Make sure you've verified and have owner access to your site in Search Console.", 'wp-analytify' ),
+			// Choose the best domain after checking ALL URLs.
+			$chosen_domain = null;
+
+			// Priority 1: Any domain with actual keyword data (prefer first one found).
+			if ( ! empty( $accepted_domains_with_data ) ) {
+				$chosen_domain = $accepted_domains_with_data[0]; // Use first domain that has data.
+			} // phpcs:ignore Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace
+			// Priority 2: If NO domains have data, use first accepted domain (fallback).
+			elseif ( ! empty( $accepted_domains_no_data ) ) {
+				$chosen_domain = $accepted_domains_no_data[0]; // Use first accepted domain as fallback.
+			}
+
+			// Return the chosen domain's data.
+			if ( $chosen_domain ) {
+				return array(
+					'response' => $chosen_domain['data'],
+				);
+			}
+
+			// No domains were accepted at all.
+			$logger->warning(
+				'FINAL FAILURE: No domain accepted',
+				array(
+					'source' => 'analytify_fetch_search_console_stats',
+					'site'   => $domain_stream_url_filtered,
+				)
 			);
 
-			return $response;
+			return array(
+				'error' => array(
+					'status'  => "No Stats Available for $domain_stream_url_filtered",
+					'message' => __( 'Analytify gets GA4 keyword stats from Search Console. Make sure the site is verified and you have owner access.', 'wp-analytify' ),
+				),
+			);
 		}
 	} // End of class
 } // End of if class exists

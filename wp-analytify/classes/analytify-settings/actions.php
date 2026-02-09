@@ -342,10 +342,15 @@ trait Analytify_Settings_Actions {
 		$delete_cache_from_bar      = isset( $_GET['analytify_delete_cache_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['analytify_delete_cache_nonce'] ) ), 'analytify_delete_cache' );
 		$delete_cache_from_settings = isset( $_POST['analytify_delete_cache_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['analytify_delete_cache_nonce'] ) ), 'analytify_delete_cache' );
 		if ( $delete_cache_from_bar || $delete_cache_from_settings ) {
+			// Clear GA4 dashboard transients.
 			delete_transient( 'analytify_quota_exception' );
 			global $wpdb;
 			$esc_key = '%' . $wpdb->esc_like( '_analytify_transient' ) . '%';
 			$wpdb->query( $wpdb->prepare( "DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE %s", $esc_key ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Cache deletion requires direct query
+
+			// Clear Search Console cache.
+			delete_option( 'analytify_search_console_data' );
+
 			status_header( 200 );
 			$goback = add_query_arg( 'analytify-cache', 'true', wp_get_referer() );
 			wp_safe_redirect( $goback );

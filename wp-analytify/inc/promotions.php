@@ -114,7 +114,7 @@ class Analytify_Promotions {
 		$profile = get_option( 'wp-analytify-profile' );
 		if ( empty( $profile['profile_for_dashboard'] ) ) {
 			// translators: %s is the admin URL.
-			echo '<div class="notice notice-warning is-dismissible"><p>' . sprintf( esc_html__( 'Please <a href="%s">select your website profile</a> to view Analytics.', 'wp-analytify' ), esc_url( admin_url( 'admin.php?page=analytify-settings&tab=profile' ) ) ) . '</p></div>';
+			echo '<div class="notice notice-warning is-dismissible"><p>' . wp_kses( sprintf( __( 'Please <a href="%s">select your website profile</a> to view Analytics.', 'wp-analytify' ), esc_url( admin_url( 'admin.php?page=analytify-settings&tab=profile' ) ) ), array( 'a' => array( 'href' => array() ) ) ) . '</p></div>';
 		}
 	}
 

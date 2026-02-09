@@ -102,7 +102,7 @@ trait Analytify_Email_Settings {
 			$message = esc_html( 'Analytify email reports and test emails disabled.' );
 		} else {
 			$class   = 'wp-analytify-success';
-			$message = esc_html__( 'Analytify detailed report sent!', 'wp-analytify' );
+			$message = esc_html__( 'Analytify report sent.', 'wp-analytify' );
 		}
 
 		analytify_notice( $message, $class );

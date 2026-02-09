@@ -132,6 +132,14 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 				#posts-filter .tablenav .alignleft.actions input[type="submit"][name="filter_action"] {
 					display: none !important;
 				}
+				.column-analytify_sessions {
+					width: 140px;
+					min-width: 140px;
+					text-align: center !important;
+				}
+				th.column-analytify_sessions {
+					white-space: nowrap;
+				}
 			</style>
 			<span style="margin-left: 10px; display: inline-flex; align-items: center; vertical-align: middle;">
 				<span style="margin-right: 5px; white-space: nowrap;"><?php esc_html_e( 'Session Date Range:', 'wp-analytify' ); ?></span>

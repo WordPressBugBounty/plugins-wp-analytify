@@ -65,7 +65,16 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'    => 'profile_for_dashboard',
 					'label'   => __( 'Profile for dashboard', 'wp-analytify' ),
-					'desc'    => __( 'Select your Google Analytics website profile/stream for Analytify dashboard statistics. <br /><strong>Note:</strong> Not seeing new GA4 properties in the above list? See <a href="https://analytify.io/doc/how-to-integrate-analytify-with-google-analytics-4-ga4/" target="_blank">why and how to fix it</a>.', 'wp-analytify' ),
+					'desc'    => sprintf(
+						/* translators: %s: documentation link */
+						__(
+							'Select your Google Analytics website profile/stream for Analytify dashboard statistics. Note: Not seeing new GA4 properties in the above list? See %s.',
+							'wp-analytify'
+						),
+						'<a href="https://analytify.io/doc/how-to-integrate-analytify-with-google-analytics-4-ga4/" target="_blank" rel="noopener noreferrer">' .
+						esc_html__( 'why and how to fix it', 'wp-analytify' ) .
+						'</a>'
+					),
 					'type'    => 'select_profile',
 					'default' => 'Choose profile for dashboard',
 					'options' => $ga_properties_and_profiles,
@@ -185,19 +194,6 @@ trait Analytify_Settings_Fields {
 				'name'  => 'locally_host_analytics',
 				'label' => __( 'Host Google Analytics Locally', 'wp-analytify' ),
 				'desc'  => __( 'Hosting Google Analytics locally may improve your site speed and other core web vitals.', 'wp-analytify' ),
-				'type'  => 'checkbox',
-			),
-			array(
-				'name'  => 'anonymize_ip',
-				'label' => __( 'Anonymize IP addresses', 'wp-analytify' ),
-				// translators: %1$s is the opening link tag, %2$s is the closing link tag.
-				'desc'  => sprintf( __( 'Detailed information about IP anonymization in Google Analytics can be found %1$shere%2$s.', 'wp-analytify' ), '<a href=\'https://support.google.com/analytics/answer/2763052\' target=\'_blank\'>', '</a>' ),
-				'type'  => 'checkbox',
-			),
-			array(
-				'name'  => 'force_ssl',
-				'label' => __( 'Force Analytics Traffic Over SSL', 'wp-analytify' ),
-				'desc'  => __( 'Analytics traffic will always be encrypted if your site uses HTTPS. Enable this option if you don’t use HTTPS and want your analytics to be encrypted.', 'wp-analytify' ),
 				'type'  => 'checkbox',
 			),
 			array(
