@@ -99,28 +99,6 @@ trait Analytify_Utils_GA {
 		$name = WP_ANALYTIFY_FUNCTIONS::ga_reporting_property_info( 'stream_name' );
 		$url  = WP_ANALYTIFY_FUNCTIONS::ga_reporting_property_info( 'url' );
 
-		// If no reporting property info, try to get it from selected data stream.
-		if ( ! $name || ! $url ) {
-			$advanced_settings = get_option( 'wp-analytify-advanced', array() );
-
-			if ( isset( $advanced_settings['ga4_web_data_stream'] ) && ! empty( $advanced_settings['ga4_web_data_stream'] ) ) {
-				// Try to update reporting property info.
-				if ( class_exists( 'Analytify_Profile_Management' ) ) {
-					$profile_mgmt = new Analytify_Profile_Management( null );
-
-					// Use reflection to call the private method.
-					$reflection = new ReflectionClass( $profile_mgmt );
-					$method     = $reflection->getMethod( 'update_reporting_property_info' );
-					$method->setAccessible( true );
-					$method->invoke( $profile_mgmt, $advanced_settings['ga4_web_data_stream'] );
-
-					// Try again after update.
-					$name = WP_ANALYTIFY_FUNCTIONS::ga_reporting_property_info( 'stream_name' );
-					$url  = WP_ANALYTIFY_FUNCTIONS::ga_reporting_property_info( 'url' );
-				}
-			}
-		}
-
 		if ( $name && $url ) {
 			?>
 			<span class="analytify_stats_of">

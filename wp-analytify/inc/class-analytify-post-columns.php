@@ -4,6 +4,7 @@
  *
  * @package WP_Analytify
  * @since 8.0.0
+ * @version 8.1.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -69,6 +70,7 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 		 * Add the column to the posts table.
 		 *
 		 * @since 8.0.0
+		 * @version 8.1.1
 		 * @param array $columns Existing columns.
 		 * @return array Modified columns.
 		 */
@@ -79,9 +81,24 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 				return $columns;
 			}
 
-			// Get selected date range from localStorage via JavaScript or default to 30 days.
+			/**
+			 * Filters the default date range for session data in post columns.
+			 *
+			 * This filter allows you to customize the default date range used when displaying
+			 * session data in the post list table columns. The date range determines how far back
+			 * The analytics data is retrieved from Google Analytics.
+			 *
+			 * @since 8.1.1
+			 *
+			 * @param string $default_range The default date range. Default '30days'.
+			 *                              Possible values: '7days', '30days', '90days', '1year', 'alltime'.
+			 * @param string $post_type     The current post type being displayed.
+			 */
+			$default_range = apply_filters( 'analytify_session_date_range', '30days', $screen->post_type );
+
+			// Allow URL parameter override for backward compatibility.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes
-			$date_range                    = isset( $_GET['analytify_sessions_range'] ) ? sanitize_text_field( wp_unslash( $_GET['analytify_sessions_range'] ) ) : '30days';
+			$date_range                    = isset( $_GET['analytify_sessions_range'] ) ? sanitize_text_field( wp_unslash( $_GET['analytify_sessions_range'] ) ) : sanitize_text_field( $default_range );
 			$label                         = $this->wpa_get_date_range_label( $date_range );
 			$columns['analytify_sessions'] = __( 'Sessions', 'wp-analytify' ) . ' (' . $label . ')';
 			return $columns;
@@ -106,9 +123,10 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 		}
 
 		/**
-		 * Add date range filter dropdown above posts table.
+		 * Add styling for sessions column.
 		 *
 		 * @since 8.0.0
+		 * @version 8.1.1
 		 * @param string $post_type Post type.
 		 * @return void
 		 */
@@ -123,15 +141,8 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 			if ( ! $post_type_obj || ! $post_type_obj->public ) {
 				return;
 			}
-
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes
-			$selected_range = isset( $_GET['analytify_sessions_range'] ) ? sanitize_text_field( wp_unslash( $_GET['analytify_sessions_range'] ) ) : '30days';
 			?>
 			<style>
-				/* Hide filter button for sessions date range filter */
-				#posts-filter .tablenav .alignleft.actions input[type="submit"][name="filter_action"] {
-					display: none !important;
-				}
 				.column-analytify_sessions {
 					width: 140px;
 					min-width: 140px;
@@ -141,16 +152,6 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 					white-space: nowrap;
 				}
 			</style>
-			<span style="margin-left: 10px; display: inline-flex; align-items: center; vertical-align: middle;">
-				<span style="margin-right: 5px; white-space: nowrap;"><?php esc_html_e( 'Session Date Range:', 'wp-analytify' ); ?></span>
-				<select name="analytify_sessions_range" id="analytify-sessions-range-filter" style="vertical-align: middle;">
-					<option value="7days" <?php selected( $selected_range, '7days' ); ?>><?php esc_html_e( 'Last 7 Days', 'wp-analytify' ); ?></option>
-					<option value="30days" <?php selected( $selected_range, '30days' ); ?>><?php esc_html_e( 'Last 30 Days', 'wp-analytify' ); ?></option>
-					<option value="90days" <?php selected( $selected_range, '90days' ); ?>><?php esc_html_e( 'Last 90 Days', 'wp-analytify' ); ?></option>
-					<option value="1year" <?php selected( $selected_range, '1year' ); ?>><?php esc_html_e( 'Last Year', 'wp-analytify' ); ?></option>
-					<option value="alltime" <?php selected( $selected_range, 'alltime' ); ?>><?php esc_html_e( 'All Time', 'wp-analytify' ); ?></option>
-				</select>
-			</span>
 			<?php
 		}
 
@@ -203,131 +204,76 @@ if ( ! class_exists( 'Analytify_Post_Columns' ) ) {
 				return;
 			}
 			$script_output = true;
+
+			// Get the filtered default date range to pass to JavaScript.
+			$default_range = apply_filters( 'analytify_session_date_range', '30days', $screen->post_type );
 			?>
 		<script>
-		(function($) {
-			// Function to get date range from filter or localStorage
-			function getDateRange() {
-				var $filter = $('#analytify-sessions-range-filter');
-				if ( $filter.length ) {
-					var range = $filter.val();
-					// Store in localStorage for persistence
-					localStorage.setItem('analytify_sessions_range', range);
-					return range;
-				}
-				// Try to get from localStorage
-				return localStorage.getItem('analytify_sessions_range') || '30days';
-			}
+	(function($) {
+		// Function to get date range from URL parameter or default from PHP filter
+		function wpaGetDateRange() {
+			var urlParams = new URLSearchParams(window.location.search);
+			// Use PHP-filtered default instead of hardcoded '30days'
+			return urlParams.get('analytify_sessions_range') || '<?php echo esc_js( $default_range ); ?>';
+		}
 
-			// Function to load sessions data
-			function loadSessionsData() {
-				// Reset all wrappers
-				$('.analytify-sessions-wrapper').each(function() {
-					$(this).html('<span class="spinner is-active" style="float:none;margin:0;"></span>').data('updated', false);
-				});
-
-				var postIds = [];
-				var seenIds = {};
-				$('.analytify-sessions-wrapper').each(function() {
-					var postId = $(this).data('post-id');
-					// Prevent duplicate post IDs.
-					if ( postId && ! seenIds[postId] ) {
-						postIds.push(postId);
-						seenIds[postId] = true;
-					}
-				});
-
-				if ( postIds.length > 0 ) {
-					var dateRange = getDateRange();
-					// Process in chunks of 5 to avoid timeouts.
-					var chunkSize = 5;
-					for (var i = 0; i < postIds.length; i += chunkSize) {
-						var chunk = postIds.slice(i, i + chunkSize);
-						
-						$.post(ajaxurl, {
-							action: 'analytify_get_post_sessions',
-							post_ids: chunk,
-							date_range: dateRange,
-							nonce: '<?php echo esc_js( wp_create_nonce( 'analytify_sessions_nonce' ) ); ?>'
-						}, function(response) {
-							if ( response.success ) {
-								$.each(response.data, function(id, sessions) {
-									// Only update the first matching element to prevent duplicates.
-									var $wrapper = $('.analytify-sessions-wrapper[data-post-id="' + id + '"]').first();
-									if ( $wrapper.length && ! $wrapper.data('updated') ) {
-										$wrapper.html(sessions).data('updated', true);
-									}
-								});
-							}
-						});
-					}
-				}
-			}
-
-			$(document).ready(function() {
-				// Use a unique identifier to prevent duplicate processing.
-				var processedKey = 'analytify_sessions_processed';
-				if ( window[processedKey] ) {
-					return;
-				}
-				window[processedKey] = true;
-
-				// Hide filter button - we handle filtering via AJAX on dropdown change
-				$('#posts-filter .tablenav .alignleft.actions input[type="submit"][name="filter_action"]').hide();
-
-				// Set filter value from localStorage if available
-				var savedRange = localStorage.getItem('analytify_sessions_range');
-				if ( savedRange && $('#analytify-sessions-range-filter').length ) {
-					$('#analytify-sessions-range-filter').val(savedRange);
-				}
-
-				// Load sessions on page load
-				loadSessionsData();
-
-				// Handle filter change - prevent form submission since we use AJAX
-				$(document).on('change', '#analytify-sessions-range-filter', function(e) {
-					// Prevent any default form submission behavior
-					e.preventDefault();
-					e.stopPropagation();
-					
-					var selectedRange = $(this).val();
-					var rangeLabels = {
-						'7days': '<?php echo esc_js( __( '7 Days', 'wp-analytify' ) ); ?>',
-						'30days': '<?php echo esc_js( __( '30 Days', 'wp-analytify' ) ); ?>',
-						'90days': '<?php echo esc_js( __( '90 Days', 'wp-analytify' ) ); ?>',
-						'1year': '<?php echo esc_js( __( 'Last Year', 'wp-analytify' ) ); ?>',
-						'alltime': '<?php echo esc_js( __( 'All Time', 'wp-analytify' ) ); ?>'
-					};
-					
-					// Update column header dynamically
-					var $header = $('th.column-analytify_sessions, th[data-column="analytify_sessions"]');
-					if ( !$header.length ) {
-						// Try to find by text content
-						$('th').each(function() {
-							if ( $(this).text().indexOf('Sessions') !== -1 ) {
-								$header = $(this);
-								return false;
-							}
-						});
-					}
-					if ( $header.length ) {
-						var label = rangeLabels[selectedRange] || rangeLabels['30days'];
-						$header.text('<?php echo esc_js( __( 'Sessions', 'wp-analytify' ) ); ?> (' + label + ')');
-					}
-					
-					// Update URL parameter without reload
-					var url = new URL(window.location.href);
-					url.searchParams.set('analytify_sessions_range', selectedRange);
-					window.history.pushState({}, '', url.toString());
-					
-					// Reload sessions data
-					loadSessionsData();
-					
-					return false;
-				});
+		// Function to load sessions data
+		function wpaLoadSessionsData() {
+			// Reset all wrappers
+			$('.analytify-sessions-wrapper').each(function() {
+				$(this).html('<span class="spinner is-active" style="float:none;margin:0;"></span>').data('updated', false);
 			});
-		})(jQuery);
-		</script>
+
+			var postIds = [];
+			var seenIds = {};
+			$('.analytify-sessions-wrapper').each(function() {
+				var postId = $(this).data('post-id');
+				// Prevent duplicate post IDs.
+				if ( postId && ! seenIds[postId] ) {
+					postIds.push(postId);
+					seenIds[postId] = true;
+				}
+			});
+
+			if ( postIds.length > 0 ) {
+				var dateRange = wpaGetDateRange();
+				// Process in chunks of 5 to avoid timeouts.
+				var chunkSize = 5;
+				for (var i = 0; i < postIds.length; i += chunkSize) {
+					var chunk = postIds.slice(i, i + chunkSize);
+					$.post(ajaxurl, {
+						action: 'analytify_get_post_sessions',
+						post_ids: chunk,
+						date_range: dateRange,
+						nonce: '<?php echo esc_js( wp_create_nonce( 'analytify_sessions_nonce' ) ); ?>'
+					}, function(response) {
+						if ( response.success ) {
+							$.each(response.data, function(id, sessions) {
+								// Only update the first matching element to prevent duplicates.
+								var $wrapper = $('.analytify-sessions-wrapper[data-post-id="' + id + '"]').first();
+								if ( $wrapper.length && ! $wrapper.data('updated') ) {
+									$wrapper.html(sessions).data('updated', true);
+								}
+							});
+						}
+					});
+				}
+			}
+		}
+
+		$(document).ready(function() {
+			// Use a unique identifier to prevent duplicate processing.
+			var processedKey = 'analytify_sessions_processed';
+			if ( window[processedKey] ) {
+				return;
+			}
+			window[processedKey] = true;
+
+			// Load sessions on page load
+			wpaLoadSessionsData();
+		});
+	})(jQuery);
+	</script>
 			<?php
 		}
 

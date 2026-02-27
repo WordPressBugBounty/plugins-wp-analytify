@@ -105,7 +105,7 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 		/**
 		 * Text holder for general stat boxes.
 		 *
-		 * @version 7.0.5
+		 * @version 8.2.0
 		 * @return array<string, mixed>
 		 */
 		protected function general_stats_boxes() {
@@ -147,9 +147,15 @@ if ( ! class_exists( 'Analytify_Report_Abstract' ) ) {
 					'append'      => '<span class="analytify_xl_f">%</span>',
 				),
 				'view_per_session' => array(
-					'title'       => esc_html__( 'Engaged Sessions', 'wp-analytify' ),
+					'title'       => esc_html__( 'Pages / Session', 'wp-analytify' ),
 					'value'       => '0',
 					'description' => esc_html__( 'Number of page views by a user during a single session. Repeated views are counted.', 'wp-analytify' ),
+					'append'      => false,
+				),
+				'engaged_sessions' => array(
+					'title'       => esc_html__( 'Engaged Sessions', 'wp-analytify' ),
+					'value'       => '0',
+					'description' => esc_html__( 'The number of sessions that lasted longer than 10 seconds, or had a conversion event, or had 2 or more page views.', 'wp-analytify' ),
 					'append'      => false,
 				),
 			);

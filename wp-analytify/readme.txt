@@ -1,10 +1,10 @@
-=== Analytify - Google Analytics Dashboard For WordPress (GA4 analytics made easy) ===
+=== Analytify - Google Analytics Dashboard For WordPress (GA4 analytics tracking) ===
 Contributors: hiddenpearls
 Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 4.0
 Tested up to: 6.9
-Stable tag: 8.1.0
+Stable tag: 8.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,12 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 8.1.1 - 2026-02-27 =
+* Enhancement: Fixed mislabeled “Engaged Sessions” metric in single post/page analytics—restored correct “Pages / Session” label and added a proper Engaged Sessions box.
+* Enhancement: Added the `analytify_session_date_range` filter to control session date range analytics on the dashboard screen.
+* Enhancement: Added an admin notice when Measurement ID is not set for E-Commerce users.
+* Enhancement: Minor bug fixes and code improvements.
 
 = 8.1.0 - 2026-02-09 =
 * Enhancement: Improve Search Console domain detection — handle trailing slashes, prefer domains with data, fallback to accepted domains.
@@ -1147,7 +1153,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 8.1.0 =
+= 8.1.1 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

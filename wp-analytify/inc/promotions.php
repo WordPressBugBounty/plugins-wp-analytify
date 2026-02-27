@@ -121,6 +121,7 @@ class Analytify_Promotions {
 	/**
 	 * GTAG move to notice
 	 *
+	 * @version 8.1.1
 	 * @return void
 	 */
 	public function gtag_move_to_notice() {
@@ -131,7 +132,7 @@ class Analytify_Promotions {
 		$gtag_notice = get_option( 'analytify_gtag_move_to_notice' );
 		if ( ! $gtag_notice ) {
 			// translators: %s is the admin URL.
-			echo '<div class="notice notice-info is-dismissible"><p>' . sprintf( esc_html__( 'Analytify now supports GA4! <a href="%s">Click here</a> to learn more about the new features.', 'wp-analytify' ), esc_url( admin_url( 'admin.php?page=analytify-settings&tab=advanced' ) ) ) . '</p></div>';
+			echo '<div class="notice notice-info is-dismissible"><p>' . wp_kses( sprintf( /* translators: 1: Opening anchor tag, 2: Closing anchor tag. */ __( 'Analytify now supports GA4! %1$sClick here%2$s to learn more about the new features.', 'wp-analytify' ), '<a href="' . esc_url( admin_url( 'admin.php?page=analytify-settings&tab=advanced' ) ) . '">', '</a>' ), array( 'a' => array( 'href' => array() ) ) ) . '</p></div>';
 		}
 	}
 

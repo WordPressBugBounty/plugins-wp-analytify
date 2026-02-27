@@ -44,6 +44,7 @@ class Analytify_Report extends Analytify_Report_Abstract {
 	/**
 	 * Generates browser stats - GA4.
 	 *
+	 * @version 8.2.0
 	 * @param string $cache_key Cache key.
 	 * @param string $device_cache_key Device cache key.
 	 * @return array<string, mixed>
@@ -105,6 +106,11 @@ class Analytify_Report extends Analytify_Report_Abstract {
 		if ( isset( $raw['aggregations']['screenPageViewsPerSession'] ) ) {
 			$boxes['view_per_session']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['aggregations']['screenPageViewsPerSession'] );
 			$general_stats_num['view_per_session'] = $raw['aggregations']['screenPageViewsPerSession'];
+		}
+
+		if ( isset( $raw['aggregations']['engagedSessions'] ) ) {
+			$boxes['engaged_sessions']['value']    = WPANALYTIFY_Utils::pretty_numbers( $raw['aggregations']['engagedSessions'] );
+			$general_stats_num['engaged_sessions'] = $raw['aggregations']['engagedSessions'];
 		}
 
 		if ( isset( $raw['aggregations']['newUsers'] ) ) {

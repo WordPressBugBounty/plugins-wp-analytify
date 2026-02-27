@@ -6,7 +6,7 @@
  * Centralizing constants here makes them easier to manage and update.
  *
  * @package WP_Analytify
- * @since 8.1.0
+ * @since 8.1.1
  */
 
 // Exit if accessed directly.
@@ -19,11 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ============================================================================.
 
 if ( ! defined( 'ANALYTIFY_VERSION' ) ) {
-	define( 'ANALYTIFY_VERSION', '8.1.0' );
+	define( 'ANALYTIFY_VERSION', '8.1.1' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_PLUGIN_VERSION' ) ) {
-	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.1.0' );
+	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.1.1' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_ID' ) ) {

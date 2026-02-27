@@ -107,7 +107,7 @@ class Analytify_Loader {
 	/**
 	 * Set up admin notice hooks immediately
 	 *
-	 * @version 7.0.5
+	 * @version 8.1.1
 	 * @return void
 	 */
 	private function setup_admin_notice_hooks() {
@@ -119,6 +119,7 @@ class Analytify_Loader {
 			add_action( 'admin_notices', array( $admin_notices, 'pro_update_notice' ), 10 );
 			add_action( 'admin_notices', array( $admin_notices, 'analytify_admin_notice' ), 10 );
 			add_action( 'admin_notices', array( $admin_notices, 'addons_ga4_update_notice' ), 10 );
+			add_action( 'admin_notices', array( $admin_notices, 'analytify_measurement_protocol_secret_notice' ), 10 );
 			add_action( 'admin_notices', array( $admin_notices, 'analytify_cache_clear_notice' ), 10 );
 
 			// AJAX handlers.
