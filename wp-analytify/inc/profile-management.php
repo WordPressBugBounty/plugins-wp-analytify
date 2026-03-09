@@ -113,7 +113,7 @@ class Analytify_Profile_Management {
 	 * Update selected profiles when advanced option is updated.
 	 *
 	 * @since 7.0.5
-	 * @version 7.0.5
+	 * @version 8.1.2
 	 * @param mixed $old_value Old advanced value.
 	 * @param mixed $new_value New advanced value.
 	 * @return void
@@ -157,17 +157,24 @@ class Analytify_Profile_Management {
 				// get all the data for currently selected stream from the all streams array.
 				$stream_data = $all_streams[ $property_id ][ $new_value['ga4_web_data_stream'] ] ?? false;
 
-				// Set mp secret value initally to null.
+				// Set mp secret value initially to null (must be string for GA4 Measurement Protocol).
 				$new_secret_value = null;
 
 				if ( isset( $stream_data['full_name'] ) ) {
 
-					$new_secret_value = $this->analytify->analytify_get_mp_secret( $stream_data['full_name'] );
-
-					if ( empty( $new_secret_value ) ) {
-						$new_secret_value = $this->analytify->analytify_create_mp_secret( $property_id, $stream_data['full_name'], $stream_data['measurement_id'] );
+					$get_secret = $this->analytify->analytify_get_mp_secret( $stream_data['full_name'] );
+					if ( ! empty( $get_secret ) && isset( $get_secret['secretValue'] ) && is_string( $get_secret['secretValue'] ) ) {
+						$new_secret_value = $get_secret['secretValue'];
 					}
-					WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $new_secret_value );
+					if ( null === $new_secret_value ) {
+						$create_secret = $this->analytify->analytify_create_mp_secret( $property_id, $stream_data['full_name'], $stream_data['measurement_id'] );
+						if ( ! empty( $create_secret ) && isset( $create_secret['secretValue'] ) && is_string( $create_secret['secretValue'] ) ) {
+							$new_secret_value = $create_secret['secretValue'];
+						}
+					}
+					if ( null !== $new_secret_value ) {
+						WPANALYTIFY_Utils::update_option( 'measurement_protocol_secret', 'wp-analytify-advanced', $new_secret_value );
+					}
 					update_option( 'analytify_tracking_property_info', $stream_data );
 					update_option( 'analytify_reporting_property_info', $stream_data );
 				}

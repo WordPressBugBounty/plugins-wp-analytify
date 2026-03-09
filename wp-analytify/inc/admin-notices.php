@@ -110,6 +110,7 @@ class Analytify_Admin_Notices {
 	 * Display Measurement Protocol Secret missing notice
 	 *
 	 * @since 8.1.1
+	 * @version 8.1.2
 	 * @return void
 	 */
 	public function analytify_measurement_protocol_secret_notice() {
@@ -137,24 +138,29 @@ class Analytify_Admin_Notices {
 
 		$analytify = $this->analytify_get_plugin_instance();
 
-		// Check if Measurement Protocol Secret is missing.
+		// Check if Measurement Protocol Secret is missing (must be a non-empty string; API can mistakenly store full response array).
 		$mp_secret = '';
 		if ( $analytify && isset( $analytify->settings ) ) {
-			$mp_secret = $analytify->settings->get_option(
+			$raw = $analytify->settings->get_option(
 				'measurement_protocol_secret',
 				'wp-analytify-advanced',
 				''
 			);
+			if ( is_string( $raw ) ) {
+				$mp_secret = $raw;
+			} elseif ( is_array( $raw ) && isset( $raw['secretValue'] ) && is_string( $raw['secretValue'] ) ) {
+				$mp_secret = $raw['secretValue'];
+			}
 		}
 
 		// Show notice if secret is empty.
-		if ( empty( $mp_secret ) ) {
+		if ( '' === $mp_secret ) {
 			$class = 'wp-analytify-danger';
 
 			$message = sprintf(
 				/* translators: 1: Opening <b> tag, 2: Closing </b> tag, 3: Opening <a> tag with URL, 4: Closing </a> tag. */
 				esc_html__(
-					'%1$sWarning:%2$s Measurement Protocol Secret is missing. Server-side event tracking for WooCommerce, Forms, and other integrations will not work. %3$sConfigure it here%4$s.',
+					'%1$sWarning:%2$s Measurement Protocol Secret is missing, so server-side event tracking for WooCommerce, Forms, and other integrations is disabled. %3$sConfigure it here%4$s, complete the GA4 User Data Collection Acknowledgement, and reauthenticate Google Analytics in Analytify settings.',
 					'wp-analytify'
 				),
 				'<b>',
@@ -290,7 +296,9 @@ class Analytify_Admin_Notices {
 	/**
 	 * Check if GA4 mode is enabled.
 	 *
-	 * @version 8.1.1
+	 * @since 8.1.1
+	 * @version 8.1.2
+	 * @return bool
 	 */
 	private function analytify_is_ga4_enabled() {
 		$analytify = $this->analytify_get_plugin_instance();
@@ -312,7 +320,9 @@ class Analytify_Admin_Notices {
 	/**
 	 * Check if current screen is Analytify page.
 	 *
-	 * @version 8.1.1
+	 * @since 8.1.1
+	 * @version 8.1.2
+	 * @return bool
 	 */
 	private function analytify_is_analytify_screen() {
 		$analytify_pages = array(

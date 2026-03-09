@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 4.0
 Tested up to: 6.9
-Stable tag: 8.1.1
+Stable tag: 8.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,9 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 8.1.2 - 2026-03-09 =
+* Enhancement: Improve GA4 Measurement Protocol reliability by fixing secret handling and auto‑acknowledging User Data Collection.
 
 = 8.1.1 - 2026-02-27 =
 * Enhancement: Fixed mislabeled “Engaged Sessions” metric in single post/page analytics—restored correct “Pages / Session” label and added a proper Engaged Sessions box.
@@ -1153,7 +1156,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 8.1.1 =
+= 8.1.2 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

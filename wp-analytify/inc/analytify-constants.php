@@ -6,7 +6,8 @@
  * Centralizing constants here makes them easier to manage and update.
  *
  * @package WP_Analytify
- * @since 8.1.1
+ * @since 8.0.0
+ * @version 8.1.2
  */
 
 // Exit if accessed directly.
@@ -19,11 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ============================================================================.
 
 if ( ! defined( 'ANALYTIFY_VERSION' ) ) {
-	define( 'ANALYTIFY_VERSION', '8.1.1' );
+	define( 'ANALYTIFY_VERSION', '8.1.2' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_PLUGIN_VERSION' ) ) {
-	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.1.1' );
+	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.1.2' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_ID' ) ) {
@@ -123,6 +124,11 @@ if ( ! defined( 'ANALYTIFY_DEV_KEY' ) ) {
 
 if ( ! defined( 'WP_ANALYTIFY_GA_ADMIN_API_BASE' ) ) {
 	define( 'WP_ANALYTIFY_GA_ADMIN_API_BASE', 'https://analyticsadmin.googleapis.com/v1alpha' );
+}
+
+// v1beta base used for acknowledgeUserDataCollection (required before creating MP secrets).
+if ( ! defined( 'WP_ANALYTIFY_GA_ADMIN_API_BASE_V1BETA' ) ) {
+	define( 'WP_ANALYTIFY_GA_ADMIN_API_BASE_V1BETA', 'https://analyticsadmin.googleapis.com/v1beta' );
 }
 
 // ============================================================================.

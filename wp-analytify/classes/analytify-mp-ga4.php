@@ -76,11 +76,17 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 
 		/**
 		 * Class constructor.
+		 *
+		 * @version 8.1.2
 		 */
 		private function __construct() {
 			$this->wp_analytify = $GLOBALS['WP_ANALYTIFY'];
 
-			$this->api_secret     = $this->wp_analytify->settings->get_option( 'measurement_protocol_secret', 'wp-analytify-advanced', false );
+			$raw_secret = $this->wp_analytify->settings->get_option( 'measurement_protocol_secret', 'wp-analytify-advanced', false );
+			// GA4 API returns { secretValue, name, ... }; ensure we store/use only the string (back-compat: if saved as array, use secretValue).
+			$this->api_secret     = is_array( $raw_secret ) && isset( $raw_secret['secretValue'] ) && is_string( $raw_secret['secretValue'] )
+				? trim( sanitize_text_field( $raw_secret['secretValue'] ) )
+				: ( is_string( $raw_secret ) ? trim( sanitize_text_field( $raw_secret ) ) : '' );
 			$this->measurement_id = WP_ANALYTIFY_FUNCTIONS::get_UA_code();
 			$this->client_id      = $this->get_client_id();
 		}

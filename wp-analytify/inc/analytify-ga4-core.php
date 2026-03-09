@@ -548,12 +548,48 @@ trait Analytify_GA4_Core {
 	}
 
 	/**
+	 * Acknowledge user data collection for a GA4 property (required before creating MP secrets).
+	 *
+	 * @param string $property_id GA4 property ID (numeric).
+	 * @return bool True if acknowledgement succeeded or was already done, false on failure.
+	 * @since 8.1.2
+	 */
+	public function analytify_acknowledge_user_data_collection( $property_id ) {
+		if ( empty( $property_id ) || ! is_numeric( $property_id ) ) {
+			return false;
+		}
+		$token = $this->analytify_get_google_token();
+		if ( ! is_array( $token ) || ! isset( $token['access_token'] ) || empty( $token['access_token'] ) ) {
+			return false;
+		}
+		$url      = WP_ANALYTIFY_GA_ADMIN_API_BASE_V1BETA . '/properties/' . $property_id . ':acknowledgeUserDataCollection';
+		$body     = array(
+			'acknowledgement' => 'I acknowledge that I have the necessary privacy disclosures and rights from my end users for the collection and processing of their data, including the association of such data with the visitation information Google Analytics collects from my site and/or app property.',
+		);
+		$args     = array(
+			'method'  => 'POST',
+			'headers' => array(
+				'Authorization' => 'Bearer ' . $token['access_token'],
+				'Content-Type'  => 'application/json',
+			),
+			'body'    => wp_json_encode( $body ),
+		);
+		$response = wp_remote_post( $url, $args );
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+		$code = wp_remote_retrieve_response_code( $response );
+		// 200 = success.
+		return ( 200 === $code );
+	}
+
+	/**
 	 * Get Measurement Protocol Secret for GA4 tracking.
 	 *
 	 * @param string $formatted_name The formatted name of the stream.
 	 * @return array|false Array containing the secret data or false on failure.
 	 * @since 5.0.0
-	 * @version 7.0.1
+	 * @version 8.1.2
 	 */
 	public function analytify_get_mp_secret( $formatted_name ) {
 		// Validate input parameter.
@@ -612,8 +648,11 @@ trait Analytify_GA4_Core {
 			return $decoded_response['measurementProtocolSecrets'][0];
 		}
 
-		// If no secret found, try to create one.
+		// If no secret found, try to create one (acknowledge user data collection first if required by GA4).
 		try {
+			if ( preg_match( '#^properties/(\d+)/#', $formatted_name, $m ) && isset( $m[1] ) ) {
+				$this->analytify_acknowledge_user_data_collection( $m[1] );
+			}
 			$create_secret_url  = WP_ANALYTIFY_GA_ADMIN_API_BASE . '/' . $formatted_name . '/measurementProtocolSecrets';
 			$create_secret_body = array(
 				'displayName' => 'Analytify MP Secret',
@@ -665,6 +704,9 @@ trait Analytify_GA4_Core {
 
 			return false;
 		}
+
+		// Acknowledge user data collection first (required by GA4 before creating MP secrets).
+		$this->analytify_acknowledge_user_data_collection( $property_id );
 
 		// Get the access token for authentication.
 		$token = $this->analytify_get_google_token();
