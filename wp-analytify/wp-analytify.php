@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 8.1.2
+ * Version: 8.1.3
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -363,12 +363,15 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 
 			add_action( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 4 );
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'wp_analytify_plugin_action_links' ), 10, 1 );
+			add_filter( 'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'wp_analytify_plugin_action_links' ), 10, 1 );
 
 			add_action( 'wp_head', array( $this, 'analytify_add_analytics_code' ) );
 			add_action( 'wp_head', array( $this, 'analytify_add_manual_analytics_code' ) );
 
 			add_filter( 'admin_footer_text', 'wpa_admin_rate_footer_text', 1 );
 			add_action( 'admin_footer', 'wpa_print_js', 25 );
+			add_action( 'admin_footer', array( $this, 'wp_analytify_maybe_render_sdk_optout_form' ), 5 );
 
 			add_action( 'admin_init', array( $this, 'redirect_optin' ) );
 
@@ -799,6 +802,77 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 
 		/**
+		 * Adds action links to the plugin on the Plugins screen (e.g. Opt In / Opt Out, Settings).
+		 *
+		 * @param array<int|string, string> $links Default action links.
+		 * @return array<int|string, string>
+		 */
+		public function wp_analytify_plugin_action_links( $links ) {
+			$settings_link = '';
+
+			$sdk_data          = json_decode( get_option( 'wpb_sdk_wp-analytify' ), true );
+			$sdk_data          = is_array( $sdk_data ) ? $sdk_data : array();
+			$communication     = isset( $sdk_data['communication'] ) ? $sdk_data['communication'] : false;
+			$diagnostic_info   = isset( $sdk_data['diagnostic_info'] ) ? $sdk_data['diagnostic_info'] : false;
+			$extensions        = isset( $sdk_data['extensions'] ) ? $sdk_data['extensions'] : false;
+			$is_optin          = 'yes' === get_site_option( '_analytify_optin', '' );
+			$all_options_false = ! $communication && ! $diagnostic_info && ! $extensions;
+
+			if ( $communication || $diagnostic_info || $extensions ) {
+				$settings_link .= sprintf(
+					/* translators: %1$s opening link tag, %2$s closing link tag */
+					esc_html__( '%1$s Opt Out %2$s | ', 'wp-analytify' ),
+					'<a class="opt-out" href="#">',
+					'</a>'
+				);
+			} elseif ( $is_optin && $all_options_false ) {
+					update_option(
+						'wpb_sdk_wp-analytify',
+						wp_json_encode(
+							array(
+								'communication'   => '1',
+								'diagnostic_info' => '1',
+								'extensions'      => '1',
+								'user_skip'       => '0',
+							)
+						)
+					);
+					$settings_link .= sprintf(
+						/* translators: %1$s opening link tag, %2$s closing link tag */
+						esc_html__( '%1$s Opt Out %2$s | ', 'wp-analytify' ),
+						'<a class="opt-out" href="#">',
+						'</a>'
+					);
+			} else {
+				$settings_link .= sprintf(
+					/* translators: %1$s opening link tag, %2$s closing link tag */
+					esc_html__( '%1$s Opt In %2$s | ', 'wp-analytify' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=analytify-optin' ) ) . '">',
+					'</a>'
+				);
+			}
+
+			if ( ! class_exists( 'WP_Analytify_Pro' ) ) {
+				$settings_link .= sprintf(
+					/* translators: %1$s opening link tag, %2$s closing link tag */
+					esc_html__( '%1$s Get Analytify Pro %2$s | ', 'wp-analytify' ),
+					'<a href="https://analytify.io/pricing/?utm_source=analytify-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Get+Analytify+Pro" target="_blank" rel="noopener noreferrer" style="color:#3db634;">',
+					'</a>'
+				);
+			}
+
+			$settings_link .= sprintf(
+				/* translators: %1$s opening link tag, %2$s closing link tag */
+				esc_html__( '%1$s Settings %2$s', 'wp-analytify' ),
+				'<a href="' . esc_url( admin_url( 'admin.php?page=analytify-settings' ) ) . '">',
+				'</a>'
+			);
+
+			array_unshift( $links, $settings_link );
+			return $links;
+		}
+
+		/**
 		 * Plugin row meta links
 		 *
 		 * @since 1.1
@@ -860,6 +934,21 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			return $input;
 		}
 
+		/**
+		 * Output SDK opt-in/opt-out modal on the Plugins screen so the "Opt Out" action link opens the popup.
+		 *
+		 * @return void
+		 */
+		public function wp_analytify_maybe_render_sdk_optout_form() {
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
+			$screen = get_current_screen();
+			if ( ! $screen || 'plugins' !== $screen->id ) {
+				return;
+			}
+			require_once WP_ANALYTIFY_PLUGIN_DIR . '/inc/analytify-optout-form.php';
+		}
 
 		/**
 		 * Display warning if profiles are not selected.
