@@ -163,22 +163,33 @@ class Analytify_Logs {
 	}
 
 	/**
-	 * Remove/delete the chosen file.
+	 * Remove/delete the chosen log file.
+	 *
+	 * Verifies nonce, delegates to the file log handler, then clears output buffers
+	 * and redirects so the Delete log button works when admin buffering is active.
 	 *
 	 * @return void
+	 * @since 1.0.0
+	 * @version 9.0.0
 	 */
 	public static function remove_log() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to delete logs.', 'wp-analytify' ), '', array( 'response' => 403 ) );
+		}
 		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'remove_log' ) ) { // WPCS: input var ok, sanitization ok.
 			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'wp-analytify' ) );
 		}
 
-		if ( ! empty( $_REQUEST['handle'] ) ) {  // WPCS: input var ok.
-			if ( class_exists( 'ANALYTIFY_Log_Handler_File' ) ) {
-				$log_handler = new ANALYTIFY_Log_Handler_File();
-				$log_handler->remove( sanitize_text_field( wp_unslash( $_REQUEST['handle'] ) ) ); // WPCS: input var ok, sanitization ok.
-			}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified above
+		if ( ! empty( $_REQUEST['handle'] ) && class_exists( 'ANALYTIFY_Log_Handler_File' ) ) {
+			$log_handler = new ANALYTIFY_Log_Handler_File();
+			$log_handler->remove( sanitize_text_field( wp_unslash( $_REQUEST['handle'] ) ) ); // WPCS: input var ok, sanitization ok.
 		}
 
+		// Clear any output buffer so redirect is sent (fixes Delete log button when buffering is active).
+		while ( ob_get_level() ) {
+			ob_end_clean();
+		}
 		wp_safe_redirect( esc_url_raw( admin_url( 'admin.php?page=analytify-logs' ) ) );
 		exit();
 	}

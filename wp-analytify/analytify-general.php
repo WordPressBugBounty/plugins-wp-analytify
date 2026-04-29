@@ -21,6 +21,7 @@
 		// Include core classes first.
 		require_once __DIR__ . '/classes/analytify-utils.php';
 		require_once __DIR__ . '/classes/analytify-settings.php';
+		require_once __DIR__ . '/classes/analytify-mp-ga4.php';
 
 		// Include all trait files.
 		require_once __DIR__ . '/inc/analytify-authentication.php';
@@ -482,6 +483,8 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @throws Exception When API request fails.
 		 */
 		public function get_reports( $name, $metrics, $date_range, $dimensions = array(), $order_by = array(), $filters = array(), $limit = 0, $cached = true ) {
+			$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+
 			$property_id = WPANALYTIFY_Utils::get_reporting_property();
 
 			// Don't use cache if custom API keys are in use.
@@ -632,7 +635,17 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 
 				// Validate that token is an array and has the expected structure.
 				if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
-
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Invalid or missing Google Analytics token in get_reports.',
+							array(
+								'source'           => 'get_reports',
+								'report_name'      => $name,
+								'token_type'       => gettype( $token ),
+								'has_access_token' => isset( $token['access_token'] ),
+							)
+						);
+					}
 					return array();
 				}
 
@@ -671,11 +684,34 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 						'status'  => $th->getStatus(),
 						'message' => $th->getBasicMessage(),
 					);
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Exception in get_reports API call.',
+							array(
+								'source'         => 'get_reports',
+								'report_name'    => $name,
+								'status'         => $th->getStatus(),
+								'message'        => $th->getBasicMessage(),
+								'exception_type' => get_class( $th ),
+							)
+						);
+					}
 				} elseif ( method_exists( $th, 'getMessage' ) ) {
 					$default_response['error'] = array(
 						'status'  => 'Token Expired',
 						'message' => $th->getMessage(),
 					);
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Exception in get_reports API call - token expired.',
+							array(
+								'source'         => 'get_reports',
+								'report_name'    => $name,
+								'message'        => $th->getMessage(),
+								'exception_type' => get_class( $th ),
+							)
+						);
+					}
 				}
 
 				return $default_response;
@@ -791,11 +827,11 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 		 * @param int    $limit The limit for the results.
 		 *
 		 * @since 5.0.0
-		 * @version 7.0.1
+		 * @version 9.0.0
 		 */
 		public function get_search_console_stats( $transient_name, $dates = array(), $limit = 10 ) {
 
-			$logger = analytify_get_logger();
+			$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
 
 			if ( class_exists( 'QM' ) ) {
 				QM::info( 'Analytify: Getting Google Analytics token for Search Console stats.' );
@@ -814,13 +850,15 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			try {
 				$stream_url = ( isset( $tracking_stream_info['url'] ) && ! empty( $tracking_stream_info['url'] ) ) ? $tracking_stream_info['url'] : null;
 			} catch ( \Throwable $th ) {
-				$logger->warning(
-					'Error fetching stream URL',
-					array(
-						'source'  => 'analytify_fetch_stream_url',
-						'message' => $th->getMessage(),
-					)
-				);
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning(
+						'Error fetching stream URL',
+						array(
+							'source'  => 'analytify_fetch_stream_url',
+							'message' => $th->getMessage(),
+						)
+					);
+				}
 
 				if ( empty( $stream_url ) ) {
 					return array(
@@ -896,13 +934,15 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 					);
 
 					if ( is_wp_error( $http_response ) ) {
-						$logger->warning(
-							sprintf( 'HTTP request failed for domain "%s": %s', $url, $http_response->get_error_message() ),
-							array(
-								'source' => 'analytify_fetch_search_console_stats',
-								'domain' => $url,
-							)
-						);
+						if ( $logger && method_exists( $logger, 'warning' ) ) {
+							$logger->warning(
+								sprintf( 'HTTP request failed for domain "%s": %s', $url, $http_response->get_error_message() ),
+								array(
+									'source' => 'analytify_fetch_search_console_stats',
+									'domain' => $url,
+								)
+							);
+						}
 						continue; // Continue to next URL.
 					}
 
@@ -915,40 +955,46 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 
 						// Validate JSON decode result.
 						if ( json_last_error() !== JSON_ERROR_NONE ) {
-							$logger->error(
-								sprintf( 'JSON decode failed for domain "%s": %s', $url, json_last_error_msg() ),
-								array(
-									'source' => 'analytify_fetch_search_console_stats',
-									'domain' => $url,
-								)
-							);
+							if ( $logger && method_exists( $logger, 'error' ) ) {
+								$logger->error(
+									sprintf( 'JSON decode failed for domain "%s": %s', $url, json_last_error_msg() ),
+									array(
+										'source' => 'analytify_fetch_search_console_stats',
+										'domain' => $url,
+									)
+								);
+							}
 							continue;
 						}
 
 						// Ensure decoded result is an array.
 						if ( ! is_array( $decoded ) ) {
-							$logger->error(
-								sprintf( 'Unexpected JSON response for domain "%s": not an array', $url ),
-								array(
-									'source' => 'analytify_fetch_search_console_stats',
-									'domain' => $url,
-								)
-							);
+							if ( $logger && method_exists( $logger, 'error' ) ) {
+								$logger->error(
+									sprintf( 'Unexpected JSON response for domain "%s": not an array', $url ),
+									array(
+										'source' => 'analytify_fetch_search_console_stats',
+										'domain' => $url,
+									)
+								);
+							}
 							continue;
 						}
 
 						$row_count = count( $decoded['rows'] ?? array() );
 
 						// Log domain check result for debugging.
-						$logger->info(
-							sprintf( 'Domain "%s" - HTTP %d, %d rows found', $url, $http_code, $row_count ),
-							array(
-								'source'    => 'analytify_fetch_search_console_stats',
-								'domain'    => $url,
-								'http_code' => $http_code,
-								'row_count' => $row_count,
-							)
-						);
+						if ( $logger && method_exists( $logger, 'info' ) ) {
+							$logger->info(
+								sprintf( 'Domain "%s" - HTTP %d, %d rows found', $url, $http_code, $row_count ),
+								array(
+									'source'    => 'analytify_fetch_search_console_stats',
+									'domain'    => $url,
+									'http_code' => $http_code,
+									'row_count' => $row_count,
+								)
+							);
+						}
 
 						// Store this response - prefer domains with data.
 						if ( $row_count > 0 ) {
@@ -956,38 +1002,44 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 								'url'  => $url,
 								'data' => $decoded,
 							);
-							$logger->info(
-								'Domain categorized as HAVING DATA',
-								array(
-									'source'    => 'analytify_fetch_search_console_stats',
-									'domain'    => $url,
-									'row_count' => $row_count,
-								)
-							);
+							if ( $logger && method_exists( $logger, 'info' ) ) {
+								$logger->info(
+									'Domain categorized as HAVING DATA',
+									array(
+										'source'    => 'analytify_fetch_search_console_stats',
+										'domain'    => $url,
+										'row_count' => $row_count,
+									)
+								);
+							}
 						} else {
 							$accepted_domains_no_data[] = array(
 								'url'  => $url,
 								'data' => $decoded,
 							);
-							$logger->info(
-								'Domain categorized as NO DATA',
+							if ( $logger && method_exists( $logger, 'info' ) ) {
+								$logger->info(
+									'Domain categorized as NO DATA',
+									array(
+										'source'    => 'analytify_fetch_search_console_stats',
+										'domain'    => $url,
+										'row_count' => $row_count,
+									)
+								);
+							}
+						}
+					} elseif ( 200 !== $http_code ) {
+						// Log non-200 with code only; do not log response body (may contain sensitive data).
+						if ( $logger && method_exists( $logger, 'warning' ) ) {
+							$logger->warning(
+								sprintf( 'Domain "%s" returned HTTP %d', $url, $http_code ),
 								array(
 									'source'    => 'analytify_fetch_search_console_stats',
 									'domain'    => $url,
-									'row_count' => $row_count,
+									'http_code' => $http_code,
 								)
 							);
 						}
-					} else {
-						// Log non-200 responses for debugging.
-						$logger->warning(
-							sprintf( 'Domain "%s" returned HTTP %d: %s', $url, $http_code, wp_trim_words( $response_body, 20 ) ),
-							array(
-								'source'    => 'analytify_fetch_search_console_stats',
-								'domain'    => $url,
-								'http_code' => $http_code,
-							)
-						);
 					}
 				} catch ( \Throwable $th ) {
 					// Continue to next URL on exception.
@@ -1015,13 +1067,15 @@ if ( ! class_exists( 'Analytify_General' ) ) {
 			}
 
 			// No domains were accepted at all.
-			$logger->warning(
-				'FINAL FAILURE: No domain accepted',
-				array(
-					'source' => 'analytify_fetch_search_console_stats',
-					'site'   => $domain_stream_url_filtered,
-				)
-			);
+			if ( $logger && method_exists( $logger, 'warning' ) ) {
+				$logger->warning(
+					'FINAL FAILURE: No domain accepted',
+					array(
+						'source' => 'analytify_fetch_search_console_stats',
+						'site'   => $domain_stream_url_filtered,
+					)
+				);
+			}
 
 			return array(
 				'error' => array(

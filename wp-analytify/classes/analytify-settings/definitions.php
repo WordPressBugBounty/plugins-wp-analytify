@@ -65,6 +65,7 @@ trait Analytify_Settings_Definitions {
 	 * advanced configurations, and help sections.
 	 *
 	 * @return array<string, mixed> Array of settings sections with tabs and accordion structure.
+	 * @version 9.0.0
 	 */
 	public function get_settings_sections() {
 		$tabs = array(
@@ -105,6 +106,10 @@ trait Analytify_Settings_Definitions {
 					array(
 						'id'    => 'analytify-google-ads-tracking',
 						'title' => __( 'Google Ads Tracking', 'wp-analytify' ),
+					),
+					array(
+						'id'    => 'analytify-pixels-tracking',
+						'title' => __( 'Pixels Tracking', 'wp-analytify' ),
 					),
 				),
 				'priority'  => '32',

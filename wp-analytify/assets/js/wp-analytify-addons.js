@@ -27,7 +27,11 @@
 				'wp-analytify-woocommerce',
 				'wp-analytify-goals',
 				'wp-analytify-email',
+				'wp-analytify-lifterlms',
+				'wp-analytify-pmpro',
+				'pixels-tracking',
 				'wp-analytify-forms',
+				'wp-analytify-learndash',
 				'analytify-analytics-dashboard-widget/wp-analytify-dashboard.php',
 				'events-tracking',
 				'custom-dimensions',
@@ -39,7 +43,10 @@
 				'wp-analytify-woocommerce/wp-analytify-woocommerce.php',
 				'wp-analytify-goals/wp-analytify-goals.php',
 				'wp-analytify-email/wp-analytify-email.php',
-				'wp-analytify-edd/wp-analytify-edd.php'
+				'wp-analytify-edd/wp-analytify-edd.php',
+				'wp-analytify-lifterlms/wp-analytify-lifterlms.php',
+				'wp-analytify-pmpro/wp-analytify-pmpro.php',
+				'wp-analytify-learndash/wp-analytify-learndash.php'
 			];
 
 		function isValidSlug(slug) {

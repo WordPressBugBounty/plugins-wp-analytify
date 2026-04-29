@@ -43,8 +43,8 @@ trait Analytify_Rest_Endpoints_Dimensions {
 		$after_top_city_text    .= ob_get_clean();
 		$dashboard_profile_id    = WPANALYTIFY_Utils::get_reporting_property();
 		$report_url              = WP_ANALYTIFY_FUNCTIONS::get_ga_report_url( $dashboard_profile_id );
-		$after_top_country_text .= ' <a href="javascript: return false;" data-ga-dashboard-link="' . WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'top_countries' ) . '" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext">' . __( 'View All Top Countries', 'wp-analytify' ) . '</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>';
-		$after_top_city_text    .= ' <a href="javascript: return false;" data-ga-dashboard-link="' . WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'top_cities' ) . '" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext">' . __( 'View All Top Cities', 'wp-analytify' ) . '</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>';
+		$after_top_country_text .= ' <a href="javascript: return false;" data-ga-dashboard-link="' . esc_attr( WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'top_countries' ) ) . '" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext">' . esc_html__( 'View All Top Countries', 'wp-analytify' ) . '</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>';
+		$after_top_city_text    .= ' <a href="javascript: return false;" data-ga-dashboard-link="' . esc_attr( WPANALYTIFY_Utils::get_all_stats_link( $report_url, 'top_cities' ) ) . '" target="_blank" class="analytify_tooltip"><span class="analytify_tooltiptext">' . esc_html__( 'View All Top Cities', 'wp-analytify' ) . '</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>';
 		$country_stats_raw       = $this->wp_analytify->get_reports(
 			'show-geographic-countries-dashboard',
 			array( 'sessions' ),
@@ -102,8 +102,10 @@ trait Analytify_Rest_Endpoints_Dimensions {
 		if ( isset( $country_stats_raw['rows'] ) && $country_stats_raw['rows'] ) {
 			$country_count = 0; foreach ( $country_stats_raw['rows'] as $row ) {
 				if ( $country_count < $country_limit ) {
+					$country_name    = isset( $row['country'] ) ? sanitize_text_field( (string) $row['country'] ) : '';
+					$country_flag_cs = str_replace( ' ', '_', strtolower( $country_name ) );
 					$country_stats[] = array(
-						'country'  => '<span role="img" aria-label="' . $row['country'] . '" class="analytify_' . str_replace( ' ', '_', strtolower( $row['country'] ) ) . ' analytify_flages"></span> ' . $row['country'],
+						'country'  => '<span role="img" aria-label="' . esc_attr( $country_name ) . '" class="analytify_' . esc_attr( $country_flag_cs ) . ' analytify_flages"></span> ' . esc_html( $country_name ),
 						'sessions' => $row['sessions'],
 					);
 				}
@@ -115,8 +117,11 @@ trait Analytify_Rest_Endpoints_Dimensions {
 		}
 		if ( isset( $city_stats_raw['rows'] ) && $city_stats_raw['rows'] ) {
 			foreach ( $city_stats_raw['rows'] as $row ) {
-				$city_stats[] = array(
-					'city'     => '<span  role="img" aria-label="' . $row['country'] . '" class="analytify_' . str_replace( ' ', '_', strtolower( $row['country'] ) ) . ' analytify_flages"></span> ' . $row['city'],
+				$city_country_name = isset( $row['country'] ) ? sanitize_text_field( (string) $row['country'] ) : '';
+				$city_name         = isset( $row['city'] ) ? sanitize_text_field( (string) $row['city'] ) : '';
+				$city_flag_cs      = str_replace( ' ', '_', strtolower( $city_country_name ) );
+				$city_stats[]      = array(
+					'city'     => '<span role="img" aria-label="' . esc_attr( $city_country_name ) . '" class="analytify_' . esc_attr( $city_flag_cs ) . ' analytify_flages"></span> ' . esc_html( $city_name ),
 					'sessions' => $row['sessions'],
 				);
 			}
@@ -262,22 +267,28 @@ trait Analytify_Rest_Endpoints_Dimensions {
 		);
 		if ( isset( $browser_stats_raw['rows'] ) && $browser_stats_raw['rows'] ) {
 			foreach ( $browser_stats_raw['rows'] as $row ) {
+				$browser_name    = isset( $row['browser'] ) ? sanitize_text_field( (string) $row['browser'] ) : '';
+				$browser_os      = isset( $row['operatingSystem'] ) ? sanitize_text_field( (string) $row['operatingSystem'] ) : '';
 				$browser_stats[] = array(
-					'browser'  => '<span role="img" aria-label="' . $row['browser'] . '" class="' . pretty_class( $row['browser'] ) . ' analytify_social_icons"></span><span class="' . pretty_class( $row['operatingSystem'] ) . ' analytify_social_icons"></span>' . $row['browser'] . ' ' . $row['operatingSystem'],
+					'browser'  => '<span role="img" aria-label="' . esc_attr( $browser_name ) . '" class="' . esc_attr( pretty_class( $browser_name ) ) . ' analytify_social_icons"></span><span class="' . esc_attr( pretty_class( $browser_os ) ) . ' analytify_social_icons"></span>' . esc_html( $browser_name . ' ' . $browser_os ),
 					'sessions' => $row['sessions'],
 				); }
 		}
 		if ( isset( $os_stats_raw['rows'] ) && $os_stats_raw['rows'] ) {
 			foreach ( $os_stats_raw['rows'] as $row ) {
+				$os_name    = isset( $row['operatingSystem'] ) ? sanitize_text_field( (string) $row['operatingSystem'] ) : '';
+				$os_version = isset( $row['operatingSystemVersion'] ) ? sanitize_text_field( (string) $row['operatingSystemVersion'] ) : '';
 				$os_stats[] = array(
-					'os'       => '<span  role="img" aria-label="' . $row['operatingSystem'] . '" class="' . pretty_class( $row['operatingSystem'] ) . ' analytify_social_icons"></span> ' . $row['operatingSystem'] . ' ' . $row['operatingSystemVersion'],
+					'os'       => '<span role="img" aria-label="' . esc_attr( $os_name ) . '" class="' . esc_attr( pretty_class( $os_name ) ) . ' analytify_social_icons"></span> ' . esc_html( trim( $os_name . ' ' . $os_version ) ),
 					'sessions' => $row['sessions'],
 				); }
 		}
 		if ( isset( $mobile_stats_raw['rows'] ) && $mobile_stats_raw['rows'] ) {
 			foreach ( $mobile_stats_raw['rows'] as $row ) {
+				$device_brand   = isset( $row['mobileDeviceBranding'] ) ? sanitize_text_field( (string) $row['mobileDeviceBranding'] ) : '';
+				$device_model   = isset( $row['mobileDeviceModel'] ) ? sanitize_text_field( (string) $row['mobileDeviceModel'] ) : '';
 				$mobile_stats[] = array(
-					'mobile'   => '<span role="img" aria-label="' . $row['mobileDeviceBranding'] . '" class="' . pretty_class( $row['mobileDeviceBranding'] ) . ' analytify_social_icons"></span> ' . $row['mobileDeviceBranding'] . ' ' . $row['mobileDeviceModel'],
+					'mobile'   => '<span role="img" aria-label="' . esc_attr( $device_brand ) . '" class="' . esc_attr( pretty_class( $device_brand ) ) . ' analytify_social_icons"></span> ' . esc_html( trim( $device_brand . ' ' . $device_model ) ),
 					'sessions' => $row['sessions'],
 				); }
 		}
@@ -367,15 +378,15 @@ trait Analytify_Rest_Endpoints_Dimensions {
 			return array(
 				'success'   => false,
 				'error_box' => array(
-					'title'   => __( 'Unable To Fetch Reports', 'wp-analytify' ),
-					'content' => '<p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong>' . __( 'Status:', 'wp-analytify' ) . ' </strong> ' . $keyword_stats_raw['error']['status'] . '</p><p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong>' . __( 'Message:', 'wp-analytify' ) . ' </strong> ' . $keyword_stats_raw['error']['message'] . '</p>',
+					'title'   => esc_html__( 'Unable To Fetch Reports', 'wp-analytify' ),
+					'content' => '<p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong>' . esc_html__( 'Status:', 'wp-analytify' ) . ' </strong> ' . esc_html( (string) $keyword_stats_raw['error']['status'] ) . '</p><p class="analytify-promo-popup-paragraph analytify-error-popup-paragraph"><strong>' . esc_html__( 'Message:', 'wp-analytify' ) . ' </strong> ' . esc_html( (string) $keyword_stats_raw['error']['message'] ) . '</p>',
 				),
 			);
 		}
 		if ( isset( $keyword_stats_raw['response']['rows'] ) && $keyword_stats_raw['response']['rows'] > 0 ) {
 			foreach ( $keyword_stats_raw['response']['rows'] as $row ) {
 				$keywords_stats[] = array(
-					'keyword_url' => $row['keys'][0],
+					'keyword_url' => isset( $row['keys'][0] ) ? sanitize_text_field( (string) $row['keys'][0] ) : '',
 					'impressions' => $row['impressions'],
 					'clicks'      => $row['clicks'],
 				);
@@ -405,7 +416,7 @@ trait Analytify_Rest_Endpoints_Dimensions {
 			'error_message' => $error_message,
 			'headers'       => $headers,
 			'stats'         => $keywords_stats,
-			'title_stats'   => $total_clicks > 0 ? '<span class="analytify_medium_f">' . __( 'Total Clicks', 'wp-analytify' ) . '</span> ' . $total_clicks : false,
+			'title_stats'   => $total_clicks > 0 ? '<span class="analytify_medium_f">' . esc_html__( 'Total Clicks', 'wp-analytify' ) . '</span> ' . esc_html( (string) $total_clicks ) : false,
 			'footer'        => apply_filters( 'analytify_keywords_footer', __( 'Ranked keywords.', 'wp-analytify' ), array( $this->start_date, $this->end_date ) ),
 		);
 	}
@@ -450,8 +461,9 @@ trait Analytify_Rest_Endpoints_Dimensions {
 			$social_stats_ga4_raw = WPANALYTIFY_Utils::ga4_social_stats( $social_stats_raw['rows'] );
 			$total_sessions       = 0;
 			foreach ( $social_stats_ga4_raw as $row ) {
+				$session_source  = isset( $row['sessionSource'] ) ? sanitize_text_field( (string) $row['sessionSource'] ) : '';
 				$social_stats[]  = array(
-					'network'  => '<span  role="img" aria-label="' . $row['sessionSource'] . '" class="' . pretty_class( $row['sessionSource'] ) . ' analytify_social_icons"></span> ' . $row['sessionSource'],
+					'network'  => '<span role="img" aria-label="' . esc_attr( $session_source ) . '" class="' . esc_attr( pretty_class( $session_source ) ) . ' analytify_social_icons"></span> ' . esc_html( $session_source ),
 					'sessions' => WPANALYTIFY_Utils::pretty_numbers( $row['sessions'] ),
 				);
 				$total_sessions += $row['sessions']; }
@@ -472,7 +484,7 @@ trait Analytify_Rest_Endpoints_Dimensions {
 				),
 			),
 			'stats'         => $social_stats,
-			'title_stats'   => $total_sessions ? '<span class="analytify_medium_f">' . __( 'Total Visits', 'wp-analytify' ) . '</span> ' . $total_sessions : false,
+			'title_stats'   => $total_sessions ? '<span class="analytify_medium_f">' . esc_html__( 'Total Visits', 'wp-analytify' ) . '</span> ' . esc_html( (string) $total_sessions ) : false,
 			'footer'        => apply_filters( 'analytify_social_footer', __( 'Number of visitors coming from Social Channels.', 'wp-analytify' ), array( $this->start_date, $this->end_date ) ),
 		);
 	}
@@ -506,11 +518,15 @@ trait Analytify_Rest_Endpoints_Dimensions {
 			$total_sessions = $referer_stats_raw['aggregations']['sessions']; }
 		if ( isset( $referer_stats_raw['rows'] ) && $referer_stats_raw['rows'] ) {
 			foreach ( $referer_stats_raw['rows'] as $row ) {
-				$bar = '';
+				$bar            = '';
+				$referer_source = isset( $row['sessionSource'] ) ? sanitize_text_field( (string) $row['sessionSource'] ) : '';
+				$referer_medium = isset( $row['sessionMedium'] ) ? sanitize_text_field( (string) $row['sessionMedium'] ) : '';
 				if ( $total_sessions && $total_sessions > 0 ) {
-					$bar = ' <span class="analytify_bar_graph"><span style="width:' . ( $row['sessions'] / $total_sessions ) * 100 . '%"></span></span>'; }
+					$bar_width = ( $row['sessions'] / $total_sessions ) * 100;
+					$bar       = ' <span class="analytify_bar_graph"><span style="width:' . esc_attr( (string) $bar_width ) . '%"></span></span>';
+				}
 				$referer_stats[] = array(
-					'referer'  => $row['sessionSource'] . '/' . $row['sessionMedium'] . $bar,
+					'referer'  => esc_html( $referer_source . '/' . $referer_medium ) . $bar,
 					'sessions' => $row['sessions'],
 				);
 			}
@@ -531,7 +547,7 @@ trait Analytify_Rest_Endpoints_Dimensions {
 			),
 			'stats'       => $referer_stats,
 			'pagination'  => true,
-			'title_stats' => $total_sessions ? '<span class="analytify_medium_f">' . esc_html__( 'Total Visits', 'wp-analytify' ) . '</span> ' . $total_sessions : false,
+			'title_stats' => $total_sessions ? '<span class="analytify_medium_f">' . esc_html__( 'Total Visits', 'wp-analytify' ) . '</span> ' . esc_html( (string) $total_sessions ) : false,
 			'footer'      => apply_filters( 'analytify_referer_footer', __( 'Top referrers to your website.', 'wp-analytify' ), array( $this->start_date, $this->end_date ) ),
 		);
 	}
@@ -547,32 +563,65 @@ trait Analytify_Rest_Endpoints_Dimensions {
 		$what_happen_stats = array();
 		$headers           = false;
 		$footer            = false;
+		$site_url          = $this->get_profile_info( 'website_url' );
 		$page_stats_raw    = $this->wp_analytify->get_reports(
 			'show-default-what-happen',
 			array( 'engagedSessions', 'engagementRate', 'userEngagementDuration' ),
 			$this->get_dates(),
-			array( 'landingPage', 'pageTitle' ),
+			array( 'pagePath', 'pageTitle' ),
 			array(
 				'type'  => 'metric',
 				'name'  => 'engagedSessions',
 				'order' => 'desc',
 			),
-			array(),
+			array(
+				'logic'   => 'AND',
+				'filters' => array(
+					array(
+						'type'           => 'dimension',
+						'name'           => 'pageTitle',
+						'match_type'     => 4,
+						'value'          => '(not set)',
+						'not_expression' => true,
+					),
+					array(
+						'type'           => 'dimension',
+						'name'           => 'pagePath',
+						'match_type'     => 4,
+						'value'          => '(not set)',
+						'not_expression' => true,
+					),
+				),
+			),
 			$api_stats_limit
 		);
 		if ( isset( $page_stats_raw['rows'] ) && $page_stats_raw['rows'] ) {
-			$num = 1; foreach ( $page_stats_raw['rows'] as $row ) {
+			$num = 1;
+			foreach ( $page_stats_raw['rows'] as $row ) {
+				$page_path           = isset( $row['pagePath'] ) ? sanitize_text_field( (string) $row['pagePath'] ) : '';
+				$page_title          = isset( $row['pageTitle'] ) ? sanitize_text_field( (string) $row['pageTitle'] ) : '';
+				$page_url            = $site_url . $page_path;
+				$rate                = round( WPANALYTIFY_Utils::fraction_to_percentage( $row['engagementRate'] ), 2 );
+				$rate_display        = esc_html( (string) $rate );
+				$rate_attr           = esc_attr( (string) $rate );
+				$title_link          = '<span class="analytify_page_name analytify_bullet_' . absint( $num ) . '">'
+					. esc_html( $page_title )
+					. '</span><a target="_blank" rel="noopener noreferrer" href="'
+					. esc_url( $page_url ) . '">' . esc_html( $page_path ) . '</a>';
 				$what_happen_stats[] = array(
-					'title_link'             => '<span class="analytify_page_name analytify_bullet_' . $num . '">' . $row['pageTitle'] . '</span><a target="_blank" href="' . $row['landingPage'] . '">' . $row['landingPage'] . '</a>',
+					'title_link'             => $title_link,
 					'userEngagementDuration' => WPANALYTIFY_Utils::pretty_time( $row['userEngagementDuration'] ),
 					'engagedSessions'        => WPANALYTIFY_Utils::pretty_numbers( $row['engagedSessions'] ),
-					'engagementRate'         => '<div class="analytify_enter_exit_bars">' . round( WPANALYTIFY_Utils::fraction_to_percentage( $row['engagementRate'] ), 2 ) . '<span class="analytify_persantage_sign">%</span><span class="analytify_bar_graph"><span class="analytify_engagement_bar" data-rate="' . round( WPANALYTIFY_Utils::fraction_to_percentage( $row['engagementRate'] ), 2 ) . '" style="width:' . round( WPANALYTIFY_Utils::fraction_to_percentage( $row['engagementRate'] ), 2 ) . '%"></span></span></div>',
+					'engagementRate'         => '<div class="analytify_enter_exit_bars">' . $rate_display
+						. '<span class="analytify_persantage_sign">%</span><span class="analytify_bar_graph">'
+						. '<span class="analytify_engagement_bar" data-rate="' . $rate_attr . '" style="width:' . $rate_attr
+						. '%"></span></span></div>',
 				);
 				++$num;
 			}
 			$headers = array(
 				'title_link'             => array(
-					'label'    => esc_html__( 'Page / Title / Link', 'wp-analytify' ),
+					'label'    => esc_html__( 'Page Title and Link', 'wp-analytify' ),
 					'th_class' => 'analytify_txt_left analytify_link_title',
 					'td_class' => 'analytify_page_url_detials',
 				),

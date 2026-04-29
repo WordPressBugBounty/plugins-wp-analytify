@@ -2,28 +2,42 @@
 /**
  * General Stats Email View.
  *
+ * Renders general analytics stats (sessions, visitors, bounce rate, etc.) for email reports.
+ *
  * @package WP_Analytify
+ * @version   9.0.0
  */
 
 /**
- * Get compared colors for stats.
+ * Get compared colors for stats (text and background) based on current vs previous period.
  *
- * @param mixed  $results Current results.
- * @param mixed  $compare_results Comparison results.
- * @param mixed  $date_different Date difference.
- * @param string $stats_for Stats type.
- * @return array<string, string>
+ * @param mixed  $results         Current period value.
+ * @param mixed  $compare_results Previous period value.
+ * @param mixed  $date_different   Date difference (unused; kept for signature compatibility).
+ * @param string $stats_for       Optional. Metric key; 'bounce_rate' inverts green/red meaning.
+ * @return array<string, string> Keys 'color' and 'bg_color' (hex).
+ * @version 9.0.0
  */
 function get_compared_colors( $results, $compare_results, $date_different, $stats_for = '' ) {
 
-	if ( 0 === $compare_results ) {
+	// empty() treats 0, 0.0, '0', false, null, '' as empty — avoids strict === 0 missing string '0'.
+	if ( empty( $compare_results ) || ! is_numeric( $compare_results ) ) {
 		return array(
 			'color'    => '#000000',
 			'bg_color' => '#ffffff',
 		);
 	}
 
-	$compare = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . '%';
+	$compare_base = (float) $compare_results;
+	if ( 0.0 === $compare_base ) {
+		return array(
+			'color'    => '#000000',
+			'bg_color' => '#ffffff',
+		);
+	}
+
+	$current = is_numeric( $results ) ? (float) $results : 0.0;
+	$compare = ( ( $current - $compare_base ) / $compare_base ) * 100;
 
 	// Invert results for bounce rate.
 	if ( ! empty( $stats_for ) && 'bounce_rate' === $stats_for ) {
@@ -40,28 +54,36 @@ function get_compared_colors( $results, $compare_results, $date_different, $stat
 }
 
 /**
- * Get compare email stats.
+ * Build HTML row for comparison stats (percentage change + "X ago" label) in email.
  *
- * @param mixed  $results Current results.
- * @param mixed  $compare_results Comparison results.
- * @param mixed  $date_different Date difference.
- * @param string $stats_for Stats type.
- * @return string
+ * @param mixed  $results         Current period value.
+ * @param mixed  $compare_results Previous period value.
+ * @param mixed  $date_different  Label for the comparison period (e.g. "7 days"); output is escaped.
+ * @param string $stats_for       Optional. Metric key; 'bounce_rate' inverts arrow/color logic.
+ * @return string HTML fragment (table row) or empty string when compare_results is 0.
+ * @version 9.0.0
  */
 function get_compare_email_stats( $results, $compare_results, $date_different, $stats_for = '' ) {
 
-	if ( 0 === $compare_results ) {
+	if ( empty( $compare_results ) || ! is_numeric( $compare_results ) ) {
 		return '';
 	}
 
-	$compare    = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . '%';
-	$image_name = $compare > 0 ? 'analytify_green_arrow.png' : 'analytify_red_arrow.png';
-	$color      = $compare > 0 ? '#00c853' : '#fa5825';
+	$compare_base = (float) $compare_results;
+	if ( 0.0 === $compare_base ) {
+		return '';
+	}
+
+	$current       = is_numeric( $results ) ? (float) $results : 0.0;
+	$compare_pct   = ( ( $current - $compare_base ) / $compare_base ) * 100;
+	$compare_label = number_format( $compare_pct, 2 ) . '%';
+	$image_name    = $compare_pct > 0 ? 'analytify_green_arrow.png' : 'analytify_red_arrow.png';
+	$color         = $compare_pct > 0 ? '#00c853' : '#fa5825';
 
 	// Invert results for bounce rate.
 	if ( ! empty( $stats_for ) && 'bounce_rate' === $stats_for ) {
-		$image_name = $compare < 0 ? 'analytify_green_arrow_down.png' : 'analytify_red_arrow_up.png';
-		$color      = $compare < 0 ? '#00c853' : '#fa5825';
+		$image_name = $compare_pct < 0 ? 'analytify_green_arrow_down.png' : 'analytify_red_arrow_up.png';
+		$color      = $compare_pct < 0 ? '#00c853' : '#fa5825';
 	}
 
 	return '<tr>
@@ -69,10 +91,10 @@ function get_compare_email_stats( $results, $compare_results, $date_different, $
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tbody>
 			<tr>
-				<td valign="bottom" style="padding: 10px 10px 3px; font: 700 16px "Roboto", Arial, Helvetica, sans-serif;" align="center"><font color=" ' . esc_attr( $color ) . ' "><img src="' . esc_url( ANALYTIFY_IMAGES_PATH . $image_name ) . '" alt="' . esc_attr( $image_name ) . '" style="padding-right:10px; width:10px">' . esc_html( $compare ) . '</font></td>
+				<td valign="bottom" style="padding: 10px 10px 3px; font: 700 16px "Roboto", Arial, Helvetica, sans-serif;" align="center"><font color=" ' . esc_attr( $color ) . ' "><img src="' . esc_url( ANALYTIFY_IMAGES_PATH . $image_name ) . '" alt="' . esc_attr( $image_name ) . '" style="padding-right:10px; width:10px">' . esc_html( $compare_label ) . '</font></td>
 			</tr>
 				<tr>
-					<td style="padding: 3px 10px 10px; font: 700 10px "Roboto", Arial, Helvetica, sans-serif;text-transform:uppercase;" align="center"><font color="#909090">' . $date_different . ' ago</font></td>
+					<td style="padding: 3px 10px 10px; font: 700 10px Roboto, Arial, Helvetica, sans-serif;text-transform:uppercase;" align="center"><font color="#909090">' . esc_html( $date_different ) . ' ago</font></td>
 				</tr>
 			</tbody>
 		</table>
@@ -81,14 +103,14 @@ function get_compare_email_stats( $results, $compare_results, $date_different, $
 }
 
 /**
- * Generates the main TDs in the email.
+ * Generates the main stats table rows for the general-stats email (sessions, visitors, bounce rate, etc.).
  *
- * @param array<string, mixed> $current        Analytify's main object.
- * @param array<string, mixed> $stats          Stats for the current period.
- * @param array<string, mixed> $old_stats      Stats from the previous period.
- * @param string               $date_different The time difference between the two dates.
- *
- * @return string
+ * @param array<string, mixed> $current        Analytify's main object (reserved for future use).
+ * @param array<string, mixed> $stats          GA stats for the current period (aggregations).
+ * @param array<string, mixed> $old_stats      GA stats from the previous period (for comparison).
+ * @param string               $date_different Human-readable comparison period label (e.g. "7 days").
+ * @return string HTML fragment for the email body, or empty string on failure.
+ * @version 9.0.0
  */
 function pa_email_include_general( $current, $stats, $old_stats, $date_different ) {
 
@@ -523,11 +545,11 @@ function pa_email_include_general( $current, $stats, $old_stats, $date_different
 					</tr> 
 					<?php if ( class_exists( 'WP_Analytify_Pro_Base' ) ) { ?>
 					<tr>
-						<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php echo esc_url( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-pro&utm_medium=email-reports&utm_content=cta&utm_campaign=addons-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/c29b00f7-b5fa-4e04-9a28-e9d77c69ba15.png" alt="<?php esc_attr_e( 'Buy Email Notifications addon', 'wp-analytify' ); ?>"></a></td>
+						<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php echo esc_url( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-pro&utm_medium=email-reports&utm_content=cta&utm_campaign=addons-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/c29b00f7-b5fa-4e04-9a28-e9d77c69ba15.png" alt="<?php esc_attr_e( 'Buy Email Notifications add-on', 'wp-analytify' ); ?>"></a></td>
 					</tr>
 					<?php } else { ?>
 					<tr>
-						<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php echo esc_url( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-lite&utm_medium=email-reports&utm_content=cta&utm_campaign=bundle-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/3c067584-abb3-4c6b-8c28-4cc265e67bfa.png" alt="<?php esc_attr_e( 'Upgrade to Analytify Pro + Email Notifications bundle', 'wp-analytify' ); ?>" class="analytify-update-pro"></a></td>
+						<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php echo esc_url( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-lite&utm_medium=email-reports&utm_content=cta&utm_campaign=bundle-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/3c067584-abb3-4c6b-8c28-4cc265e67bfa.png" alt="<?php esc_attr_e( 'Upgrade to Analytify Pro + Email Notifications add-on bundle', 'wp-analytify' ); ?>" class="analytify-update-pro"></a></td>
 					</tr>
 				<?php } ?>
 				</tbody>

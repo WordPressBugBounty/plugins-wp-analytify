@@ -218,6 +218,22 @@ function analytify_get_logger() {
 }
 
 /**
+ * Log a message with the Analytify logger if available (DRY helper).
+ *
+ * @param string               $level   Log level: 'warning', 'error', 'info', etc.
+ * @param string               $message Message to log.
+ * @param array<string, mixed> $context Optional context array.
+ * @since 9.0.0
+ * @return void
+ */
+function analytify_log( $level, $message, $context = array() ) {
+	$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+	if ( $logger && method_exists( $logger, $level ) ) {
+		$logger->$level( $message, $context );
+	}
+}
+
+/**
  * Registers the default log handler.
  *
  * @since 2.1.23

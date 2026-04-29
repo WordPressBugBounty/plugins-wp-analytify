@@ -83,13 +83,15 @@ trait Analytify_Authentication {
 
 	/**
 	 * Connect with Google Analytics API and get authentication token and save it.
+	 * Never logs response body (OAuth responses can contain tokens).
 	 *
 	 * @since 6.0.0
-	 * @version 7.1.2
+	 * @version 9.0.0
 	 *
 	 * @return string|false|null Access token, false on error, or null if no auth code.
 	 */
 	public function analytify_pa_connect_v2() {
+		$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
 
 		// Retrieve stored token data.
 		$token_data    = $this->analytify_get_google_token();
@@ -139,8 +141,18 @@ trait Analytify_Authentication {
 
 			if ( is_wp_error( $response ) ) {
 				if ( ! get_transient( 'analytify_token_request_error_logged' ) ) {
-					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Transient-based rate limiting for error logging.
-					error_log( 'Error: Failed to send token request.' );
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Failed to send token request.',
+							array(
+								'source'             => 'analytify_pa_connect_v2',
+								'error'              => sanitize_text_field( $response->get_error_message() ),
+								'token_uri'          => esc_url_raw( $token_uri ),
+								'has_auth_code'      => ! empty( $auth_code ),
+								'request_grant_type' => sanitize_text_field( $token_request_data['grant_type'] ),
+							)
+						);
+					}
 					set_transient( 'analytify_token_request_error_logged', true, 24 * HOUR_IN_SECONDS );
 				}
 				return false;
@@ -159,16 +171,39 @@ trait Analytify_Authentication {
 				return $access_token_data['access_token'];
 			} else {
 				if ( ! get_transient( 'analytify_token_response_error_logged' ) ) {
-					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Transient-based rate limiting for error logging.
-					error_log( 'Error: Access token not found in response.' );
+					// Do not log response_body (OAuth response can contain access/refresh tokens).
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Access token not found in response.',
+							array(
+								'source'             => 'analytify_pa_connect_v2',
+								'response_code'      => absint( wp_remote_retrieve_response_code( $response ) ),
+								'has_auth_code'      => ! empty( $auth_code ),
+								'has_refresh_token'  => ! empty( $refresh_token ),
+								'token_uri'          => esc_url_raw( $token_uri ),
+								'request_grant_type' => sanitize_text_field( $token_request_data['grant_type'] ),
+							)
+						);
+					}
 					set_transient( 'analytify_token_response_error_logged', true, 24 * HOUR_IN_SECONDS );
 				}
 				return false;
 			}
 		} catch ( Exception $e ) {
 			if ( ! get_transient( 'analytify_token_exception_error_logged' ) ) {
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Transient-based rate limiting for error logging.
-				error_log( 'Analytify (Error): ' . $e->getMessage() );
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning(
+						'Exception during token request: ' . $e->getMessage(),
+						array(
+							'source'             => 'analytify_pa_connect_v2',
+							'exception'          => sanitize_text_field( $e->getMessage() ),
+							'token_uri'          => esc_url_raw( $token_uri ),
+							'has_auth_code'      => ! empty( $auth_code ),
+							'request_grant_type' => sanitize_text_field( $token_request_data['grant_type'] ),
+							'trace'              => sanitize_textarea_field( $e->getTraceAsString() ),
+						)
+					);
+				}
 				set_transient( 'analytify_token_exception_error_logged', true, 24 * HOUR_IN_SECONDS );
 			}
 			return false;
@@ -182,13 +217,16 @@ trait Analytify_Authentication {
 	 * This function is responsible for obtaining a new access token
 	 * by using the given refresh token. It is typically used when the
 	 * current access token has expired and needs to be renewed.
+	 * Never includes response body in logged error message (may contain tokens).
 	 *
-	 * @version 8.0.0
+	 * @version 9.0.0
 	 *
 	 * @param string $refresh_token The refresh token used to obtain a new access token.
 	 * @return mixed The new access token or an error response if the refresh fails.
 	 */
 	public function analytify_refresh_access_token( $refresh_token ) {
+		$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+
 		if ( empty( $refresh_token ) ) {
 			return false;
 		}
@@ -211,8 +249,16 @@ trait Analytify_Authentication {
 
 		if ( is_wp_error( $response ) ) {
 			if ( ! get_transient( 'analytify_token_error_logged' ) ) {
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-				error_log( 'Error: Failed to refresh access token. WP_Error: ' . $response->get_error_message() );
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning(
+						'Failed to refresh access token.',
+						array(
+							'source'                 => 'analytify_refresh_access_token',
+							'error'                  => sanitize_text_field( $response->get_error_message() ),
+							'refresh_token_provided' => ! empty( $refresh_token ),
+						)
+					);
+				}
 				set_transient( 'analytify_token_error_logged', true, HOUR_IN_SECONDS );
 			}
 			return false;
@@ -223,7 +269,8 @@ trait Analytify_Authentication {
 		$access_token_data = json_decode( $body, true );
 
 		if ( 200 !== $response_code || empty( $access_token_data['access_token'] ) ) {
-			$error_message = "HTTP {$response_code}: Failed to refresh access token. Response: {$body}";
+			// Do not include response body in error message (may contain tokens).
+			$error_message = "HTTP {$response_code}: Failed to refresh access token.";
 
 			// Check if email notification is enabled in Advanced settings.
 			$advanced_settings = get_option( 'wp-analytify-advanced', array() );
@@ -307,8 +354,15 @@ This is an automated notification from Analytify.',
 
 					// Defensive: Skip wp_mail if no valid recipients.
 					if ( empty( $sanitized_recipients ) ) {
-						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logging skipped email due to invalid recipients.
-						error_log( 'Analytify: Token refresh failure email skipped - no valid recipients' );
+						if ( $logger && method_exists( $logger, 'warning' ) ) {
+							$logger->warning(
+								'Token refresh failure email skipped - no valid recipients.',
+								array(
+									'source'              => 'analytify_refresh_access_token',
+									'original_recipients' => $recipients,
+								)
+							);
+						}
 					} else {
 						// Sanitize subject.
 						$subject = wp_strip_all_tags( $mail_args['subject'] );
@@ -338,9 +392,15 @@ This is an automated notification from Analytify.',
 						if ( $email_sent ) {
 							// Store flag in separate option only if email succeeds.
 							update_option( 'analytify_token_refresh_failed_email_sent', true );
-						} else {
-							// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logging wp_mail failure.
-							error_log( 'Analytify: Token refresh failure email failed to send via wp_mail' );
+						} elseif ( $logger && method_exists( $logger, 'warning' ) ) {
+								$logger->warning(
+									'Token refresh failure email failed to send via wp_mail.',
+									array(
+										'source'     => 'analytify_refresh_access_token',
+										'recipients' => $sanitized_recipients,
+										'subject'    => $subject,
+									)
+								);
 						}
 					}
 				}
@@ -348,8 +408,16 @@ This is an automated notification from Analytify.',
 
 			if ( ! apply_filters( 'analytify_suppress_default_token_error_log', false, $error_message ) ) {
 				if ( ! get_transient( 'analytify_token_error_logged' ) ) {
-					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Transient-based rate limiting for error logging.
-					error_log( 'Analytify: Token refresh failed - ' . $error_message );
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Token refresh failed.',
+							array(
+								'source'        => 'analytify_refresh_access_token',
+								'error_message' => sanitize_text_field( $error_message ),
+								'response_code' => absint( wp_remote_retrieve_response_code( $response ) ),
+							)
+						);
+					}
 					set_transient( 'analytify_token_error_logged', true, DAY_IN_SECONDS );
 				}
 			}
@@ -390,14 +458,16 @@ This is an automated notification from Analytify.',
 		try {
 			// Get a fresh access token using the refresh token.
 			$token  = $this->analytify_get_google_token();
-			$logger = analytify_get_logger();
+			$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
 			if ( class_exists( 'QM' ) ) {
 				QM::info( 'Analytify: Getting Google Analytics token for GA4 web properties.' );
 			}
 
 			// Validate that token is an array and has the expected structure.
 			if ( ! is_array( $token ) || ! isset( $token['access_token'] ) ) {
-				$logger->warning( 'Error: Invalid or missing Google Analytics token in analytify_list_ga4_web_properties.' );
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning( 'Error: Invalid or missing Google Analytics token in analytify_list_ga4_web_properties.' );
+				}
 				if ( class_exists( 'QM' ) ) {
 					QM::warning( 'Analytify: Error: Invalid or missing Google Analytics token in analytify_list_ga4_web_properties.' );
 				}
@@ -422,8 +492,6 @@ This is an automated notification from Analytify.',
 				'headers'      => $headers,
 			);
 		} catch ( Exception $e ) {
-			// Log the error message for debugging purposes.
-			// error_log( 'Error connecting to Google Analytics Admin API: ' . $e->getMessage() );.
 			return null;
 		}
 	}

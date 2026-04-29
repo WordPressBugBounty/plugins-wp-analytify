@@ -16,8 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 	/**
-	 * This class is responsible for returning the correct
-	 * locally hosted file.
+	 * Resolves the locally hosted gtag bundle URL and coordinates download, alias storage, and cleanup.
 	 */
 	class Analytify_Host_Analytics extends Analytify_Host_Analytics_Abstract {
 
@@ -35,6 +34,8 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 		 * @var mixed
 		 */
 		private $host_analytics_locally;
+
+
 
 		const GTAG_URL = 'https://www.googletagmanager.com';
 
@@ -60,17 +61,17 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 
 			if ( ! $this->host_analytics_locally && $this->file_already_exist() ) {
 
-				$file_alias_path = WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias();
-				$gtag_path       = WP_ANALYTIFY_LOCAL_DIR . 'gtag.js';
+				$dir             = WP_ANALYTIFY_LOCAL_DIR;
+				$paths_to_remove = array( $dir . 'gtag.js', $dir . 'gtag.min.js' );
+				$alias           = $this->get_file_alias();
+				if ( $alias ) {
+					array_unshift( $paths_to_remove, $dir . $alias );
+				}
 
-				if ( file_exists( $file_alias_path ) && is_file( $file_alias_path ) ) {
-
-					unlink( WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Direct file operations needed for analytics file hosting
-
-				} elseif ( file_exists( $gtag_path ) && is_file( $gtag_path ) ) {
-
-					unlink( $gtag_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Direct file operations needed for analytics file hosting
-
+				foreach ( array_unique( $paths_to_remove ) as $path ) {
+					if ( file_exists( $path ) && is_file( $path ) ) {
+						wp_delete_file( $path );
+					}
 				}
 
 				return;
@@ -90,7 +91,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 		 */
 		public function file_already_exist() {
 
-			if ( file_exists( WP_ANALYTIFY_LOCAL_DIR . 'gtag.js' ) || file_exists( WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ) ) {
+			if ( file_exists( WP_ANALYTIFY_LOCAL_DIR . 'gtag.js' ) || file_exists( WP_ANALYTIFY_LOCAL_DIR . 'gtag.min.js' ) || file_exists( WP_ANALYTIFY_LOCAL_DIR . $this->get_file_alias() ) ) {
 				return true;
 			}
 
@@ -108,7 +109,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 				return null;
 			}
 
-			$url = content_url() . str_replace( WP_CONTENT_DIR, '', WP_ANALYTIFY_LOCAL_DIR ) . 'gtag.js';
+			$url = content_url() . str_replace( WP_CONTENT_DIR, '', WP_ANALYTIFY_LOCAL_DIR ) . 'gtag.min.js';
 
 			if ( strpos( home_url(), 'https://' ) !== false && ! is_ssl() ) {
 				$url = str_replace( 'http://', 'https://', $url );
@@ -120,7 +121,7 @@ if ( ! class_exists( 'Analytify_Host_Analytics' ) ) {
 				return $url;
 			}
 
-			$url = str_replace( 'gtag.js', $file_alias, $url );
+			$url = str_replace( 'gtag.min.js', $file_alias, $url );
 
 			return $url;
 		}

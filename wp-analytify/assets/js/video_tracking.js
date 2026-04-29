@@ -97,6 +97,10 @@
 		};
 
 		const setupYouTubeTracking = function () {
+			if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+				return;
+			}
+
 			$('iframe[src*="youtube.com"]').each(function () {
 				const iframe = this;
 

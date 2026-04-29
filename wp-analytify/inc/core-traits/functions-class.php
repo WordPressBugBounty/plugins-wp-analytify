@@ -408,4 +408,72 @@ class WP_ANALYTIFY_FUNCTIONS {
 	public static function get_ga_report_range( $start_date, $end_date, $compare_start_date, $compare_end_date ) {
 		return '%3F_u.date00%3D' . str_replace( '-', '', $start_date ) . '%26_u.date01%3D' . str_replace( '-', '', $end_date ) . '%26_u.date10%3D' . str_replace( '-', '', $compare_start_date ) . '%26_u.date11%3D' . str_replace( '-', '', $compare_end_date );
 	}
+
+	/**
+	 * Message when the analytics session token is missing (e.g. post_analytics_token).
+	 * Used by Pro add-on dashboards such as Paid Memberships Pro.
+	 *
+	 * @since 9.0.0
+	 * @return void
+	 */
+	public static function wpa_authenticate_message() {
+		esc_html_e( 'You must be logged in to see the Analytics Dashboard.', 'wp-analytify' );
+	}
+
+	/**
+	 * Message when the current user lacks the role/capability to view the dashboard.
+	 *
+	 * @since 9.0.0
+	 * @return void
+	 */
+	public static function wpa_authorize_message() {
+		esc_html_e( 'You do not have permission to view this dashboard.', 'wp-analytify' );
+	}
+
+	/**
+	 * HTML wrapper for inline dashboard errors (matches analytify-stats-error-msg pattern).
+	 *
+	 * @param string $message_html Already-escaped message text.
+	 * @return string
+	 */
+	private static function wpa_dashboard_error_markup( $message_html ) {
+		return '<div class="analytify-stats-error-msg"><div class="wpb-error-box"><span class="blk"><span class="line">'
+			. '</span><span class="dot"></span></span><span class="information-txt">' . $message_html . '</span></div></div>';
+	}
+
+	/**
+	 * Markup when Google Analytics is not connected or the session token is missing.
+	 * LearnDash and other Pro dashboards echo the return value.
+	 *
+	 * @since 9.0.0
+	 * @return string
+	 */
+	public static function wpa_not_connected() {
+		return self::wpa_dashboard_error_markup(
+			esc_html__( 'You must be logged in to see the Analytics Dashboard.', 'wp-analytify' )
+		);
+	}
+
+	/**
+	 * Markup when the current user may not view the dashboard (role/capability).
+	 *
+	 * @since 9.0.0
+	 * @return string
+	 */
+	public static function wpa_not_allowed() {
+		return self::wpa_dashboard_error_markup(
+			esc_html__( 'You do not have permission to view this dashboard.', 'wp-analytify' )
+		);
+	}
+
+	/**
+	 * Placeholder for Pro add-on dashboards that used to call a second profile notice.
+	 * The notice is already output when the caller evaluates {@see wpa_check_profile_selection()}
+	 * in an `if` condition (side effect), so this must not call it again.
+	 *
+	 * @since 9.0.0
+	 * @return void
+	 */
+	public static function wpa_select_profile_message() {
+	}
 }

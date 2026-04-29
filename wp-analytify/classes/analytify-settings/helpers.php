@@ -58,7 +58,7 @@ trait Analytify_Settings_Helpers {
 	 */
 	public function get_field_description( $args ) {
 		if ( isset( $args['desc'] ) && ! empty( $args['desc'] ) ) {
-			$desc = sprintf( '<p class="description">%s</p>', $args['desc'] );
+			$desc = sprintf( '<p class="description">%s</p>', wp_kses_post( $args['desc'] ) );
 		} else {
 			$desc = '';
 		}

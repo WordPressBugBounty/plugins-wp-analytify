@@ -55,7 +55,7 @@ $report_date_range = WP_ANALYTIFY_FUNCTIONS::get_ga_report_range( $start_date, $
 					<div class="wpa-tab-wrapper"><?php $wp_analytify->dashboard_navigation(); ?></div>
 					<div class="wpb_plugin_tabs_content analytify-dashboard-content">
 						<div class="analytify_wraper <?php echo esc_attr( implode( ' ', $selected_stats ) ); ?>">
-							<div class="analytify_main_title_section">
+							<div class="analytify_main_title_section analytify-dashboard-header-toolbar">
 								<div class="analytify_dashboard_title">
 									<h1 class="analytify_pull_left analytify_main_title"><?php esc_html_e( 'Overview Dashboard', 'wp-analytify' ); ?> <?php if ( class_exists( 'WP_Analytify_Pro_Base' ) && isset( $_GET['page'] ) && 'analytify-dashboard' === $_GET['page'] && 1 === count( $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes. ?>
 										<button name="generate_dashboard_pdf" 

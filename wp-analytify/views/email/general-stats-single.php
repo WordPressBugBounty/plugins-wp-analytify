@@ -16,14 +16,23 @@ if ( ! function_exists( 'get_compared_colors' ) ) {
 	 * @return array<string, string>
 	 */
 	function get_compared_colors( $results, $compare_results, $date_different ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Parameter kept for consistency
-		if ( 0 !== $compare_results ) {
-			$compare = number_format( ( ( $results - $compare_results ) / $compare_results ) * 100, 2 ) . '%';
-		} else {
+		if ( empty( $compare_results ) || ! is_numeric( $compare_results ) ) {
 			return array(
-				'color'    => '#000000',  // Default color code for positive difference.
-				'bg_color' => '#ffffff',   // Default color code for lighter color.
+				'color'    => '#000000',
+				'bg_color' => '#ffffff',
 			);
 		}
+
+		$compare_base = (float) $compare_results;
+		if ( 0.0 === $compare_base ) {
+			return array(
+				'color'    => '#000000',
+				'bg_color' => '#ffffff',
+			);
+		}
+
+		$current = is_numeric( $results ) ? (float) $results : 0.0;
+		$compare = ( ( $current - $compare_base ) / $compare_base ) * 100;
 
 		return array(
 			'color'    => $compare > 0 ? '#00c853' : '#fa5825',
@@ -134,11 +143,11 @@ if ( ! function_exists( 'pa_email_include_single_general' ) ) {
 					</tr> 
 					<?php if ( class_exists( 'WP_Analytify_Pro_Base' ) ) : ?>
 						<tr>
-							<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php analytify_e( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-pro&utm_medium=email-reports&utm_content=cta&utm_campaign=addons-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/c29b00f7-b5fa-4e04-9a28-e9d77c69ba15.png" alt="<?php esc_attr_e( 'Buy Email Notifications addon', 'wp-analytify' ); ?>"></a></td>
+							<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php analytify_e( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-pro&utm_medium=email-reports&utm_content=cta&utm_campaign=addons-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/c29b00f7-b5fa-4e04-9a28-e9d77c69ba15.png" alt="<?php esc_attr_e( 'Buy Email Notifications add-on', 'wp-analytify' ); ?>"></a></td>
 						</tr>
 					<?php else : ?>
 						<tr>
-							<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php analytify_e( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-lite&utm_medium=email-reports&utm_content=cta&utm_campaign=bundle-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/3c067584-abb3-4c6b-8c28-4cc265e67bfa.png" alt="<?php esc_attr_e( 'Upgrade to Analytify Pro + Email Notifications bundle', 'wp-analytify' ); ?>" class="analytify-update-pro"></a></td>
+							<td valign="top" colspan="2" align="center" style="padding-top: 24px;"><a href="<?php analytify_e( 'https://analytify.io/add-ons/email-notifications?utm_source=analytify-lite&utm_medium=email-reports&utm_content=cta&utm_campaign=bundle-upgrade' ); ?>"><img src="https://mcusercontent.com/16d94a7b1c408429988343325/images/3c067584-abb3-4c6b-8c28-4cc265e67bfa.png" alt="<?php esc_attr_e( 'Upgrade to Analytify Pro + Email Notifications add-on bundle', 'wp-analytify' ); ?>" class="analytify-update-pro"></a></td>
 						</tr>
 					<?php endif; ?>
 			</tbody></table>

@@ -213,8 +213,14 @@ trait Analytify_Utils_GA {
 	/**
 	 * Get required dimensions for GA4.
 	 *
-	 * @version 7.0.5
-	 * @return array<string, mixed> List of GA4 custom dimensions.
+	 * Register these in GA4 Admin → Custom definitions (Event scope) so reports work.
+	 * Enhanced Tel Link Analytics uses: wpa_category, wpa_link_action, wpa_link_label,
+	 * wpa_device_category, wpa_click_hour, wpa_click_day, wpa_traffic_source, plus the
+	 * standard dimension `country` (not listed here).
+	 *
+	 * @since 1.0.0
+	 * @version 9.0.0
+	 * @return array<string, mixed> List of GA4 custom dimensions keyed by parameter_name.
 	 */
 	public static function required_dimensions() {
 		$dimensions = array(
@@ -274,11 +280,6 @@ trait Analytify_Utils_GA {
 				'scope'          => 1,
 			),
 			array(
-				'parameter_name' => 'wpa_category',
-				'display_name'   => 'WPA Category',
-				'scope'          => 1,
-			),
-			array(
 				'parameter_name' => 'wpa_affiliate_label',
 				'display_name'   => 'WPA Affiliate Label',
 				'scope'          => 1,
@@ -324,11 +325,6 @@ trait Analytify_Utils_GA {
 				'scope'          => 1,
 			),
 			array(
-				'parameter_name' => 'wpa_seo_score',
-				'display_name'   => 'WPA Seo Score',
-				'scope'          => 1,
-			),
-			array(
 				'parameter_name' => 'wpa_percentage',
 				'display_name'   => 'WPA Percentage',
 				'scope'          => 1,
@@ -361,6 +357,41 @@ trait Analytify_Utils_GA {
 			array(
 				'parameter_name' => 'wpa_archive_type',
 				'display_name'   => 'WPA Archive Type',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_llms_post_type',
+				'display_name'   => 'WPA LLMS Post Type',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_llms_instructor',
+				'display_name'   => 'WPA LLMS Instructor',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_device_category',
+				'display_name'   => 'WPA Device Category',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_click_hour',
+				'display_name'   => 'WPA Click Hour',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_click_day',
+				'display_name'   => 'WPA Click Day',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_traffic_source',
+				'display_name'   => 'WPA Traffic Source',
+				'scope'          => 1,
+			),
+			array(
+				'parameter_name' => 'wpa_country_code',
+				'display_name'   => 'WPA Country Code',
 				'scope'          => 1,
 			),
 

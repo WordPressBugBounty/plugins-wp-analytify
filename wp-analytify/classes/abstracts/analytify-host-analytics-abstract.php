@@ -37,13 +37,6 @@ if ( ! class_exists( 'Analytify_Host_Analytics_Abstract' ) ) {
 		public $tracking_id;
 
 		/**
-		 * File contents.
-		 *
-		 * @var string
-		 */
-		public $file_contents;
-
-		/**
 		 * Tracking mode.
 		 *
 		 * @var string
@@ -68,13 +61,18 @@ if ( ! class_exists( 'Analytify_Host_Analytics_Abstract' ) ) {
 		}
 
 		/**
-		 * Set the URL of remote gtag library.
+		 * Builds the remote gtag.js download URL. Called from the constructor after tracking_id is set.
 		 *
 		 * @return void
 		 * @since 5.0.6
 		 */
 		public function set_all_values() {
-			$this->remote_file_url = Analytify_Host_Analytics::GTAG_URL . '/gtag/js?id=' . $this->tracking_id;
+			if ( empty( $this->tracking_id ) ) {
+				$this->remote_file_url = '';
+				return;
+			}
+
+			$this->remote_file_url = Analytify_Host_Analytics::GTAG_URL . '/gtag/js?id=' . rawurlencode( $this->tracking_id ) . '&l=dataLayer&dl=1';
 		}
 
 		/**
@@ -105,78 +103,89 @@ if ( ! class_exists( 'Analytify_Host_Analytics_Abstract' ) ) {
 		 */
 		public function download_file() {
 
-			$file_contents = wp_remote_get( $this->remote_file_url );
-			$logger        = analytify_get_logger();
-			if ( class_exists( 'QM' ) ) {
-				if ( class_exists( 'QM' ) ) {
-					QM::info( 'Analytify: Downloading analytics file from remote URL.' );
-				}
+			if ( empty( $this->remote_file_url ) ) {
+				return;
 			}
 
-			if ( is_wp_error( $file_contents ) ) {
+			$response = wp_remote_get( $this->remote_file_url );
+			$logger   = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
 
-				$logger->warning( sprintf( 'Error occured while downloading analytics file: %1$s - %2$s', $file_contents->get_error_code(), $file_contents->get_error_message() ), array( 'source' => 'analytify_analytics_file_errors' ) );
+			if ( class_exists( 'QM' ) ) {
+				QM::info( 'Analytify: Downloading analytics file from remote URL.' );
+			}
+
+			if ( is_wp_error( $response ) ) {
+
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning( sprintf( 'Error occured while downloading analytics file: %1$s - %2$s', $response->get_error_code(), $response->get_error_message() ), array( 'source' => 'analytify_analytics_file_errors' ) );
+				}
 				if ( class_exists( 'QM' ) ) {
-					if ( class_exists( 'QM' ) ) {
-						QM::warning( 'Analytify: Error occured while downloading analytics file: ' . $file_contents->get_error_code() . ' - ' . $file_contents->get_error_message(), array( 'source' => 'analytify_analytics_file_errors' ) );
-					}
+					QM::warning( 'Analytify: Error occured while downloading analytics file: ' . $response->get_error_code() . ' - ' . $response->get_error_message(), array( 'source' => 'analytify_analytics_file_errors' ) );
 				}
 
 				return;
 
 			}
 
-			$file_alias = $this->get_file_alias() ?? $this->tracking_mode . '.js';
+			$body = wp_remote_retrieve_body( $response );
+			if ( '' === $body ) {
+				return;
+			}
 
-			if ( $file_alias && file_exists( ( defined( 'WP_ANALYTIFY_LOCAL_DIR' ) ? WP_ANALYTIFY_LOCAL_DIR : '' ) . $file_alias ) ) {
+			$local_dir = defined( 'WP_ANALYTIFY_LOCAL_DIR' ) ? WP_ANALYTIFY_LOCAL_DIR : '';
 
-				$deleted = unlink( ( defined( 'WP_ANALYTIFY_LOCAL_DIR' ) ? WP_ANALYTIFY_LOCAL_DIR : '' ) . $file_alias ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- Direct file operations are acceptable for analytics file hosting
-
-				if ( ! $deleted ) {
-					$logger->warning( 'File could not be deleted due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
-					if ( class_exists( 'QM' ) ) {
-						if ( class_exists( 'QM' ) ) {
-							QM::warning( 'Analytify: File could not be deleted due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
-						}
-					}
+			$old_alias = $this->get_file_alias();
+			$deleted   = true;
+			if ( is_string( $old_alias ) && '' !== $old_alias ) {
+				$old_path = $local_dir . $old_alias;
+				if ( file_exists( $old_path ) && is_file( $old_path ) ) {
+					wp_delete_file( $old_path );
+					$deleted = ! file_exists( $old_path );
 				}
 			}
 
-			$file_alias = bin2hex( random_bytes( 4 ) ) . '.js';
-
-			$write = file_put_contents( ( defined( 'WP_ANALYTIFY_LOCAL_DIR' ) ? WP_ANALYTIFY_LOCAL_DIR : '' ) . $file_alias, $file_contents['body'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Direct file operations are acceptable for analytics file hosting
-
-			if ( ! $write ) {
-				$logger->warning( 'File could not be saved due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
-				if ( class_exists( 'QM' ) ) {
-					if ( class_exists( 'QM' ) ) {
-						QM::warning( 'Analytify: File could not be saved due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
-					}
+			if ( ! $deleted ) {
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning( 'File could not be deleted due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
 				}
+				if ( class_exists( 'QM' ) ) {
+					QM::warning( 'Analytify: File could not be deleted due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
+				}
+			}
+
+			// Random basename with .min.js to reflect the minified gtag bundle from Google.
+			$file_alias = bin2hex( random_bytes( 4 ) ) . '.min.js';
+
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Direct file operations are acceptable for analytics file hosting
+			$write = file_put_contents( $local_dir . $file_alias, $body );
+
+			if ( false === $write ) {
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning( 'File could not be saved due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
+				}
+				if ( class_exists( 'QM' ) ) {
+					QM::warning( 'Analytify: File could not be saved due to some error', array( 'source' => 'analytify_analytics_file_errors' ) );
+				}
+				return;
 			}
 
 			$this->set_file_alias( $this->tracking_mode, $file_alias );
 		}
 
 		/**
-		 * Get file alias.
+		 * Return the current locally hosted gtag filename alias, if any.
 		 *
-		 * @return string|null
+		 * @return string
 		 */
-		public function get_file_alias() {
-			return $this->file_contents;
-		}
+		abstract public function get_file_alias();
 
 		/**
-		 * Set file alias for tracking mode.
+		 * Persist the new filename alias for the tracking mode.
 		 *
-		 * @param string $tracking_mode The tracking mode.
-		 * @param string $file_alias The file alias.
-		 * @return void
+		 * @param string $tracking_mode Tracking mode key.
+		 * @param string $file_alias    Generated basename (e.g. abcd1234.min.js).
+		 * @return mixed                Implementation may return bool (e.g. from update_option).
 		 */
-		public function set_file_alias( $tracking_mode, $file_alias ) {
-			$this->tracking_mode = $tracking_mode;
-			$this->file_contents = $file_alias;
-		}
+		abstract public function set_file_alias( $tracking_mode, $file_alias );
 	}
 }

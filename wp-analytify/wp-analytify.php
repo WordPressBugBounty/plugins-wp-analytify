@@ -3,13 +3,13 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 8.1.3
+ * Version: 9.0.0
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
  * Text Domain: wp-analytify
  * Requires at least: 4.0
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Domain Path: /languages
  * GitHub Plugin URI: https://github.com/WPBrigade/wp-analytify
  *
@@ -416,7 +416,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		public function redirect_optin() {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes
 			$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
-			if ( $page && ( 'analytify-settings' === $page || 'analytify-dashboard' === $page || 'analytify-woocommerce' === $page || 'analytify-addons' === $page ) ) {
+
+			if ( $page && ( 'analytify-settings' === $page || 'analytify-dashboard' === $page || 'analytify-pmpro' === $page || 'analytify-learndash' === $page || 'analytify-lifterlms' === $page || 'analytify-woocommerce' === $page || 'analytify-addons' === $page ) ) {
 				if ( ! get_site_option( '_analytify_optin' ) ) {
 					wp_safe_redirect( admin_url( 'admin.php?page=analytify-optin' ) );
 					exit;
@@ -436,7 +437,6 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			$plugin_dir = basename( __DIR__ );
 			load_plugin_textdomain( 'wp-analytify', false, $plugin_dir . '/languages/' );
 		}
-
 
 		/**
 		 *
@@ -657,6 +657,34 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			$script_src  = $local_analytics_file ?? 'https://www.googletagmanager.com/gtag/js';
 			$script_src .= ( strpos( $script_src, '?' ) !== false ? '&' : '?' ) . 'id=' . esc_attr( $ua_code );
 
+			// Excluded query parameters: strip only these query keys from page_location (path and hash unchanged).
+			$exclude_params = 'on' === $this->settings->get_option( 'exclude_query_params', 'wp-analytify-advanced' );
+			$params_list    = $this->settings->get_option( 'query_params_to_exclude', 'wp-analytify-advanced' );
+			$params_list    = is_string( $params_list ) ? $params_list : '';
+
+			$js_location_logic = '';
+			if ( $exclude_params && '' !== $params_list ) {
+				$params_array = array_map( 'trim', explode( ',', $params_list ) );
+				$params_array = array_map( 'strtolower', $params_array );
+				$params_array = array_values( array_unique( array_filter( $params_array, 'strlen' ) ) );
+				$params_json  = wp_json_encode( $params_array );
+
+				// Strip only query keys (case-insensitive); path and hash are not altered; no query string / repeated params are safe.
+				$js_location_logic = "
+			try {
+				var wa_loc = window.location.href;
+				var wa_url = new URL(wa_loc);
+				var wa_params = $params_json;
+				var keysToRemove = [];
+				wa_url.searchParams.forEach(function(val, key) {
+					if (wa_params.indexOf(key.toLowerCase()) !== -1) { keysToRemove.push(key); }
+				});
+				keysToRemove.forEach(function(k) { wa_url.searchParams.delete(k); });
+				configuration.page_location = wa_url.toString();
+			} catch (e) {}
+				";
+			}
+
 			?>
 
 			<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Inline gtag script must be output directly in the page head. ?>
@@ -670,6 +698,11 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 			const gaID = '<?php echo esc_js( $ua_code ); ?>';
 
 			<?php do_action( 'analytify_tracking_code_before_pageview' ); ?>
+			<?php
+			if ( ! empty( $js_location_logic ) ) {
+				echo $js_location_logic; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JS logic constructed internally with safe JSON.
+			}
+			?>
 
 			gtag('config', gaID, configuration);
 
@@ -1225,8 +1258,8 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			add_submenu_page(
 				'analytify-dashboard',
-				ANALYTIFY_NICK . esc_html__( ' PRO vs FREE', 'wp-analytify' ),
-				esc_html__( 'PRO vs FREE', 'wp-analytify' ),
+				ANALYTIFY_NICK . esc_html__( ' FREE vs PRO', 'wp-analytify' ),
+				esc_html__( 'FREE vs PRO', 'wp-analytify' ),
 				'manage_options',
 				'analytify-go-pro',
 				array(
@@ -1397,16 +1430,19 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 		/**
 		 * Trigger logging cleanup using the logging class.
 		 *
+		 * Uses guarded logger (null-safe) to avoid fatal if logger unavailable.
+		 *
 		 * @since 2.1.23
+		 * @version 9.0.0
 		 * @return void
 		 */
 		public static function analytify_cleanup_logs() {
-			$logger = analytify_get_logger();
+			$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
 			if ( class_exists( 'QM' ) ) {
 				QM::info( 'Analytify: Starting cleanup of expired logs.' );
 			}
 
-			if ( is_callable( array( $logger, 'clear_expired_logs' ) ) ) {
+			if ( $logger && is_callable( array( $logger, 'clear_expired_logs' ) ) ) {
 				$logger->clear_expired_logs();
 				if ( class_exists( 'QM' ) ) {
 					QM::info( 'Analytify: Expired logs cleared successfully.' );

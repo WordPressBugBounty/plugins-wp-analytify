@@ -3,8 +3,8 @@ Contributors: hiddenpearls
 Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 4.0
-Tested up to: 6.9
-Stable tag: 8.1.3
+Tested up to: 7.0
+Stable tag: 9.0.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,24 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 9.0.0 – 2026-04-29 =
+* New Feature: Introduced new paid module Pixels Tracking.
+* New Feature: Introduced new paid module LifterLMS Tracking.
+* New Feature: Introduced new paid module LearnDash Tracking.
+* New Feature: Introduced new paid module Paid Memberships Pro Tracking.
+* New Feature: Added custom dimensions to support enhanced `tel:` link tracking ahead of Enhanced Tel Link Analytics reports.
+* New Feature: Custom date range for scheduled email reports, including “yesterday” and safer scheduling.
+* New Feature: Exclude selected URL query parameters from tracking (Advanced).
+* Enhancement: Locally hosted GA serves minified `gtag.min.js` and drops legacy `gtag.js` handling.
+* Enhancement: Switched from `error_log` to Analytify logger; improved diagnostic log and debugging UX.
+* Enhancement: “Send Email” reports: loading states, strings, and more reliable background sends.
+* Enhancement: Code re-factorization and improvements.
+* Enhancement: Pie chart sizing and spacing on the dashboard.
+* Bug Fix: YouTube video tracking script error and noisy console output.
+* Bug Fix: General Stats email template styling and safer comparison label escaping.
+* Bug Fix: Measurement Protocol GA4 class reference so MP events load and send correctly.
+* Compatibility: Compatible with WordPress 7.0
 
 = 8.1.3 – 2026-03-17 =
 * Security: Added nonce verification and capability checks to prevent CSRF attacks.
@@ -1159,7 +1177,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 8.1.3 =
+= 9.0.0 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

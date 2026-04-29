@@ -58,6 +58,7 @@ trait Analytify_Utils_UI {
 	 * @param string               $start_date Start date value.
 	 * @param string               $end_date   End date value.
 	 * @param array<string, mixed> $args       Additional arguments for customization.
+	 * @version 9.0.0
 	 * @return void
 	 */
 	public static function date_form( $start_date, $end_date, $args = array() ) {
@@ -68,10 +69,10 @@ trait Analytify_Utils_UI {
 			return;
 		}
 
-		// ⚠️ Nonce verification recommended if form processes POST data.
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for display purposes
-		$page  = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
-		$class = ( 'edd-dashboard' === $page || 'analytify-woocommerce' === $page ) ? 'ecommerce-stats-class' : $page;
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin ?page= slug for CSS class only; not form POST handling.
+
+		$class = ( 'edd-dashboard' === $page || 'analytify-woocommerce' === $page || 'analytify-pmpro' === $page || 'analytify-learndash' === $page || 'analytify-lifterlms' === $page ) ? 'ecommerce-stats-class' : $page;
+
 		?>
 		<form class="analytify_form_date analytify_form_date_pro <?php echo esc_attr( $class ); ?>" action="" method="post">
 			<?php

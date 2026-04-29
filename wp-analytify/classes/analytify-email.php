@@ -7,6 +7,7 @@
  *
  * @package WP_Analytify
  * @since 1.0.0
+ * @version 9.0.0
  */
 
 ob_start();
@@ -15,6 +16,8 @@ ob_start();
 $plugin_dir = defined( 'WP_ANALYTIFY_PLUGIN_DIR' ) ? WP_ANALYTIFY_PLUGIN_DIR : dirname( __DIR__ );
 require_once $plugin_dir . '/classes/analytify-email/bootstrap.php';
 require_once $plugin_dir . '/classes/analytify-email/settings.php';
+// Since 9.0.0 — custom From/To bounds for monthly-style email reports (see `email-custom-range.php`).
+require_once $plugin_dir . '/classes/analytify-email/email-custom-range.php';
 require_once $plugin_dir . '/classes/analytify-email/scheduler.php';
 require_once $plugin_dir . '/classes/analytify-email/render.php';
 require_once $plugin_dir . '/classes/analytify-email/single-send.php';

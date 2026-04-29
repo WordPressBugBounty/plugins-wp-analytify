@@ -7,7 +7,7 @@
  *
  * @package WP_Analytify
  * @since 8.0.0
- * @version 8.1.3
+ * @version 9.0.0
  */
 
 // Exit if accessed directly.
@@ -20,11 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ============================================================================.
 
 if ( ! defined( 'ANALYTIFY_VERSION' ) ) {
-	define( 'ANALYTIFY_VERSION', '8.1.3' );
+	define( 'ANALYTIFY_VERSION', '9.0.0' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_PLUGIN_VERSION' ) ) {
-	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '8.1.3' );
+	define( 'WP_ANALYTIFY_PLUGIN_VERSION', '9.0.0' );
 }
 
 if ( ! defined( 'WP_ANALYTIFY_ID' ) ) {

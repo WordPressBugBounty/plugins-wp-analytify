@@ -40,12 +40,14 @@ class Analytify_Factory_Reset {
 	/**
 	 * Retrieve an array of settings to be deleted.
 	 *
+	 * @version 9.0.0
 	 * @return array<string, mixed> An array of setting names.
 	 */
 	private function get_all_settings(): array {
 
 		$settings = array(
 			'wp_analytify_modules',
+			'wp_analytify_pro_addons',
 			'wp-analytify-tracking',
 			'wp-analytify-email',
 			'wp-analytify-front',
@@ -76,6 +78,10 @@ class Analytify_Factory_Reset {
 			'analytify_email_license_status',
 			'analytify_email_license_key',
 			'analytify-google-ads-tracking',
+			'analytify-pixels-tracking',
+			'analytify_pmpro_track_events',
+			'analytify_pmpro_track_purchases',
+			'analytify_llms_dismissed_notices',
 			'_analytify_optin',
 			'analytify_cache_timeout',
 			'analytify_csv_data',
@@ -126,6 +132,8 @@ class Analytify_Factory_Reset {
 	 * Remove the specified settings.
 	 *
 	 * @return void
+	 *
+	 * @version 9.0.0
 	 */
 	public function remove_settings() {
 		foreach ( $this->settings as $setting ) {
@@ -142,5 +150,21 @@ class Analytify_Factory_Reset {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query needed for wildcard deletion of transients.
 		$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_analytify_%' OR option_name LIKE '_transient_timeout_analytify_%'" );
+
+		// PMPro: GA4 idempotency flags (analytify_pmpro_tracked_{order_id}).
+		$pmpro_tracked_like = $wpdb->esc_like( 'analytify_pmpro_tracked_' ) . '%';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Wildcard cleanup for unbounded per-order options.
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $pmpro_tracked_like ) );
+
+		// LearnDash / PMPro: dismissed admin notices (analytify_notice_ + 32-char md5 only).
+		$notice_like = $wpdb->esc_like( 'analytify_notice_' ) . '%';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Avoid deleting unrelated keys sharing a prefix.
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s AND CHAR_LENGTH(option_name) = %d",
+				$notice_like,
+				49
+			)
+		);
 	}
 }

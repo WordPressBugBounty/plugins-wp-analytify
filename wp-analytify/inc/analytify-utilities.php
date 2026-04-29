@@ -263,6 +263,7 @@ trait Analytify_General_Utilities {
 	 *
 	 * @param string $slug Slug of addon./moudle.
 	 * @return string $addon_state: active or deactive
+	 * @version 9.0.0
 	 */
 	public function analytify_module_state( $slug ) {
 
@@ -281,9 +282,12 @@ trait Analytify_General_Utilities {
 			'wp-analytify-woocommerce',
 			'wp-analytify-goals',
 			'wp-analytify-authors',
+			'wp-analytify-learndash',
 			'wp-analytify-edd',
 			'wp-analytify-forms',
 			'wp-analytify-campaigns',
+			'wp-analytify-lifterlms',
+			'wp-analytify-pmpro',
 		);
 		$pro_features = array(
 			'custom-dimensions',
@@ -319,6 +323,7 @@ trait Analytify_General_Utilities {
 	 * @param string $slug Slug of addon.
 	 *
 	 * @return bool $addon_active
+	 * @version 9.0.0
 	 */
 	public function addon_is_active( $slug ) {
 
@@ -361,6 +366,12 @@ trait Analytify_General_Utilities {
 				}
 				break;
 
+			case 'wp-analytify-pmpro':
+				if ( class_exists( 'WP_Analytify_Pmpro_Addon' ) ) {
+					$addon_active = true;
+				}
+				break;
+
 			case 'wp-analytify-forms':
 				if ( class_exists( 'Analytify_Forms' ) || class_exists( 'Analytify_Addon_Forms' ) ) {
 					$addon_active = true;
@@ -369,6 +380,18 @@ trait Analytify_General_Utilities {
 
 			case 'wp-analytify-pro':
 				if ( class_exists( 'WP_Analytify_Pro_Base' ) ) {
+					$addon_active = true;
+				}
+				break;
+
+			case 'wp-analytify-lifterlms':
+				if ( class_exists( 'WP_Analytify_LifterLMS_Addon' ) ) {
+					$addon_active = true;
+				}
+				break;
+
+			case 'wp-analytify-learndash':
+				if ( class_exists( 'WP_Analytify_LearnDash_Addon' ) || class_exists( 'WP_Analytify_LearnDash' ) ) {
 					$addon_active = true;
 				}
 				break;

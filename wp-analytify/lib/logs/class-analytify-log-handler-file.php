@@ -243,11 +243,13 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 	}
 
 	/**
-	 * Remove/delete the chosen file.
+	 * Remove/delete the chosen log file from disk.
 	 *
-	 * @param string $handle Log handle.
+	 * Closes the handle if open so unlink can succeed. Validates path stays under log dir.
 	 *
-	 * @return bool
+	 * @param string $handle Log handle (sanitized filename key from get_log_files()).
+	 * @return bool True if file was removed.
+	 * @since 9.0.0 Close handle before unlink; normalize path slashes for Windows.
 	 */
 	public function remove( $handle ) {
 		$removed = false;
@@ -256,8 +258,12 @@ class ANALYTIFY_Log_Handler_File extends ANALYTIFY_Log_Handler {
 
 		if ( isset( $logs[ $handle ] ) && $logs[ $handle ] ) {
 			$file = realpath( trailingslashit( WP_ANALYTIFY_LOG_DIR ) . $logs[ $handle ] );
-			if ( 0 === stripos( $file, trailingslashit( WP_ANALYTIFY_LOG_DIR ) ) && is_file( $file ) && is_writable( $file ) ) { // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_is_writable
-				$this->close( $file ); // Close first to be certain no processes keep it alive after it is unlinked.
+			// Normalize slashes so prefix check works on Windows (realpath uses backslashes, WP_ANALYTIFY_LOG_DIR may use forward).
+			$log_dir_slash = trailingslashit( WP_ANALYTIFY_LOG_DIR );
+			$file_norm     = $file ? str_replace( '\\', '/', $file ) : '';
+			$dir_norm      = str_replace( '\\', '/', $log_dir_slash );
+			if ( $file && 0 === stripos( $file_norm, $dir_norm ) && is_file( $file ) && is_writable( $file ) ) { // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_is_writable
+				$this->close( $handle );
 				$removed = unlink( $file ); // phpcs:ignore WordPress.VIP.FileSystemWritesDisallow.file_ops_unlink
 			}
 			do_action( 'analytify_log_remove', $handle, $removed );

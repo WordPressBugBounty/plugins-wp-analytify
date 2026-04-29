@@ -61,6 +61,7 @@ trait Analytify_Email_Bootstrap {
 		add_filter( 'wp_analytify_pro_setting_fields', array( $this, 'analytifye_email_setting_fields' ), 20, 1 );
 		add_action( 'after_single_view_stats_buttons', array( $this, 'single_send_email' ) );
 		add_action( 'wp_ajax_send_analytics_email', array( $this, 'send_analytics_email' ) );
+		add_action( 'wp_ajax_nopriv_analytify_send_single_email_background', array( $this, 'send_analytics_email_background' ) );
 		add_action( 'analytify_settings_logs', array( $this, 'analytify_settings_logs' ) );
 	}
 
@@ -90,6 +91,19 @@ trait Analytify_Email_Bootstrap {
 			'wpanalytify_data',
 			array(
 				'nonces' => $nonces,
+			)
+		);
+
+		// Localized strings for email UI (translation / _x). Always localized when this script is enqueued.
+		wp_localize_script(
+			'analytify_email_script',
+			'wpAnalytifyEmail',
+			array(
+				'sendEmailReport'      => _x( 'Send Email Report', 'button label', 'wp-analytify' ),
+				'sending'              => _x( 'Sending...', 'button state while sending', 'wp-analytify' ),
+				'placeholderRecipient' => _x( 'Enter recipient email', 'placeholder for recipient email input', 'wp-analytify' ),
+				'emailReportSent'      => _x( 'Email Report Sent!', 'success message after sending single post email', 'wp-analytify' ),
+				'emailSendFailed'      => _x( 'Failed to send email. Please try again.', 'error when single post email request fails', 'wp-analytify' ),
 			)
 		);
 	}

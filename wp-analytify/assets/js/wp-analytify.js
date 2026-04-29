@@ -3,6 +3,28 @@ var height = 0,
 	height3 = 0;
 
 jQuery(document).ready(function ($) {
+	/**
+	 * Puts #wpfooter inside #wpbody so the rating/version row uses the same column width as
+	 * Analytify content (matches manual fix: $('#wpfooter').appendTo($('#wpbody'))).
+	 */
+	function analytifyRelocateAdminFooter() {
+		var body = document.body;
+		if (! body || ! body.className) {
+			return;
+		}
+		var cn = body.className;
+		if (cn.indexOf('toplevel_page_analytify') === -1 && cn.indexOf('analytify_page_') === -1) {
+			return;
+		}
+		var $footer = $('#wpfooter');
+		var $wpbody = $('#wpbody');
+		if (! $footer.length || ! $wpbody.length || $footer.closest('#wpbody').length) {
+			return;
+		}
+		$footer.appendTo($wpbody);
+	}
+	analytifyRelocateAdminFooter();
+
 	// Fallback method for formating dates.
 	function formatDate(date) {
 		const d = new Date(date),

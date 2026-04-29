@@ -135,6 +135,8 @@ trait Analytify_Navigation {
 
 	/**
 	 * Register dashboard navigation menu.
+	 *
+	 * @version 9.0.0
 	 */
 	public function dashboard_navigation() {
 
@@ -239,6 +241,27 @@ trait Analytify_Navigation {
 							'sub_name'    => 'Checkout behavior',
 							'page_slug'   => 'edd-dashboard',
 							'addon_slug'  => 'wp-analytify-edd',
+							'module_type' => 'pro_addon',
+						),
+						array(
+							'name'        => 'LifterLMS',
+							'sub_name'    => 'Course Stats',
+							'page_slug'   => 'analytify-lifterlms',
+							'addon_slug'  => 'wp-analytify-lifterlms',
+							'module_type' => 'pro_addon',
+						),
+						array(
+							'name'        => 'Paid Memberships Pro',
+							'sub_name'    => 'Membership Analytics',
+							'page_slug'   => 'analytify-pmpro',
+							'addon_slug'  => 'wp-analytify-pmpro',
+							'module_type' => 'pro_addon',
+						),
+						array(
+							'name'        => 'LearnDash',
+							'sub_name'    => 'Course Analytics',
+							'page_slug'   => 'analytify-learndash',
+							'addon_slug'  => 'wp-analytify-learndash',
 							'module_type' => 'pro_addon',
 						),
 					),

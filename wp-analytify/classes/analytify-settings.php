@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'WP_Analytify_Settings' ) ) {
 
 	// Include split traits for settings.
+	require_once __DIR__ . '/analytify-settings/analytify-settings-sanitizers.php';
 	require_once __DIR__ . '/analytify-settings/definitions.php';
 	require_once __DIR__ . '/analytify-settings/render.php';
 	require_once __DIR__ . '/analytify-settings/helpers.php';

@@ -20,9 +20,10 @@
 trait Analytify_Email_Single_Send {
 
 	/**
-	 * Send Email Stats for Single Page/Post.
+	 * Send Email Stats for Single Page/Post (returns immediately with success; sends email after response flush).
 	 *
 	 * @since 1.2.0
+	 * @since 9.0.0 Sends JSON success response, flushes to client, then runs email in same request so mail is sent reliably (e.g. on localhost where background self-request often fails).
 	 * @return void
 	 */
 	public function send_analytics_email() {
@@ -37,10 +38,69 @@ trait Analytify_Email_Single_Send {
 			wp_die( 'Sorry, you are not allowed to do that.', 403 );
 		}
 
-		$start_date = sanitize_text_field( wp_unslash( $_POST['start_date'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Input is validated with isset() check above
-		$end_date   = sanitize_text_field( wp_unslash( $_POST['end_date'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Input is validated with isset() check above
-		$post_id    = (int) sanitize_text_field( wp_unslash( $_POST['post_id'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Input is validated with isset() check above
-		$site_url   = site_url();
+		$start_date = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : '';
+		$end_date   = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
+		$post_id    = isset( $_POST['post_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) : 0;
+
+		// Send success response so Preview/Response are not empty and UI shows "Email Report Sent!".
+		$body = wp_json_encode( array( 'success' => true ) );
+		if ( ! headers_sent() ) {
+			status_header( 200 );
+			header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+			header( 'Content-Length: ' . (string) strlen( $body ) );
+		}
+		echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON-encoded response.
+		// Flush so the client receives the response immediately; then send email in same request.
+		while ( ob_get_level() ) {
+			ob_end_flush();
+		}
+		flush();
+		if ( function_exists( 'fastcgi_finish_request' ) ) {
+			fastcgi_finish_request();
+		}
+
+		$this->do_send_single_analytics_email( $post_id, $start_date, $end_date, $recipient_email );
+		exit;
+	}
+
+	/**
+	 * Background handler: run single-post email job (called via non-blocking request, no user session).
+	 *
+	 * @since 9.0.0
+	 * @return void
+	 */
+	public function send_analytics_email_background() {
+		$job_key = isset( $_POST['job_key'] ) ? sanitize_text_field( wp_unslash( $_POST['job_key'] ) ) : '';
+		$nonce   = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( '' === $job_key || ! wp_verify_nonce( $nonce, 'analytify_email_bg_' . $job_key ) ) {
+			wp_die( '', 403 );
+		}
+		$job = get_transient( 'analytify_email_job_' . $job_key );
+		delete_transient( 'analytify_email_job_' . $job_key );
+		if ( ! is_array( $job ) || empty( $job['post_id'] ) ) {
+			wp_die( '', 400 );
+		}
+		$this->do_send_single_analytics_email(
+			(int) $job['post_id'],
+			isset( $job['start_date'] ) ? $job['start_date'] : '',
+			isset( $job['end_date'] ) ? $job['end_date'] : '',
+			isset( $job['recipient_email'] ) ? $job['recipient_email'] : ''
+		);
+		wp_die();
+	}
+
+	/**
+	 * Build and send single-post analytics email (Search Console + GA + wp_mail). Used by background job.
+	 *
+	 * @since 9.0.0
+	 * @param int    $post_id          Post ID.
+	 * @param string $start_date       Start date (YYYY-MM-DD).
+	 * @param string $end_date         End date (YYYY-MM-DD).
+	 * @param string $recipient_email  Recipient email or empty to use saved list.
+	 * @return void
+	 */
+	protected function do_send_single_analytics_email( $post_id, $start_date, $end_date, $recipient_email ) {
+		$site_url = site_url();
 
 		if ( 0 === $post_id ) {
 			$u_post = '/'; // phpcs:ignore Squiz.PHP.CommentedOutCode.Found -- This is intentionally commented out
@@ -81,8 +141,8 @@ trait Analytify_Email_Single_Send {
 		$search_console_stats = $this->WP_ANALYTIFY->get_search_console_stats( // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Variable name is acceptable for this context
 			'post_' . $post_id,
 			array(
-				'start' => $start_date,
-				'end'   => $end_date,
+				'start' => $s_date,
+				'end'   => $e_date,
 			)
 		);
 		$total_clicks         = 0;
@@ -359,7 +419,5 @@ trait Analytify_Email_Single_Send {
 
 			wp_mail( $email_address, $subject, $message, $headers );
 		}
-
-		wp_die();
 	}
 }

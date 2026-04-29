@@ -164,6 +164,17 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 				)
 			);
 			if ( is_wp_error( $response ) ) {
+				$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+				if ( $logger && method_exists( $logger, 'error' ) ) {
+					$logger->error(
+						'Failed to send hit via Measurement Protocol.',
+						array(
+							'source'         => 'send_hit',
+							'error'          => $response->get_error_message(),
+							'measurement_id' => $this->measurement_id,
+						)
+					);
+				}
 				return false;
 			}
 

@@ -27,6 +27,7 @@ trait Analytify_Settings_Render {
 	 * @since 1.0.0
 	 * @param array<string, mixed> $args Field arguments.
 	 * @return void
+	 * @version 9.0.0
 	 */
 	public function callback_text( $args ) {
 		$option_value = $this->get_option( $args['id'], $args['section'], $args['std'] );
@@ -44,6 +45,16 @@ trait Analytify_Settings_Render {
 		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 		$type  = isset( $args['type'] ) ? $args['type'] : 'text';
 		$html  = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"/>', esc_attr( $type ), esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), $value );
+
+		if ( ! empty( $args['tooltip'] ) ) {
+			$tooltip_text = is_string( $args['tooltip'] ) ? $args['tooltip'] : $args['desc'];
+			$html        .= sprintf( '<span class="dashicons dashicons-editor-help setting-more-info" title="%1$s"></span>', esc_attr( $tooltip_text ) );
+
+			if ( $tooltip_text === $args['desc'] ) {
+				$args['desc'] = '';
+			}
+		}
+
 		$html .= $this->get_field_description( $args );
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML is properly escaped above
 	}
@@ -98,6 +109,7 @@ trait Analytify_Settings_Render {
 	 *
 	 * @param array<string, mixed> $args Field arguments.
 	 * @return void
+	 * @version 9.0.0
 	 */
 	public function callback_checkbox( $args ) {
 		$option_value = $this->get_option( $args['id'], $args['section'], $args['std'] );
@@ -120,11 +132,17 @@ trait Analytify_Settings_Render {
 		$html                  .= sprintf( '<label for="%1$s[%2$s]"></label>', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );
 		$html                  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="%3$s" />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $defalut_value ) );
 		$html                  .= sprintf( '<div class="toggle"><input type="checkbox" class="checkbox" id="%1$s%2$s[%3$s]" name="%1$s%2$s[%3$s]" value="on" %4$s %5$s /><span class="btn-nob"></span><span class="texts"></span><span class="bg"></span></div>', esc_attr( $checkbox_name_override ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), checked( $checkbox_value, 'on', false ), esc_attr( $is_disabled ) );
-		if ( $args['tooltip'] ) {
-			$html .= sprintf( '<span class="dashicons dashicons-editor-help setting-more-info" title="%1$s"></span>', esc_attr( $args['desc'] ) );
-		} else {
-			$html .= $this->get_field_description( $args );
+
+		if ( ! empty( $args['tooltip'] ) ) {
+			$tooltip_text = is_string( $args['tooltip'] ) ? $args['tooltip'] : $args['desc'];
+			$html        .= sprintf( '<span class="dashicons dashicons-editor-help setting-more-info" title="%1$s"></span>', esc_attr( $tooltip_text ) );
+
+			if ( $tooltip_text === $args['desc'] ) {
+				$args['desc'] = '';
+			}
 		}
+
+		$html .= $this->get_field_description( $args );
 		$html .= '</fieldset>';
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML is properly escaped above
 	}
@@ -732,6 +750,7 @@ trait Analytify_Settings_Render {
 			<div class="wp-analytify-view-error-log">
 			</div>
 			<div class="wp-analytify-view-error-log">
+				<button id="analytify-copy-diagnostic" class="button"><?php esc_html_e( 'Copy to Clipboard', 'wp-analytify' ); ?></button>
 				<button id="analytify-download-diagnostic" class="button"><?php esc_html_e( 'Download Diagnostic Log', 'wp-analytify' ); ?></button>
 				<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=analytify-logs' ) ); ?>"><?php esc_html_e( 'View Error Logs', 'wp-analytify' ); ?></a>
 			</div>

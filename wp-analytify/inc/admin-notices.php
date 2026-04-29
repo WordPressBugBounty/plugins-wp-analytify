@@ -59,7 +59,7 @@ class Analytify_Admin_Notices {
 		if ( defined( 'ANALYTIFY_PRO_VERSION' ) && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '<' ) ) {
 			$class   = 'wp-analytify-danger';
 			$message = sprintf( // translators: Update notice.
-				esc_html__( '%1$sNote:%2$s Please update to the latest Analytify Pro version to manage all modules/addons from %3$s here %4$s.', 'wp-analytify' ),
+				esc_html__( '%1$sNote:%2$s Please update to the latest Analytify Pro version to manage all modules/add-ons from %3$s here %4$s.', 'wp-analytify' ),
 				'<b>',
 				'</b>',
 				'<a href="' . esc_url( admin_url( 'admin.php?page=analytify-addons' ) ) . '">',

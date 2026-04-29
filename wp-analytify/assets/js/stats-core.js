@@ -378,6 +378,7 @@ jQuery(function ($) {
 						name: setting_title,
 						type: 'pie',
 						center: ['50%', '43%'],
+						radius: '70%',
 						label: {
 							show: false
 						},
@@ -417,7 +418,7 @@ jQuery(function ($) {
 					legend: {
 						orient: 'horizontal',
 						bottom: '5%',
-						textStyle: { fontSize: 13, fontWeight: '500' },
+						textStyle: { fontSize: 14, fontWeight: '500' },
 						itemGap: 4,
 						formatter: function (name) {
 							const key = analytifyGetKeyByLabel(setting_stats, name);
@@ -433,6 +434,7 @@ jQuery(function ($) {
 						name: setting_title,
 						type: 'pie',
 						center: ['50%', '43%'],
+						radius: '70%',
 						label: {
 							show: false
 						},

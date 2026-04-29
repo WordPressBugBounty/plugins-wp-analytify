@@ -49,6 +49,8 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 		 * @since 1.3
 		 */
 		public function addons() {
+			$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+
 			if ( ! class_exists( 'WP_Analytify_Pro' ) || ( defined( 'ANALYTIFY_PRO_VERSION' ) && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '<' ) ) ) {
 
 				// Get the transient where the addons are stored on-site.
@@ -130,9 +132,15 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 					}
 				} else {
 					// Log the error for debugging, but don't expose it to users.
-					if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Only logs when WP_DEBUG is enabled.
-						error_log( 'Analytify: Failed to fetch addons - ' . $response->get_error_message() );
+					if ( $logger && method_exists( $logger, 'warning' ) ) {
+						$logger->warning(
+							'Failed to fetch addons from API.',
+							array(
+								'source'     => 'addons',
+								'error'      => $response->get_error_message(),
+								'ssl_verify' => $sslverify,
+							)
+						);
 					}
 					// Try again with SSL verification disabled if it was enabled.
 					if ( $sslverify ) {
@@ -238,9 +246,15 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 				}
 			} else {
 				// Log the error for debugging, but don't expose it to users.
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Only logs when WP_DEBUG is enabled.
-					error_log( 'Analytify: Failed to fetch addons - ' . $response->get_error_message() );
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning(
+						'Failed to fetch addons from API (retry section).',
+						array(
+							'source'     => 'addons',
+							'error'      => $response->get_error_message(),
+							'ssl_verify' => $sslverify,
+						)
+					);
 				}
 				// Try again with SSL verification disabled if it was enabled.
 				if ( $sslverify ) {
@@ -317,7 +331,11 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 							strpos( $addon->slug, 'authors' ) !== false ||
 							strpos( $addon->slug, 'forms' ) !== false ||
 							strpos( $addon->slug, 'email' ) !== false ||
-							strpos( $addon->slug, 'goals' ) !== false
+							strpos( $addon->slug, 'goals' ) !== false ||
+							strpos( $addon->slug, 'lifterlms' ) !== false ||
+							strpos( $addon->slug, 'pmpro' ) !== false ||
+							strpos( $addon->slug, 'learndash' ) !== false
+
 						)
 						);
 					}
@@ -523,6 +541,38 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 		}
 
 		/**
+		 * Whether a bundled Pro module main file exists (Pro ZIP includes the integration).
+		 *
+		 * @param string $slug Module slug, e.g. wp-analytify-pmpro.
+		 * @return bool
+		 */
+		public function pro_bundled_module_is_installed( $slug ) {
+			if ( ! is_string( $slug ) || '' === $slug ) {
+				return false;
+			}
+			if ( ! defined( 'ANALYTIFY_PRO_ROOT_PATH' ) ) {
+				return false;
+			}
+			// Pixels ships as class-analytify-pixels-tracking.php (not slug/slug.php).
+			if ( 'pixels-tracking' === $slug ) {
+				$main = ANALYTIFY_PRO_ROOT_PATH . '/inc/modules/pixels-tracking/class-analytify-pixels-tracking.php';
+				return file_exists( $main );
+			}
+			$main = ANALYTIFY_PRO_ROOT_PATH . '/inc/modules/' . $slug . '/' . $slug . '.php';
+			return file_exists( $main );
+		}
+
+		/**
+		 * Changelog URL for “Update Analytify Pro” CTAs on the Add-ons screen.
+		 *
+		 * @param string $utm_content UTM content slug for analytics.
+		 * @return string
+		 */
+		public function get_analytify_pro_changelog_url( $utm_content = 'addons' ) {
+			return 'https://analytify.io/changelog/?utm_source=analytify-pro&utm_medium=addons&utm_campaign=update-pro&utm_content=' . rawurlencode( (string) $utm_content );
+		}
+
+		/**
 		 * Returns a list of modules.
 		 *
 		 * @return array<string, mixed>
@@ -537,6 +587,73 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 		}
 
 		/**
+		 * Reorder an associative list keyed by slug (e.g. pro add-ons or modules) for the Add-ons screen.
+		 *
+		 * @param array<string, mixed> $items      Rows keyed by slug.
+		 * @param array<int, string>   $slug_order Preferred slug order.
+		 * @return array<string, mixed>
+		 */
+		public function reorder_assoc_by_slug_list( $items, $slug_order ) {
+			if ( empty( $items ) || ! is_array( $items ) ) {
+				return $items;
+			}
+			if ( ! is_array( $slug_order ) ) {
+				$slug_order = array();
+			}
+			$ordered = array();
+			foreach ( $slug_order as $slug ) {
+				if ( isset( $items[ $slug ] ) ) {
+					$ordered[ $slug ] = $items[ $slug ];
+				}
+			}
+			foreach ( $items as $slug => $row ) {
+				if ( ! isset( $ordered[ $slug ] ) ) {
+					$ordered[ $slug ] = $row;
+				}
+			}
+			return $ordered;
+		}
+
+		/**
+		 * Reorder API add-on objects (each has a slug) for the Add-ons screen.
+		 *
+		 * @param array<int, object> $extensions Objects with a slug property.
+		 * @param array<int, string> $slug_order   Slugs to show first, in order.
+		 * @return array<int, object>
+		 */
+		public function reorder_extension_list_by_slugs( $extensions, $slug_order ) {
+			if ( empty( $extensions ) || ! is_array( $extensions ) ) {
+				return $extensions;
+			}
+			if ( ! is_array( $slug_order ) ) {
+				$slug_order = array();
+			}
+			$by_slug = array();
+			$no_slug = array();
+			foreach ( $extensions as $item ) {
+				if ( is_object( $item ) && isset( $item->slug ) && '' !== $item->slug ) {
+					$by_slug[ $item->slug ] = $item;
+				} else {
+					$no_slug[] = $item;
+				}
+			}
+			$out = array();
+			foreach ( $slug_order as $slug ) {
+				if ( isset( $by_slug[ $slug ] ) ) {
+					$out[] = $by_slug[ $slug ];
+					unset( $by_slug[ $slug ] );
+				}
+			}
+			foreach ( $by_slug as $item ) {
+				$out[] = $item;
+			}
+			foreach ( $no_slug as $item ) {
+				$out[] = $item;
+			}
+			return $out;
+		}
+
+		/**
 		 * Check module status.
 		 *
 		 * @param string $slug Plugin slug.
@@ -544,7 +661,42 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 		 */
 		public function check_module_status( $slug ) {
 
+			if ( ! isset( $this->modules_list[ $slug ] ) || ! is_array( $this->modules_list[ $slug ] ) ) {
+				return;
+			}
+
+			if ( 'pixels-tracking' === $slug && class_exists( 'WP_Analytify_Pro', false )
+				&& function_exists( 'wp_analytify_pro_pixels_tracking_module_file_exists' )
+				&& ! wp_analytify_pro_pixels_tracking_module_file_exists()
+			) {
+				$update_url = 'https://analytify.io/changelog/?utm_source=wp-analytify&utm_medium=addons&utm_campaign=pixels-pro-update';
+				printf(
+					/* translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag. */
+					esc_html__( '%1$s Update Analytify Pro %2$s', 'wp-analytify' ),
+					'<a target="_blank" rel="noopener noreferrer" class="button-primary" href="' . esc_url( $update_url ) . '">',
+					'</a>'
+				);
+				return;
+			}
+
 			$nonce = wp_create_nonce( $slug );
+
+			$pro_module_cards = array(
+				'wp-analytify-pmpro',
+				'wp-analytify-learndash',
+				'wp-analytify-lifterlms',
+			);
+
+			if ( in_array( $slug, $pro_module_cards, true ) && class_exists( 'WP_Analytify_Pro' ) && ! $this->pro_bundled_module_is_installed( $slug ) ) {
+				$changelog = $this->get_analytify_pro_changelog_url( $slug );
+				printf(
+					/* translators: %1$s: opening anchor tag, %2$s: closing anchor tag. */
+					esc_html__( '%1$s Update Analytify Pro %2$s', 'wp-analytify' ),
+					'<a class="button-primary" href="' . esc_url( $changelog ) . '" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				);
+				return;
+			}
 
 			if ( 'active' === $this->modules_list[ $slug ]['status'] && $this->check_pro_support() ) {
 				// translators: Deactivate add-on.
@@ -573,6 +725,145 @@ if ( ! class_exists( 'WP_Analytify_Addons' ) ) {
 		public function get_addon_icon( $slug ) {
 
 			return ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . '/assets/img/addons-svgs/' . $slug . '.svg';
+		}
+
+		/**
+		 * Print one API-sourced add-on card (Add-ons admin screen).
+		 *
+		 * @param object     $extension Add-on object from addons().
+		 * @param string|int $loop_key  Key for loaders(); use slug when known.
+		 * @return void
+		 */
+		public function render_api_addon_card( $extension, $loop_key = '' ) {
+			if ( ! is_object( $extension ) || ! isset( $extension->url ) || ! isset( $extension->title ) ) {
+				return;
+			}
+
+			$icon_url = '';
+			if ( isset( $extension->media ) && is_object( $extension->media ) &&
+				isset( $extension->media->icon ) && is_object( $extension->media->icon ) &&
+				isset( $extension->media->icon->url ) ) {
+				$icon_url = (string) $extension->media->icon->url;
+			}
+
+			$excerpt = isset( $extension->excerpt ) ? $extension->excerpt : '';
+			$slug    = isset( $extension->slug ) ? $extension->slug : '';
+			$loader  = ( '' !== $loop_key && is_scalar( $loop_key ) ) ? (string) $loop_key : $slug;
+			$class   = $slug ? $slug : $loader;
+			$class   = sanitize_html_class( str_replace( '/', '-', $class ) );
+
+			$title_class = 'analytify-addon-card__title';
+			if ( ! empty( $icon_url ) ) {
+				$title_class .= ' analytify-addon-card__title--has-icon';
+			}
+
+			echo '<div class="wp-extension ' . esc_attr( $class ) . '">';
+			echo '<a target="_blank" href="' . esc_url( $extension->url ) . '">';
+			echo '<h3 class="' . esc_attr( $title_class ) . '"';
+			if ( ! empty( $icon_url ) ) {
+				echo ' style="' . esc_attr( '--analytify-addon-icon: url(' . esc_url( $icon_url ) . ')' ) . '"';
+			}
+			echo '>' . esc_html( $extension->title ) . '</h3></a>';
+			echo '<p>' . wp_kses_post( wpautop( wp_strip_all_tags( $excerpt ) ) ) . '</p><p>';
+			$this->addons_status( $slug, $extension );
+			echo '</p>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
+			echo $this->loaders( $loader, $icon_url );
+			echo '</div>';
+		}
+
+		/**
+		 * Print one internal module add-on card (Add-ons admin screen).
+		 *
+		 * @param array<string, mixed> $module Row from wp_analytify_modules.
+		 * @return void
+		 */
+		public function render_module_addon_card( $module ) {
+			if ( ! is_array( $module ) || empty( $module['slug'] ) ) {
+				return;
+			}
+
+			$slug  = (string) $module['slug'];
+			$title = isset( $module['title'] ) ? (string) $module['title'] : '';
+			$url   = isset( $module['url'] ) ? (string) $module['url'] : '';
+			$image = isset( $module['image'] ) ? (string) $module['image'] : '';
+			$desc  = isset( $module['description'] ) ? (string) $module['description'] : '';
+
+			echo '<div class="wp-extension ' . esc_attr( $slug ) . '">';
+			echo '<a target="_blank" href="' . esc_url( $url ) . '">';
+			echo '<h3 class="analytify-addon-card__title analytify-addon-card__title--has-icon"';
+			echo ' style="' . esc_attr( '--analytify-addon-icon: url(' . esc_url( $image ) . ')' ) . '">';
+			echo esc_html( $title );
+			echo '</h3></a>';
+			echo '<p>' . esc_html( $desc ) . '</p><p>';
+			$this->check_module_status( $slug );
+			echo '</p>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
+			echo $this->loaders( $title, $image );
+			echo '</div>';
+		}
+
+		/**
+		 * Slugs present in an API add-ons list.
+		 *
+		 * @param array<int, object> $addons Add-ons from addons().
+		 * @return array<string, true>
+		 */
+		public function get_api_addon_slugs( $addons ) {
+			$slugs = array();
+			if ( ! is_array( $addons ) ) {
+				return $slugs;
+			}
+			foreach ( $addons as $item ) {
+				if ( is_object( $item ) && ! empty( $item->slug ) ) {
+					$slugs[ (string) $item->slug ] = true;
+				}
+			}
+			return $slugs;
+		}
+
+		/**
+		 * Print one Pro-bundled add-on card (saved in wp_analytify_pro_addons).
+		 *
+		 * @param string               $slug Folder slug, e.g. wp-analytify-learndash.
+		 * @param array<string, mixed> $meta  name, url, description, status.
+		 * @return void
+		 */
+		public function render_pro_addon_card( $slug, $meta ) {
+			if ( ! is_array( $meta ) || empty( $meta['name'] ) ) {
+				return;
+			}
+
+			$url  = isset( $meta['url'] ) ? (string) $meta['url'] : '';
+			$desc = isset( $meta['description'] ) ? (string) $meta['description'] : '';
+			$name = (string) $meta['name'];
+			$icon = $this->get_addon_icon( $slug );
+
+			$use_pro_actions = class_exists( 'WP_Analytify_Pro' ) && defined( 'ANALYTIFY_PRO_VERSION' ) &&
+				version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '>=' );
+
+			echo '<div class="wp-extension ' . esc_attr( $name ) . '">';
+			echo '<a target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">';
+			echo '<h3 class="analytify-addon-card__title analytify-addon-card__title--has-icon"';
+			echo ' style="' . esc_attr( '--analytify-addon-icon: url(' . esc_url( $icon ) . ')' ) . '">';
+			echo esc_html( $name );
+			echo '</h3></a>';
+			echo '<p>' . wp_kses_post( wpautop( wp_strip_all_tags( $desc ) ) ) . '</p><p>';
+			if ( $use_pro_actions ) {
+				$this->pro_addons_status( $slug, isset( $meta['status'] ) ? $meta['status'] : 'inactive' );
+			} else {
+				$buy_url = '' !== $url ? $url : 'https://analytify.io/pricing';
+				printf(
+					/* translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag for the purchase link. */
+					esc_html__( '%1$s Get this add-on %2$s', 'wp-analytify' ),
+					'<a target="_blank" rel="noopener noreferrer" class="button-primary" href="' . esc_url( $buy_url ) . '">',
+					'</a>'
+				);
+			}
+			echo '</p>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
+			echo $this->loaders( $name, $icon );
+			echo '</div>';
 		}
 
 		/**
@@ -642,6 +933,113 @@ $addons     = $obj_wp_analytify_addons->addons();
 $pro_addons = get_option( 'wp_analytify_pro_addons' );
 $modules    = $obj_wp_analytify_addons->modules();
 
+$pro_addons_slug_order = apply_filters(
+	'analytify_pro_addons_display_slug_order',
+	array(
+		'wp-analytify-forms',
+		'wp-analytify-authors',
+		'wp-analytify-goals',
+		'wp-analytify-email',
+		'wp-analytify-campaigns',
+		'wp-analytify-edd',
+		'wp-analytify-woocommerce',
+	)
+);
+if ( is_array( $pro_addons ) ) {
+	$pro_addons = $obj_wp_analytify_addons->reorder_assoc_by_slug_list( $pro_addons, $pro_addons_slug_order );
+}
+
+$api_addons_slug_order = apply_filters(
+	'analytify_api_addons_display_slug_order',
+	array( 'analytify-analytics-dashboard-widget' )
+);
+if ( is_array( $addons ) ) {
+	$addons = $obj_wp_analytify_addons->reorder_extension_list_by_slugs( $addons, $api_addons_slug_order );
+}
+
+$modules_slug_order = apply_filters(
+	'analytify_modules_display_slug_order',
+	array(
+		'pixels-tracking',
+		'wp-analytify-pmpro',
+		'wp-analytify-learndash',
+		'wp-analytify-lifterlms',
+		'custom-dimensions',
+		'amp',
+		'events-tracking',
+		'google-ads-tracking',
+	)
+);
+if ( is_array( $modules ) ) {
+	$modules = $obj_wp_analytify_addons->reorder_assoc_by_slug_list( $modules, $modules_slug_order );
+}
+
+// When Pro add-ons load first, pull GA4 widget out of the API list so it can render 3rd (after Authors).
+$ga4_dashboard_addon = null;
+$ga4_slug            = 'analytify-analytics-dashboard-widget';
+$use_pro_addons_grid = class_exists( 'WP_Analytify_Pro' ) && defined( 'ANALYTIFY_PRO_VERSION' ) &&
+	version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '>=' ) && ! empty( $pro_addons );
+
+if ( $use_pro_addons_grid && is_array( $addons ) ) {
+	foreach ( $addons as $idx => $extension ) {
+		if ( is_object( $extension ) && isset( $extension->slug ) && $ga4_slug === $extension->slug ) {
+			$ga4_dashboard_addon = $extension;
+			unset( $addons[ $idx ] );
+			break;
+		}
+	}
+	$addons = array_values( $addons );
+}
+
+// When Pro add-ons load first, pull Pixels out of the module list so it can sit after WooCommerce.
+$pixels_module_after_woo = null;
+$pixels_slug             = 'pixels-tracking';
+if ( $use_pro_addons_grid && is_array( $modules ) && is_array( $pro_addons ) &&
+	isset( $pro_addons['wp-analytify-woocommerce'] ) ) {
+	if ( isset( $modules[ $pixels_slug ] ) && is_array( $modules[ $pixels_slug ] ) ) {
+		$pixels_module_after_woo = $modules[ $pixels_slug ];
+		unset( $modules[ $pixels_slug ] );
+	} else {
+		foreach ( $modules as $mkey => $mrow ) {
+			if ( is_array( $mrow ) && isset( $mrow['slug'] ) && $pixels_slug === $mrow['slug'] ) {
+				$pixels_module_after_woo = $mrow;
+				unset( $modules[ $mkey ] );
+				break;
+			}
+		}
+	}
+}
+
+// When Pixels renders after WooCommerce, keep PMPro / LearnDash / LifterLMS module cards next to it.
+$lms_modules_after_pixels = array();
+$lms_slugs_after_pixels   = array(
+	'wp-analytify-pmpro',
+	'wp-analytify-learndash',
+	'wp-analytify-lifterlms',
+);
+if ( $use_pro_addons_grid && is_array( $modules ) && $pixels_module_after_woo ) {
+	foreach ( $lms_slugs_after_pixels as $lms_slug ) {
+		$found_lms = null;
+		$found_key = null;
+		if ( isset( $modules[ $lms_slug ] ) && is_array( $modules[ $lms_slug ] ) ) {
+			$found_lms = $modules[ $lms_slug ];
+			$found_key = $lms_slug;
+		} else {
+			foreach ( $modules as $mkey => $mrow ) {
+				if ( is_array( $mrow ) && isset( $mrow['slug'] ) && $lms_slug === $mrow['slug'] ) {
+					$found_lms = $mrow;
+					$found_key = $mkey;
+					break;
+				}
+			}
+		}
+		if ( null !== $found_lms && null !== $found_key ) {
+			$lms_modules_after_pixels[] = $found_lms;
+			unset( $modules[ $found_key ] );
+		}
+	}
+}
+
 $analytify_screen = get_current_screen() ? get_current_screen()->base : '';
 $version          = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION : ( defined( 'ANALYTIFY_VERSION' ) ? ANALYTIFY_VERSION : '1.0.0' ); ?>
 
@@ -666,7 +1064,7 @@ $version          = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION :
 					<div class="wpa-tab-wrapper">
 						<ul class="analytify_nav_tab_wrapper nav-tab-wrapper">
 							<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=analytify-addons' ) ); ?>"
-									class="analytify_nav_tab <?php echo ( 'analytify_page_analytify-addons' === $analytify_screen ) ? 'nav-tab-active' : ''; ?>">Addons</a>
+									class="analytify_nav_tab <?php echo ( 'analytify_page_analytify-addons' === $analytify_screen ) ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Addons', 'wp-analytify' ); ?></a>
 							</li>
 							<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=analytify-settings#wp-analytify-license' ) ); ?>"
 									class="analytify_nav_tab">License</a></li>
@@ -679,129 +1077,61 @@ $version          = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION :
 							<h2 class='opt-title'><span id='icon-options-general' class='analytics-options'><img
 										src="<?php echo esc_url( plugins_url( '../assets/img/wp-analytics-logo.png', __FILE__ ) ); ?>"
 										alt="analytics"></span>
-								<?php esc_html_e( 'Extend the functionality of Analytify with these awesome Add-ons', 'wp-analytify' ); ?>
+								<?php esc_html_e( 'Powerful Add-ons to Get More from Analytify.', 'wp-analytify' ); ?>
 							</h2>
 
-							<div class="tabwrapper">
+							<div class="tabwrapper analytify-addons-grid">
 
 								<?php
 
 								if ( class_exists( 'WP_Analytify_Pro' ) && defined( 'ANALYTIFY_PRO_VERSION' ) && version_compare( ANALYTIFY_PRO_VERSION, '6.0.0', '>=' ) && ! empty( $pro_addons ) ) {
 									foreach ( $pro_addons as $slug => $meta ) :
-										?>
-										<div class="wp-extension <?php echo esc_attr( $meta['name'] ); ?>">
-											<a target="_blank" href="<?php echo esc_url( $meta['url'] ); ?>">
-												<h3
-													style="background-image: url(<?php echo esc_url( $obj_wp_analytify_addons->get_addon_icon( $slug ) ); ?>);">
-													<?php echo esc_html( $meta['name'] ); ?>
-												</h3>
-											</a>
-											<p><?php echo wp_kses_post( wpautop( wp_strip_all_tags( $meta['description'] ) ) ); ?></p>
-											<p><?php $obj_wp_analytify_addons->pro_addons_status( $slug, $meta['status'] ); ?>
-											</p>
-
-											<?php
-											// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
-											echo ( $obj_wp_analytify_addons->loaders( $meta['name'], $obj_wp_analytify_addons->get_addon_icon( $slug ) ) );
-											?>
-
-										</div>
-
-										<?php
+										$obj_wp_analytify_addons->render_pro_addon_card( $slug, $meta );
+										if ( 'wp-analytify-authors' === $slug && $ga4_dashboard_addon ) {
+											$obj_wp_analytify_addons->render_api_addon_card(
+												$ga4_dashboard_addon,
+												$ga4_slug
+											);
+										}
+										if ( 'wp-analytify-woocommerce' === $slug && $pixels_module_after_woo ) {
+											$obj_wp_analytify_addons->render_module_addon_card( $pixels_module_after_woo );
+											foreach ( $lms_modules_after_pixels as $lms_module_row ) {
+												$obj_wp_analytify_addons->render_module_addon_card( $lms_module_row );
+											}
+										}
 									endforeach;
 									foreach ( $addons as $name => $extension ) :
-										// Skip if extension data is invalid or missing required properties.
-										if ( ! is_object( $extension ) || ! isset( $extension->url ) || ! isset( $extension->title ) ) {
-											continue;
-										}
-
-										// Get icon URL safely.
-										$icon_url = '';
-										if ( isset( $extension->media ) && is_object( $extension->media ) &&
-											isset( $extension->media->icon ) && is_object( $extension->media->icon ) &&
-											isset( $extension->media->icon->url ) ) {
-											$icon_url = $extension->media->icon->url;
-										}
-
-										// Get excerpt safely.
-										$excerpt = isset( $extension->excerpt ) ? $extension->excerpt : '';
-
-										// Get slug safely - use slug property if available, otherwise use array key.
-										$slug = isset( $extension->slug ) ? $extension->slug : ( is_string( $name ) ? $name : '' );
-										// Fallback for class name if name is numeric.
-										$extension_class = isset( $extension->slug ) ? esc_attr( $extension->slug ) : esc_attr( $name );
-										?>
-									
-										<div class="wp-extension <?php echo esc_attr( $extension_class ); ?>">
-											<a target="_blank" href="<?php echo esc_url( $extension->url ); ?>">
-												<h3
-													<?php if ( ! empty( $icon_url ) ) : ?>
-													style="background-image: url(<?php echo esc_url( $icon_url ); ?>);"
-													<?php endif; ?>
-												>
-													<?php echo esc_html( $extension->title ); ?>
-												</h3>
-											</a>
-											<p>
-												<?php echo wp_kses_post( wpautop( wp_strip_all_tags( $excerpt ) ) ); ?>
-											</p>
-											<p>
-												<?php $obj_wp_analytify_addons->addons_status( $slug, $extension ); ?>
-											</p>
-											<?php
-											// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
-											echo ( $obj_wp_analytify_addons->loaders( $name, $icon_url ) );
-											?>
-										</div>
-										<?php
+										$obj_wp_analytify_addons->render_api_addon_card( $extension, $name );
 									endforeach;
 
 								} else {
 									foreach ( $addons as $name => $extension ) :
-										// Skip if extension data is invalid or missing required properties.
-										if ( ! is_object( $extension ) || ! isset( $extension->url ) || ! isset( $extension->title ) ) {
-											continue;
-										}
-
-										// Get icon URL safely.
-										$icon_url = '';
-										if ( isset( $extension->media ) && is_object( $extension->media ) &&
-											isset( $extension->media->icon ) && is_object( $extension->media->icon ) &&
-											isset( $extension->media->icon->url ) ) {
-											$icon_url = $extension->media->icon->url;
-										}
-
-										// Get excerpt safely.
-										$excerpt = isset( $extension->excerpt ) ? $extension->excerpt : '';
-
-										// Get slug safely - use slug property if available, otherwise use array key.
-										$slug = isset( $extension->slug ) ? $extension->slug : ( is_string( $name ) ? $name : '' );
-										// Fallback for class name if name is numeric.
-										$extension_class = isset( $extension->slug ) ? esc_attr( $extension->slug ) : esc_attr( $name );
-										?>
-										<div class="wp-extension <?php echo esc_attr( $extension_class ); ?>">
-											<a target="_blank" href="<?php echo esc_url( $extension->url ); ?>">
-												<h3
-													<?php if ( ! empty( $icon_url ) ) : ?>
-													style="background-image: url(<?php echo esc_url( $icon_url ); ?>);"
-													<?php endif; ?>
-												>
-													<?php echo esc_html( $extension->title ); ?>
-												</h3>
-											</a>
-											<p>
-												<?php echo wp_kses_post( wpautop( wp_strip_all_tags( $excerpt ) ) ); ?>
-											</p>
-											<p>
-												<?php $obj_wp_analytify_addons->addons_status( $slug, $extension ); ?>
-											</p>
-											<?php
-											// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
-											echo ( $obj_wp_analytify_addons->loaders( $name, $icon_url ) );
-											?>
-										</div>
-										<?php
+										$obj_wp_analytify_addons->render_api_addon_card( $extension, $name );
 									endforeach;
+
+									// Pro-only rows (LearnDash, LifterLMS, PMPro, …) live in wp_analytify_pro_addons; the API
+									// list omits them when Pro is off — still show cards using saved option + purchase links.
+									$api_addon_slugs = $obj_wp_analytify_addons->get_api_addon_slugs( $addons );
+									if ( ! empty( $pro_addons ) && is_array( $pro_addons ) ) {
+										$pro_for_lite         = $obj_wp_analytify_addons->reorder_assoc_by_slug_list(
+											$pro_addons,
+											$pro_addons_slug_order
+										);
+										$pro_rows_now_modules = array(
+											'wp-analytify-pmpro',
+											'wp-analytify-learndash',
+											'wp-analytify-lifterlms',
+										);
+										foreach ( $pro_for_lite as $slug => $meta ) {
+											if ( ! is_array( $meta ) || isset( $api_addon_slugs[ $slug ] ) ) {
+												continue;
+											}
+											if ( in_array( $slug, $pro_rows_now_modules, true ) ) {
+												continue;
+											}
+											$obj_wp_analytify_addons->render_pro_addon_card( $slug, $meta );
+										}
+									}
 
 									// Show message if no valid addons found.
 									$valid_addons_count = 0;
@@ -810,8 +1140,15 @@ $version          = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION :
 											++$valid_addons_count;
 										}
 									}
+									if ( ! empty( $pro_addons ) && is_array( $pro_addons ) ) {
+										foreach ( $pro_addons as $slug => $meta ) {
+											if ( is_array( $meta ) && ! isset( $api_addon_slugs[ $slug ] ) ) {
+												++$valid_addons_count;
+											}
+										}
+									}
 
-									if ( 0 === $valid_addons_count && empty( $pro_addons ) && empty( $modules ) ) {
+									if ( 0 === $valid_addons_count && empty( $modules ) ) {
 										?>
 										<div class="notice notice-error">
 											<p><?php esc_html_e( 'Unable to load addons. Please check your internet connection and try refreshing the page.', 'wp-analytify' ); ?></p>
@@ -823,25 +1160,9 @@ $version          = defined( 'ANALYTIFY_PRO_VERSION' ) ? ANALYTIFY_PRO_VERSION :
 
 								<?php
 								foreach ( $modules as $module ) :
-									?>
-
-									<div class="wp-extension <?php echo esc_attr( $module['slug'] ); ?>">
-										<a target="_blank" href="<?php echo esc_url( $module['url'] ); ?>">
-											<h3
-												style="background-size: 90px 90px; background-image: url(<?php echo esc_url( $module['image'] ); ?>);">
-												<?php echo esc_html( $module['title'] ); ?>
-											</h3>
-										</a>
-										<p><?php echo esc_html( $module['description'] ); ?></p>
-										<p><?php $obj_wp_analytify_addons->check_module_status( $module['slug'] ); ?></p>
-
-										<?php
-										// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe internal HTML from loaders().
-										echo ( $obj_wp_analytify_addons->loaders( $module['title'], $module['image'] ) );
-										?>
-
-									</div>
-								<?php endforeach; ?>
+									$obj_wp_analytify_addons->render_module_addon_card( $module );
+								endforeach;
+								?>
 
 							</div>
 						</div>

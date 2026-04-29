@@ -202,6 +202,15 @@ class Analytify_Analytics_Reports {
 				wp_die();
 			}
 
+			if ( 'active' === $set_state && 'pixels-tracking' === $module_slug
+				&& function_exists( 'wp_analytify_pro_pixels_tracking_module_file_exists' )
+				&& class_exists( 'WP_Analytify_Pro', false )
+				&& ! wp_analytify_pro_pixels_tracking_module_file_exists()
+			) {
+				echo esc_html__( 'Failed', 'wp-analytify' );
+				wp_die();
+			}
+
 			if ( 'active' === $set_state ) {
 				$analytify_modules[ $module_slug ]['status'] = 'active';
 			} else {

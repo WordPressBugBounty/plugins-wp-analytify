@@ -6,7 +6,8 @@
  * ensuring smooth migration of settings and data structures.
  *
  * @package WP_Analytify
- * @since 2.0
+ * @since 2.0.0
+ * @version 9.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Compatibility for older versions for Analytify before 2.0
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class WP_Analytify_Compatibility_Upgrade {
 
@@ -57,13 +58,31 @@ class WP_Analytify_Compatibility_Upgrade {
 	/**
 	 * Run the upgrade routine.
 	 *
+	 * Uses guarded logger (null-safe) when logging completion.
+	 *
 	 * @return void
+	 * @version 9.0.0
 	 */
 	public function upgrade_routine() {
+		// Guarded logger: null-safe.
+		$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+
 		$this->profile_settings();
 		$this->admin_settings();
 		$this->advanced_settings();
 		$this->dashboard_settings();
+
+		if ( ( ! empty( $this->profile_settings ) || ! empty( $this->admin_settings ) || ! empty( $this->advanced_settings ) ) && $logger && method_exists( $logger, 'warning' ) ) {
+			$logger->warning(
+				'Analytify successfully completed a compatibility upgrade routine for legacy settings.',
+				array(
+					'source'   => 'upgrade_routine',
+					'profiles' => ! empty( $this->profile_settings ),
+					'admin'    => ! empty( $this->admin_settings ),
+					'advanced' => ! empty( $this->advanced_settings ),
+				)
+			);
+		}
 	}
 
 	/**
@@ -318,44 +337,82 @@ if ( ! get_option( 'analytify_free_upgrade_routine' ) ) {
  * Register default modules.
  *
  * @return void
+ * @version 9.0.0
  */
 function analytify_register_modules() { // phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed -- Mixed structure is acceptable for this type of file
+	// Key order is used when merging defaults into wp_analytify_modules for the Add-ons screen.
 	$default_modules = array(
-		'events-tracking'     => array(
-			'status'      => 'active',
-			'slug'        => 'events-tracking',
-			'page_slug'   => 'analytify-events',
-			'title'       => __( 'Events Tracking', 'wp-analytify' ),
-			'description' => __( 'This Add-on will track custom events in a unique and intuitive way which is very understandable even for non-technical WordPress users.', 'wp-analytify' ),
-			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/analytify-events-tracking.svg',
-			'url'         => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Events+Tracking',
+		'pixels-tracking'        => array(
+			'status'      => false,
+			'slug'        => 'pixels-tracking',
+			'page_slug'   => 'analytify-pixels-tracking',
+			'title'       => esc_html__( 'Pixels Tracking', 'wp-analytify' ),
+			'description' => esc_html__( 'Connect and manage multiple ad pixels, including Meta, TikTok, Pinterest, and more, to track conversions and power smarter retargeting campaigns across all your platforms.', 'wp-analytify' ),
+			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/analytify-pixels-tracking.svg',
+			'url'         => esc_url( 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Pixels+Tracking' ),
 		),
-		'custom-dimensions'   => array(
+		'custom-dimensions'      => array(
 			'status'      => 'active',
 			'slug'        => 'custom-dimensions',
 			'page_slug'   => 'analytify-dimensions',
-			'title'       => __( 'Custom Dimensions', 'wp-analytify' ),
-			'description' => __( 'With the Custom Dimensions addon you can view data which can be segmented and organized according to your businesses.', 'wp-analytify' ),
+			'title'       => esc_html__( 'Custom Dimensions', 'wp-analytify' ),
+			'description' => esc_html__( 'View and segment your analytics data using custom dimensions tailored to your business. Organize insights the way that works best for you.', 'wp-analytify' ),
 			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/analytify-custom-dimensions.svg',
-			'url'         => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Custom+Dimensions',
+			'url'         => esc_url( 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Custom+Dimensions' ),
 		),
-		'amp'                 => array(
+		'amp'                    => array(
 			'status'      => false,
 			'slug'        => 'amp',
 			'page_slug'   => 'analytify-amp',
-			'title'       => __( 'AMP', 'wp-analytify' ),
-			'description' => __( 'Analytify\'s AMP Addon will enable accurate reporting and tracking of mobile visitors to your AMP pages.', 'wp-analytify' ),
+			'title'       => esc_html__( 'AMP', 'wp-analytify' ),
+			'description' => esc_html__( 'Track and report on mobile visitors to your AMP pages with full accuracy. Gain clear insights into how your accelerated pages perform.', 'wp-analytify' ),
 			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/analytify-google-amp.svg',
-			'url'         => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=AMP',
+			'url'         => esc_url( 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=AMP' ),
 		),
-		'google-ads-tracking' => array(
+		'events-tracking'        => array(
+			'status'      => 'active',
+			'slug'        => 'events-tracking',
+			'page_slug'   => 'analytify-events',
+			'title'       => esc_html__( 'Events Tracking', 'wp-analytify' ),
+			'description' => esc_html__( 'Track custom events on your WordPress site in a clear, intuitive way designed for all skill levels. No technical knowledge required to get started.', 'wp-analytify' ),
+			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/analytify-events-tracking.svg',
+			'url'         => esc_url( 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Events+Tracking' ),
+		),
+		'google-ads-tracking'    => array(
 			'status'      => false,
 			'slug'        => 'google-ads-tracking',
 			'page_slug'   => 'analytify-ads-tracking',
-			'title'       => __( 'Google Ads Tracking', 'wp-analytify' ),
-			'description' => __( 'This Addon Tracks Google Ads Conversions for Woocommerce and EDD.', 'wp-analytify' ),
+			'title'       => esc_html__( 'Google Ads Tracking', 'wp-analytify' ),
+			'description' => esc_html__( 'Track Google Ads conversions seamlessly for WooCommerce and Easy Digital Downloads stores.', 'wp-analytify' ),
 			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/google-ads-logo.png',
-			'url'         => 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Google+Ads',
+			'url'         => esc_url( 'https://analytify.io/pricing?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade&utm_content=Google+Ads' ),
+		),
+		'wp-analytify-pmpro'     => array(
+			'status'      => false,
+			'slug'        => 'wp-analytify-pmpro',
+			'page_slug'   => 'analytify-pmpro',
+			'title'       => esc_html__( 'Paid Memberships Pro Tracking', 'wp-analytify' ),
+			'description' => esc_html__( 'Track membership conversions, revenue, and member activity directly within Analytify. Get detailed insights into membership levels, payment gateways, and user behavior.', 'wp-analytify' ),
+			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/addons-svgs/wp-analytify-pmpro.svg',
+			'url'         => esc_url( 'https://analytify.io/add-ons/paid-memberships-pro/?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade' ),
+		),
+		'wp-analytify-learndash' => array(
+			'status'      => false,
+			'slug'        => 'wp-analytify-learndash',
+			'page_slug'   => 'analytify-learndash',
+			'title'       => esc_html__( 'LearnDash Tracking', 'wp-analytify' ),
+			'description' => esc_html__( 'Track quiz completions, lesson progress, course enrollments, and student engagement for your LearnDash e-learning site. Identify drop-off points and improve course outcomes with detailed reports.', 'wp-analytify' ),
+			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/addons-svgs/wp-analytify-learndash.svg',
+			'url'         => esc_url( 'https://analytify.io/add-ons/learndash/?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade' ),
+		),
+		'wp-analytify-lifterlms' => array(
+			'status'      => false,
+			'slug'        => 'wp-analytify-lifterlms',
+			'page_slug'   => 'analytify-lifterlms',
+			'title'       => esc_html__( 'LifterLMS Tracking', 'wp-analytify' ),
+			'description' => esc_html__( 'Track memberships, course purchases, student enrollments, and revenue for your LifterLMS site. Understand how learners discover and move through your courses with clear, visual analytics.', 'wp-analytify' ),
+			'image'       => ( defined( 'ANALYTIFY_PLUGIN_URL' ) ? ANALYTIFY_PLUGIN_URL : '' ) . 'assets/img/addons-svgs/wp-analytify-lifterlms.svg',
+			'url'         => esc_url( 'https://analytify.io/add-ons/lifterlms/?utm_source=analytify-lite&utm_medium=addons&utm_campaign=pro-upgrade' ),
 		),
 	);
 
@@ -368,6 +425,36 @@ function analytify_register_modules() { // phpcs:ignore Universal.Files.Separate
 
 	// Merge default modules with existing ones, preserving existing settings.
 	$analytify_modules = array_merge( $default_modules, $analytify_modules );
+
+	// Move PMPro / LearnDash / LifterLMS from legacy Pro add-ons list into internal modules (one-time).
+	$module_addon_slugs = array( 'wp-analytify-pmpro', 'wp-analytify-learndash', 'wp-analytify-lifterlms' );
+	$pro_addons_migrate = get_option( 'wp_analytify_pro_addons', array() );
+	if ( is_array( $pro_addons_migrate ) ) {
+		$pro_addons_dirty = false;
+		foreach ( $module_addon_slugs as $mod_slug ) {
+			if ( isset( $pro_addons_migrate[ $mod_slug ] ) && isset( $analytify_modules[ $mod_slug ] ) ) {
+				$legacy_status                            = isset( $pro_addons_migrate[ $mod_slug ]['status'] ) ? $pro_addons_migrate[ $mod_slug ]['status'] : '';
+				$analytify_modules[ $mod_slug ]['status'] = ( 'active' === $legacy_status ) ? 'active' : false;
+				unset( $pro_addons_migrate[ $mod_slug ] );
+				$pro_addons_dirty = true;
+			}
+		}
+		if ( $pro_addons_dirty ) {
+			update_option( 'wp_analytify_pro_addons', $pro_addons_migrate );
+		}
+	}
+
+	// Pro builds without the Pixels module file cannot load it; clear a stale "active" flag.
+	if ( function_exists( 'wp_analytify_pro_pixels_tracking_module_file_exists' )
+		&& class_exists( 'WP_Analytify_Pro', false )
+		&& ! wp_analytify_pro_pixels_tracking_module_file_exists()
+		&& isset( $analytify_modules['pixels-tracking'] )
+		&& is_array( $analytify_modules['pixels-tracking'] )
+		&& isset( $analytify_modules['pixels-tracking']['status'] )
+		&& 'active' === $analytify_modules['pixels-tracking']['status']
+	) {
+		$analytify_modules['pixels-tracking']['status'] = false;
+	}
 
 	update_option( 'wp_analytify_modules', $analytify_modules );
 

@@ -107,6 +107,7 @@ class Analytify_Scripts_Styles {
 	 * Loading admin scripts JS for the plugin.
 	 *
 	 * @param string $page Current page.
+	 * @version 9.0.0
 	 * @return void
 	 */
 	public function admin_scripts( $page ) {
@@ -128,7 +129,23 @@ class Analytify_Scripts_Styles {
 		global $post_type;
 
 		// For main page.
-		if ( 'index.php' === $page || 'toplevel_page_analytify-dashboard' === $page || 'analytify_page_analytify-woocommerce' === $page || 'analytify_page_edd-dashboard' === $page || 'analytify_page_analytify-campaigns' === $page || 'analytify_page_analytify-goals' === $page || 'analytify_page_analytify-forms' === $page || 'analytify_page_analytify-dimensions' === $page || 'analytify_page_analytify-authors' === $page || 'analytify_page_analytify-events' === $page || 'analytify_page_analytify-forms' === $page || 'analytify_page_analytify-promo' === $page || in_array( $post_type, $this->analytify->settings->get_option( 'show_analytics_post_types_back_end', 'wp-analytify-admin', array() ), true ) ) {
+		$allowed_pages = array(
+			'index.php',
+			'toplevel_page_analytify-dashboard',
+			'analytify_page_analytify-woocommerce',
+			'analytify_page_analytify-lifterlms',
+			'analytify_page_analytify-learndash',
+			'analytify_page_analytify-pmpro',
+			'analytify_page_edd-dashboard',
+			'analytify_page_analytify-campaigns',
+			'analytify_page_analytify-goals',
+			'analytify_page_analytify-forms',
+			'analytify_page_analytify-dimensions',
+			'analytify_page_analytify-authors',
+			'analytify_page_analytify-events',
+			'analytify_page_analytify-promo',
+		);
+		if ( in_array( $page, $allowed_pages, true ) || in_array( $post_type, $this->analytify->settings->get_option( 'show_analytics_post_types_back_end', 'wp-analytify-admin', array() ), true ) ) {
 			// Using WP's internal moment-js, after 4.2.1.
 
 			/**
@@ -201,7 +218,8 @@ class Analytify_Scripts_Styles {
 		}
 
 		// For dashboard only.
-		$analytify_chart_pages = array( 'toplevel_page_analytify-dashboard', 'analytify_page_analytify-woocommerce', 'analytify_page_edd-dashboard', 'analytify_page_analytify-campaigns' );
+		$analytify_chart_pages = array( 'toplevel_page_analytify-dashboard', 'analytify_page_analytify-woocommerce', 'analytify_page_edd-dashboard', 'analytify_page_analytify-pmpro', 'analytify_page_analytify-learndash', 'analytify_page_analytify-lifterlms', 'analytify_page_analytify-campaigns' );
+
 		if ( in_array( $page, $analytify_chart_pages, true ) ) {
 				// Enqueue the main JavaScript file.
 			wp_enqueue_script( 'echarts-js', plugins_url( 'assets/js/echarts.min.js', $this->plugin_file ), array(), ANALYTIFY_VERSION, true );
@@ -270,9 +288,12 @@ class Analytify_Scripts_Styles {
 				'analytify-settings-js',
 				'analytify_settings',
 				array(
-					'is_hide_profile' => $this->analytify->settings->get_option( 'hide_profiles_list', 'wp-analytify-profile', 'off' ),
-					'is_authenticate' => (bool) get_option( 'pa_google_token' ),
-					'ga_mode'         => WPANALYTIFY_Utils::get_ga_mode(),
+					'is_hide_profile'       => $this->analytify->settings->get_option( 'hide_profiles_list', 'wp-analytify-profile', 'off' ),
+					'is_authenticate'       => (bool) get_option( 'pa_google_token' ),
+					'ga_mode'               => WPANALYTIFY_Utils::get_ga_mode(),
+					'copy_failed_message'   => __( 'Failed to copy to clipboard. Please copy manually.', 'wp-analytify' ),
+					'copy_success_message'  => __( 'Copied!', 'wp-analytify' ),
+					'no_diagnostic_message' => __( 'No diagnostic information available to copy. Please load the diagnostic log first.', 'wp-analytify' ),
 				)
 			);
 

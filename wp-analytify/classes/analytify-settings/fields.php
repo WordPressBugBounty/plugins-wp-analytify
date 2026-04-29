@@ -9,19 +9,23 @@
  * PURPOSE:
  * - Defines settings field configurations
  * - Renders individual field types
- * - Manages field validation and sanitization
+ * - Manages field validation and sanitization (e.g. sanitize_text_field for text inputs)
  * - Provides field-related utility methods
  *
  * @package WP_Analytify
  * @subpackage Settings
  * @since 8.0.0
+ * @version 9.0.0
  */
 
 trait Analytify_Settings_Fields {
 	/**
-	 * Get settings fields configuration
+	 * Get settings fields configuration.
 	 *
-	 * @version 7.0.5
+	 * Text fields use sanitize_callback (e.g. sanitize_text_field) for proper input sanitization.
+	 *
+	 * @since 8.0.0
+	 * @version 9.0.0
 	 * @return array<string, mixed>
 	 */
 	public function get_settings_fields() {
@@ -253,7 +257,28 @@ trait Analytify_Settings_Fields {
 				'desc'              => __( 'All the linked domains separated by a comma', 'wp-analytify' ),
 				'type'              => 'text',
 				'class'             => 'linker_tracking',
-				'sanitize_callback' => 'trim',
+				'sanitize_callback' => 'sanitize_text_field',
+			),
+			/**
+			 * Exclude URL Query Parameters: when enabled, the list below strips those query keys
+			 * from the page URL before sending to GA. Only query-string keys are removed; path and hash unchanged.
+			 *
+			 * @since 9.0.0
+			 */
+			array(
+				'name'  => 'exclude_query_params',
+				'label' => __( 'Exclude URL Query Parameters', 'wp-analytify' ),
+				'desc'  => __( 'Filter out specific URL query parameters from being tracked inside Google Analytics.', 'wp-analytify' ),
+				'type'  => 'checkbox',
+				'class' => 'user_exclude_query_params',
+			),
+			array(
+				'name'              => 'query_params_to_exclude',
+				'label'             => __( 'Exclude Query Parameters', 'wp-analytify' ),
+				'desc'              => __( 'Enter comma-separated query parameters to exclude (e.g. fbclid, ref). Only letters, numbers, underscores and hyphens are allowed.', 'wp-analytify' ),
+				'type'              => 'text',
+				'class'             => 'exclude_query_params',
+				'sanitize_callback' => 'analytify_sanitize_query_params_to_exclude',
 			),
 			array(
 				'name'    => 'enable_token_refresh_failure_email',

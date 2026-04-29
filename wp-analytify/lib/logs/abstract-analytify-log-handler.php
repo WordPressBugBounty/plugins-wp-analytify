@@ -43,6 +43,14 @@ abstract class ANALYTIFY_Log_Handler implements ANALYTIFY_Log_Handler_Interface 
 		$level_string = strtoupper( $level );
 		$entry        = "{$time_string} {$level_string} {$message}";
 
+		// Include context details if present
+		if ( ! empty( $context ) ) {
+			$context_string = wp_json_encode( $context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+			if ( $context_string ) {
+				$entry .= " | Context: {$context_string}";
+			}
+		}
+
 		return apply_filters(
 			'analytify_format_log_entry',
 			$entry,
