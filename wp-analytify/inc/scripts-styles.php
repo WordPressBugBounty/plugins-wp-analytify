@@ -171,7 +171,29 @@ class Analytify_Scripts_Styles {
 			*/
 
 			wp_enqueue_script( 'pikaday-js', plugins_url( 'assets/js/pikaday.js', $this->plugin_file ), array( 'moment' ), ANALYTIFY_VERSION, false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- Script loaded in header intentionally
-			wp_enqueue_script( 'analytify-dashboard-js', plugins_url( 'assets/js/wp-analytify-dashboard.js', $this->plugin_file ), array( 'pikaday-js' ), ANALYTIFY_VERSION, false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- Script loaded in header intentionally
+
+			$analytify_dashboard_js_deps = array( 'pikaday-js' );
+			// jsPDF 4.2.1+ (patched HTML-in-new-window / output options); bundled under assets (see package.json).
+			if ( 'toplevel_page_analytify-dashboard' === $page ) {
+				wp_enqueue_script(
+					'analytify-jspdf',
+					plugins_url( 'assets/js/jspdf.umd.min.js', $this->plugin_file ),
+					array(),
+					'4.2.1',
+					false
+				); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- PDF export; must load before dashboard JS
+				wp_enqueue_script(
+					'analytify-html2canvas',
+					plugins_url( 'assets/js/html2canvas.min.js', $this->plugin_file ),
+					array(),
+					'1.4.1',
+					false
+				); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- PDF export; vendored (same as jsPDF)
+				$analytify_dashboard_js_deps[] = 'analytify-jspdf';
+				$analytify_dashboard_js_deps[] = 'analytify-html2canvas';
+			}
+
+			wp_enqueue_script( 'analytify-dashboard-js', plugins_url( 'assets/js/wp-analytify-dashboard.js', $this->plugin_file ), $analytify_dashboard_js_deps, ANALYTIFY_VERSION, false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- Script loaded in header intentionally
 
 			wp_localize_script(
 				'analytify-dashboard-js',
@@ -248,8 +270,6 @@ class Analytify_Scripts_Styles {
 			$show = isset( $_GET['show'] ) ? sanitize_text_field( wp_unslash( $_GET['show'] ) ) : '';
 			if ( class_exists( 'WP_Analytify_Pro_Base' ) && version_compare( ANALYTIFY_PRO_VERSION, '5.0.0' ) >= 0 && ! empty( $page ) && empty( $show ) && 'analytify-dashboard' === $page ) {
 				wp_enqueue_script( 'analytify-stats-core', plugins_url( 'assets/js/stats-core.js', $this->plugin_file ), array( 'jquery', 'echarts-js', 'analytify-comp-chart' ), ANALYTIFY_VERSION, true );
-				wp_enqueue_script( 'jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js', array(), ANALYTIFY_VERSION, false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- External script loaded in header
-				wp_enqueue_script( 'html2canvas', 'https://html2canvas.hertzen.com/dist/html2canvas.js', array(), ANALYTIFY_VERSION, false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- External script loaded in header
 
 			} else {
 				wp_enqueue_script( 'analytify-stats-core', plugins_url( 'assets/js/stats-core.js', $this->plugin_file ), array( 'jquery', 'echarts-js' ), ANALYTIFY_VERSION, true );

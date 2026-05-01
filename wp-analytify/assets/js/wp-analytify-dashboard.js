@@ -554,7 +554,13 @@ jQuery(document).ready(function ($) {
 		// Generate the PDF content
 		html2canvas(content[0], canvasOptions).then(function (canvas) {
 			const imgData = canvas.toDataURL('image/png', 1.0);
-			const pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+			// jsPDF v4 UMD exposes the class as window.jspdf.jsPDF; older builds used a global jsPDF.
+			const JsPDF = typeof jsPDF !== 'undefined' ? jsPDF : (window.jspdf && window.jspdf.jsPDF);
+			if (! JsPDF) {
+				exportButton.val(originalButtonText).prop('disabled', false);
+				return;
+			}
+			const pdf = new JsPDF('p', 'pt', [PDF_Width, PDF_Height]);
 			pdf.addImage(imgData, 'PNG', 0, 0, PDF_Width, PDF_Height);
 
 			// Get the date range and dashboard heading
