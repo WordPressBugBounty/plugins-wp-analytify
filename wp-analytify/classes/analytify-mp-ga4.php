@@ -1,4 +1,6 @@
-<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName,Universal.Files.SeparateFunctionsFromOO.Mixed -- File naming is acceptable and mixed structure is acceptable
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- Historical filename matches class context.
+
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- Function is part of the class API (global wrapper + class in one module file).
 /**
  * This file contains the class that makes the gtag api calls.
  *
@@ -8,6 +10,37 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
+}
+
+if ( ! function_exists( 'analytify_mp_ga4_build_request_body' ) ) {
+	/**
+	 * Build GA4 Measurement Protocol request body (client_id + events) after debug + filter hooks.
+	 *
+	 * @since 9.0.0
+	 * @param string            $client_id Client ID for the MP payload.
+	 * @param array<int, mixed> $events    Events list (GA4 name / params shape).
+	 * @return array<string, mixed> Array with keys client_id and events.
+	 */
+	function analytify_mp_ga4_build_request_body( $client_id, $events ) {
+		$events     = is_array( $events ) ? $events : array();
+		$debug_mode = apply_filters( 'analytify_debug_mode', false );
+		if ( $debug_mode ) {
+			foreach ( $events as $index => $event ) {
+				if ( ! is_array( $event ) ) {
+					continue;
+				}
+				if ( ! isset( $event['params'] ) || ! is_array( $event['params'] ) ) {
+					$events[ $index ]['params'] = array();
+				}
+				$events[ $index ]['params']['debug_mode'] = 1;
+			}
+		}
+		$events = apply_filters( 'analytify_ga4_events_for_mp_api_call', $events );
+		return array(
+			'client_id' => (string) $client_id,
+			'events'    => is_array( $events ) ? $events : array(),
+		);
+	}
 }
 
 if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
@@ -139,22 +172,24 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 		 */
 		public function send_hit( $events ): bool {
 
-			$url = $this->api_url();
-
-			$debug_mode = apply_filters( 'analytify_debug_mode', false );
-
-			if ( $debug_mode ) {
-				foreach ( $events as $index => $event ) {
-					$events[ $index ]['params']['debug_mode'] = 1;
+			if ( '' === (string) $this->measurement_id || '' === (string) $this->api_secret ) {
+				$logger = function_exists( 'analytify_get_logger' ) ? analytify_get_logger() : null;
+				if ( $logger && method_exists( $logger, 'warning' ) ) {
+					$logger->warning(
+						'Measurement Protocol send skipped: missing measurement ID or API secret.',
+						array(
+							'source'         => 'send_hit',
+							'measurement_id' => $this->measurement_id,
+							'has_api_secret' => '' !== (string) $this->api_secret,
+						)
+					);
 				}
+				return false;
 			}
 
-			$events = apply_filters( 'analytify_ga4_events_for_mp_api_call', $events );
+			$url = $this->api_url();
 
-			$body      = array(
-				'client_id' => $this->client_id,
-				'events'    => $events,
-			);
+			$body      = analytify_mp_ga4_build_request_body( $this->client_id, $events );
 			$json_body = wp_json_encode( $body );
 			$response  = wp_remote_post(
 				$url,
@@ -183,18 +218,15 @@ if ( ! class_exists( 'Analytify_MP_GA4' ) ) {
 	}
 }
 
-// phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed -- Function is part of the class API
-
 /**
  * Uses the singleton pattern to call the api.
  *
  * @param array<string, mixed> $events Parameters to send to the API.
- *
  * @return bool
- *
- * @phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
  */
 function analytify_mp_ga4( $events ): bool {
 	$instance = Analytify_MP_GA4::get_instance();
 	return $instance->send_hit( $events );
 }
+
+// phpcs:enable Universal.Files.SeparateFunctionsFromOO.Mixed

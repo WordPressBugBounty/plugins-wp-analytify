@@ -36,7 +36,18 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'    => 'manual_ua_code',
 					'label'   => __( 'GA Tracking ID', 'wp-analytify' ),
-					'desc'    => wp_sprintf( '<p class="description">%s <code>%s</code> or <code>%s</code><br /> %s <code>%s</code>%s </p>', __( 'Manually add the Tracking ID that looks a like', 'wp-analytify' ), 'UA-XXXXXXXX-XX', 'G-XXXXXXXXXX', __( 'Our default tracking method is newly recommended', 'wp-analytify' ), __( 'Global Site Tag (gtag.js)', 'wp-analytify' ), __( 'by Google Analytics.', 'wp-analytify' ) ),
+					'desc'    => sprintf(
+						// translators: %1$s UA example in code, %2$s G example in code, %3$s line break with trailing space, %4$s gtag label in code.
+						esc_html__(
+							// phpcs:ignore Generic.Files.LineLength.MaxExceeded -- Single literal for i18n tooling.
+							'Manually add the Tracking ID that looks like %1$s or %2$s%3$sOur default tracking method is newly recommended %4$s by Google Analytics.',
+							'wp-analytify'
+						),
+						'<code>UA-XXXXXXXX-XX</code>',
+						'<code>G-XXXXXXXXXX</code>',
+						'<br /> ',
+						'<code>Global Site Tag (gtag.js)</code>'
+					),
 					'type'    => 'text',
 					'default' => '',
 				),
@@ -60,7 +71,15 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'    => 'profile_for_posts',
 					'label'   => __( 'Profile for posts (Backend/Front-end)', 'wp-analytify' ),
-					'desc'    => __( 'Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics. <br /><strong>Note:</strong> GA4 properties from the above list.', 'wp-analytify' ),
+					'desc'    => sprintf(
+						// translators: %1$s opening line break and strong, %2$s closing strong and space before GA4 sentence.
+						esc_html__(
+							'Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics.%1$sNote:%2$s GA4 properties from the above list.',
+							'wp-analytify'
+						),
+						'<br /><strong>',
+						'</strong> '
+					),
 					'type'    => 'select_profile',
 					'default' => 'Choose profile for posts',
 					'options' => $ga_properties_and_profiles,
@@ -70,13 +89,12 @@ trait Analytify_Settings_Fields {
 					'name'    => 'profile_for_dashboard',
 					'label'   => __( 'Profile for dashboard', 'wp-analytify' ),
 					'desc'    => sprintf(
-						/* translators: %s: documentation link */
-						__(
-							'Select your Google Analytics website profile/stream for Analytify dashboard statistics. Note: Not seeing new GA4 properties in the above list? See %s.',
+						// translators: %1$s, %2$s: documentation link open and close around link text.
+						esc_html__(
+							'Select your Google Analytics website profile/stream for Analytify dashboard statistics. Note: Not seeing new GA4 properties in the above list? See %1$swhy and how to fix it%2$s.',
 							'wp-analytify'
 						),
-						'<a href="https://analytify.io/doc/how-to-integrate-analytify-with-google-analytics-4-ga4/" target="_blank" rel="noopener noreferrer">' .
-						esc_html__( 'why and how to fix it', 'wp-analytify' ) .
+						'<a href="' . esc_url( 'https://analytify.io/doc/how-to-integrate-analytify-with-google-analytics-4-ga4/' ) . '" target="_blank" rel="noopener noreferrer">',
 						'</a>'
 					),
 					'type'    => 'select_profile',
@@ -108,8 +126,17 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'    => 'show_analytics_post_types_back_end',
 					'label'   => __( 'Analytics on post types', 'wp-analytify' ),
-					// translators: %1$s is the opening link tag, %1$s is the closing link tag.
-					'desc'    => class_exists( 'WP_Analytify_Pro' ) ? __( 'Show Analytics under the above post types only', 'wp-analytify' ) : sprintf( __( 'Show analytics below these post types only. Buy %1$sPremium%1$s version for Custom Post Types.', 'wp-analytify' ), '<a href="' . analytify_get_update_link() . '" target="_blank">', '</a>' ),
+					'desc'    => class_exists( 'WP_Analytify_Pro' )
+						? __( 'Show Analytics under the above post types only', 'wp-analytify' )
+						: sprintf(
+							// translators: %1$s, %2$s: Premium upsell link open and close.
+							esc_html__(
+								'Show analytics below these post types only. Buy %1$sPremium%2$s version for Custom Post Types.',
+								'wp-analytify'
+							),
+							'<a href="' . esc_url( analytify_get_update_link() ) . '" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
 					'type'    => 'chosen',
 					'default' => array(),
 					'options' => $this->get_current_post_types(),
@@ -117,8 +144,18 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'    => 'show_panels_back_end',
 					'label'   => __( 'Edit posts/pages analytics panels', 'wp-analytify' ),
-					// translators: %1$s is the opening link tag, %2$s is the closing link tag.
-					'desc'    => class_exists( 'WP_Analytify_Pro' ) ? __( 'Select which statistic panels you want to display under posts/pages.', 'wp-analytify' ) : sprintf( __( 'Select which statistic panels you want to display under posts/pages. Only "General Stats" will visible in Free Version. Buy %1$sPremium%2$s version to see the full statistics.', 'wp-analytify' ), '<a href="' . analytify_get_update_link() . '" target="_blank">', '</a>' ),
+					'desc'    => class_exists( 'WP_Analytify_Pro' )
+						? __( 'Select which statistic panels you want to display under posts/pages.', 'wp-analytify' )
+						: sprintf(
+							// translators: %1$s, %2$s: Premium upsell link open and close.
+							esc_html__(
+								// phpcs:ignore Generic.Files.LineLength.MaxExceeded -- Single literal for i18n tooling.
+								'Select which statistic panels you want to display under posts/pages. Only "General Stats" will visible in Free Version. Buy %1$sPremium%2$s version to see the full statistics.',
+								'wp-analytify'
+							),
+							'<a href="' . esc_url( analytify_get_update_link() ) . '" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
 					'type'    => 'chosen',
 					'default' => array(),
 					'options' => array(
@@ -159,8 +196,18 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'  => 'user_advanced_keys',
 					'label' => __( 'Setup Custom API keys?', 'wp-analytify' ),
-					// translators: %1$s is line break, %2$s is Google Console link, %3$s is line break, %4$s is video guide link, %5$s is closing link tag.
-					'desc'  => sprintf( __( 'It is highly recommended by Google to use your own API keys. %1$sYou need to create a Project in Google %2$s. %3$sHere is a short %4$svideo guide%5$s to get your own ClientID, Client Secret and Redirect URL and enter them in below inputs.', 'wp-analytify' ), '<br />', '<a target=\'_blank\' href=\'https://console.developers.google.com/project\'>Console</a>', '<br />', '<a target=\'_blank\' href=\'https://analytify.io/custom-api-keys-video\'>', '</a>' ),
+					'desc'  => sprintf(
+						// translators: %1$s line break (reused). %2$s Google Console link open, %3$s closing </a> (reused). %4$s video guide link open.
+						esc_html__(
+							// phpcs:ignore Generic.Files.LineLength.MaxExceeded -- Single literal for i18n tooling.
+							'It is highly recommended by Google to use your own API keys.%1$s You need to create a Project in Google %2$sConsole%3$s.%1$s Here is a short %4$svideo guide%3$s to get your own Client ID, Client Secret and Redirect URL and enter them in the inputs below.',
+							'wp-analytify'
+						),
+						'<br />',
+						'<a href="' . esc_url( 'https://console.developers.google.com/project' ) . '" target="_blank" rel="noopener noreferrer">',
+						'</a>',
+						'<a href="' . esc_url( 'https://analytify.io/custom-api-keys-video' ) . '" target="_blank" rel="noopener noreferrer">'
+					),
 					'type'  => 'checkbox',
 					'class' => 'user_advanced_keys',
 				),
@@ -183,8 +230,14 @@ trait Analytify_Settings_Fields {
 				array(
 					'name'              => 'redirect_uri',
 					'label'             => __( 'Redirect URL', 'wp-analytify' ),
-					// translators: %1$s is the admin URL.
-					'desc'              => sprintf( __( '( Redirect URL is very important when you are using your own keys. Paste this into the above field: %1$s )', 'wp-analytify' ), '<b>' . admin_url( 'admin.php?page=analytify-settings' ) . '</b>' ),
+					'desc'              => sprintf(
+						// translators: %1$s bold block containing the admin settings URL as text.
+						esc_html__(
+							'( Redirect URL is very important when you are using your own keys. Paste this into the above field: %1$s )',
+							'wp-analytify'
+						),
+						'<strong>' . esc_html( admin_url( 'admin.php?page=analytify-settings' ) ) . '</strong>'
+					),
 					'type'              => 'text',
 					'class'             => 'user_keys',
 					'sanitize_callback' => 'trim',
@@ -203,8 +256,15 @@ trait Analytify_Settings_Fields {
 			array(
 				'name'  => 'track_user_id',
 				'label' => __( 'Track User ID', 'wp-analytify' ),
-				// translators: %1$s is the opening link tag, %2$s is the closing link tag.
-				'desc'  => sprintf( __( 'Detailed information about Track User ID in Google Analytics can be found %1$shere%2$s.', 'wp-analytify' ), '<a href=\'https://support.google.com/analytics/answer/3123662\' target=\'_blank\'>', '</a>' ),
+				'desc'  => sprintf(
+					// translators: %1$s, %2$s: Google help link open and close around "here".
+					esc_html__(
+						'Detailed information about Track User ID in Google Analytics can be found %1$shere%2$s.',
+						'wp-analytify'
+					),
+					'<a href="' . esc_url( 'https://support.google.com/analytics/answer/3123662' ) . '" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				),
 				'type'  => 'checkbox',
 			),
 			array(
@@ -246,8 +306,16 @@ trait Analytify_Settings_Fields {
 			array(
 				'name'  => 'linker_cross_domain_tracking',
 				'label' => __( 'Setup Cross-domain Tracking', 'wp-analytify' ),
-				// translators: %1$s is the code tag, %2$s is the opening link tag, %3$s is the closing link tag.
-				'desc'  => sprintf( __( 'This will add the %1$s tag to your tracking code. Read this %2$sguide%3$s for more information.', 'wp-analytify' ), '<code>allowLinker:true</code>', '<a href=\'https:\/\/analytify.io/doc/setup-cross-domain-tracking-wordpress\' target=\'_blank\'>', '</a>' ),
+				'desc'  => sprintf(
+					// translators: %1$s code sample, %2$s and %3$s guide link open and close.
+					esc_html__(
+						'This will add the %1$s tag to your tracking code. Read this %2$sguide%3$s for more information.',
+						'wp-analytify'
+					),
+					'<code>allowLinker:true</code>',
+					'<a href="' . esc_url( 'https://analytify.io/doc/setup-cross-domain-tracking-wordpress' ) . '" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				),
 				'type'  => 'checkbox',
 				'class' => 'user_linker_tracking',
 			),

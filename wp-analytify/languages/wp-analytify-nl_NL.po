@@ -1,5 +1,3 @@
-# Copyright (C) 2026 Analytify
-# This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
 "Project-Id-Version: Analytify Dashboard 9.0.0\n"
@@ -11,91 +9,61 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-04-28T09:33:40+00:00\n"
 "PO-Revision-Date: 2026-04-28 13:19+0000\n"
+"Language: nl-NL\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wp-analytify\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl-NL\n"
 
-#: wp-analytify.php
 #. Plugin Name of the plugin
+#: wp-analytify.php
 msgid "Analytify Dashboard"
 msgstr "Analytify Dashboard"
 
-#: wp-analytify.php
 #. Plugin URI of the plugin
-msgid ""
-"https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_"
-"campaign=pro-upgrade&utm_content=plugin-uri"
-msgstr ""
-"https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_"
-"campaign=pro-upgrade&utm_content=plugin-uri"
-
 #: wp-analytify.php
-#. Description of the plugin
-msgid ""
-"Analytify brings a brand new and modern feeling of Google Analytics "
-"superbly integrated within the WordPress."
-msgstr ""
-"Analytify brengt een gloednieuwe en moderne ervaring van Google Analytics, "
-"perfect geïntegreerd binnen WordPress."
+msgid "https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri"
+msgstr "https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri"
 
+#. Description of the plugin
+#: wp-analytify.php
+msgid "Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress."
+msgstr "Analytify brengt een gloednieuwe en moderne ervaring van Google Analytics, perfect geïntegreerd binnen WordPress."
+
+#. Author of the plugin
 #: wp-analytify.php
 #: views/default/admin/addons-promo.php:24
-#. Author of the plugin
 msgid "Analytify"
 msgstr "Analytify"
 
-#: wp-analytify.php
 #. Author URI of the plugin
-msgid ""
-"https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_"
-"campaign=pro-upgrade&utm_content=author-uri"
-msgstr ""
-"https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_"
-"campaign=pro-upgrade&utm_content=author-uri"
+#: wp-analytify.php
+msgid "https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri"
+msgstr "https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri"
 
-#: analytify-general.php:244
 #. translators: Reset authentication error message.
-msgid ""
-"%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don't "
-"worry, This error message is only visible to Administrators. %6$s %2$s"
-msgstr ""
-"%1$s Oeps, probeer %2$s de %3$s-authenticatie opnieuw in te stellen. %4$s "
-"%7$s %4$s %5$s Maak je geen zorgen, dit foutbericht is alleen zichtbaar "
-"voor beheerders. %6$s %2$s"
+#: analytify-general.php:244
+msgid "%1$s Oops, Try to %2$s Reset %3$s Authentication. %4$s %7$s %4$s %5$s Don't worry, This error message is only visible to Administrators. %6$s %2$s"
+msgstr "%1$s Oeps, probeer %2$s de %3$s-authenticatie opnieuw in te stellen. %4$s %7$s %4$s %5$s Maak je geen zorgen, dit foutbericht is alleen zichtbaar voor beheerders. %6$s %2$s"
 
-#: analytify-general.php:329
-#: analytify-general.php:444
 #. translators: Error message for logged in users.
 #. translators: Error message.
-msgid ""
-"%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don't worry, This "
-"error message is only visible to Administrators. %4$s %2$s "
-msgstr ""
-"%1$s Oeps, er is iets fout gegaan. %2$s %5$s %2$s %3$s Maak je geen zorgen, "
-"dit foutbericht is alleen zichtbaar voor beheerders. %4$s %2$s "
+#: analytify-general.php:329
+#: analytify-general.php:444
+msgid "%1$s Oops, Something went wrong. %2$s %5$s %2$s %3$s Don't worry, This error message is only visible to Administrators. %4$s %2$s "
+msgstr "%1$s Oeps, er is iets fout gegaan. %2$s %5$s %2$s %3$s Maak je geen zorgen, dit foutbericht is alleen zichtbaar voor beheerders. %4$s %2$s "
 
-#: analytify-general.php:337
-#: analytify-general.php:450
 #. translators: Reset authentication error message.
 #. translators: Error message.
-msgid ""
-"%1$s Oops, Try to %3$s Reset %4$s Authentication. %2$s %7$s %2$s %5$s Don't "
-"worry, This error message is only visible to Administrators. %6$s %2$s"
-msgstr ""
-"%1$s Oeps, probeer %3$s de %4$s-authenticatie opnieuw in te stellen. %2$s "
-"%7$s %2$s %5$s Maak je geen zorgen, dit foutbericht is alleen zichtbaar "
-"voor beheerders. %6$s %2$s"
+#: analytify-general.php:337
+#: analytify-general.php:450
+msgid "%1$s Oops, Try to %3$s Reset %4$s Authentication. %2$s %7$s %2$s %5$s Don't worry, This error message is only visible to Administrators. %6$s %2$s"
+msgstr "%1$s Oeps, probeer %3$s de %4$s-authenticatie opnieuw in te stellen. %2$s %7$s %2$s %5$s Maak je geen zorgen, dit foutbericht is alleen zichtbaar voor beheerders. %6$s %2$s"
 
+#. translators: Error message.
 #: analytify-general.php:345
 #: analytify-general.php:456
-#. translators: Error message.
-msgid ""
-"%1$s Oops! %2$s %5$s %2$s %3$s Don't worry, This error message is only "
-"visible to Administrators. %4$s %2$s"
-msgstr ""
-"%1$s Oeps! %2$s %5$s %2$s %3$s Maak je geen zorgen, dit foutbericht is "
-"alleen zichtbaar voor beheerders. %4$s %2$s"
+msgid "%1$s Oops! %2$s %5$s %2$s %3$s Don't worry, This error message is only visible to Administrators. %4$s %2$s"
+msgstr "%1$s Oeps! %2$s %5$s %2$s %3$s Maak je geen zorgen, dit foutbericht is alleen zichtbaar voor beheerders. %4$s %2$s"
 
 #: analytify-general.php:867
 #: analytify-general.php:878
@@ -103,12 +71,8 @@ msgid "No URL found for the selected stream"
 msgstr "Geen URL gevonden voor de geselecteerde stream"
 
 #: analytify-general.php:1083
-msgid ""
-"Analytify gets GA4 keyword stats from Search Console. Make sure the site is "
-"verified and you have owner access."
-msgstr ""
-"Analytify haalt GA4 zoekwoordstatistieken uit Search Console. Zorg ervoor "
-"dat de site is geverifieerd en dat je eigenaarstoegang hebt."
+msgid "Analytify gets GA4 keyword stats from Search Console. Make sure the site is verified and you have owner access."
+msgstr "Analytify haalt GA4 zoekwoordstatistieken uit Search Console. Zorg ervoor dat de site is geverifieerd en dat je eigenaarstoegang hebt."
 
 #: classes/abstracts/analytify-report-abstract.php:114
 #: classes/analytify-rest/endpoints-general.php:39
@@ -120,12 +84,8 @@ msgstr "Sessies"
 
 #: classes/abstracts/analytify-report-abstract.php:116
 #: classes/analytify-rest/endpoints-general.php:40
-msgid ""
-"A session is a time period in which a user is actively engaged with your "
-"website."
-msgstr ""
-"Een sessie is een tijdsperiode waarin een gebruiker actief bezig is met je "
-"website."
+msgid "A session is a time period in which a user is actively engaged with your website."
+msgstr "Een sessie is een tijdsperiode waarin een gebruiker actief bezig is met je website."
 
 #: classes/abstracts/analytify-report-abstract.php:120
 #: classes/analytify-rest/endpoints-dimensions.php:137
@@ -170,37 +130,24 @@ msgstr "Bouncepercentage"
 
 #: classes/abstracts/analytify-report-abstract.php:140
 #: classes/analytify-rest/endpoints-general.php:64
-msgid ""
-"Percentage of single page visits (i.e number of visits in which a visitor "
-"leaves your website from the landing page without browsing your website)."
-msgstr ""
-"Percentage van enkele pagina bezoeken (d.w.z. het aantal bezoeken waarbij "
-"een bezoeker uw website verlaat vanaf de landingspagina zonder door uw "
-"website te browsen)."
+msgid "Percentage of single page visits (i.e number of visits in which a visitor leaves your website from the landing page without browsing your website)."
+msgstr "Percentage van enkele pagina bezoeken (d.w.z. het aantal bezoeken waarbij een bezoeker uw website verlaat vanaf de landingspagina zonder door uw website te browsen)."
 
 #: classes/abstracts/analytify-report-abstract.php:144
 msgid "% New sessions"
 msgstr "% Nieuwe sessies"
 
 #: classes/abstracts/analytify-report-abstract.php:146
-msgid ""
-"A new session is a time period when a new user comes to your website and is "
-"actively engaged with your website."
-msgstr ""
-"Een nieuwe sessie is een tijdsperiode waarin een nieuwe gebruiker naar uw "
-"website komt en actief betrokken is bij uw website."
+msgid "A new session is a time period when a new user comes to your website and is actively engaged with your website."
+msgstr "Een nieuwe sessie is een tijdsperiode waarin een nieuwe gebruiker naar uw website komt en actief betrokken is bij uw website."
 
 #: classes/abstracts/analytify-report-abstract.php:150
 msgid "Pages / Session"
 msgstr "Pagina's / Sessie"
 
 #: classes/abstracts/analytify-report-abstract.php:152
-msgid ""
-"Number of page views by a user during a single session. Repeated views are "
-"counted."
-msgstr ""
-"Aantal paginaweergaven door een gebruiker tijdens een enkele sessie. "
-"Herhaalde weergaven worden meegerekend."
+msgid "Number of page views by a user during a single session. Repeated views are counted."
+msgstr "Aantal paginaweergaven door een gebruiker tijdens een enkele sessie. Herhaalde weergaven worden meegerekend."
 
 #: classes/abstracts/analytify-report-abstract.php:156
 #: classes/analytify-rest/endpoints-dimensions.php:634
@@ -210,12 +157,8 @@ msgstr "Betrokken Sessies"
 
 #: classes/abstracts/analytify-report-abstract.php:158
 #: classes/analytify-rest/endpoints-general.php:84
-msgid ""
-"The number of sessions that lasted longer than 10 seconds, or had a "
-"conversion event, or had 2 or more page views."
-msgstr ""
-"Het aantal sessies dat langer dan 10 seconden duurde, of een "
-"conversiegebeurtenis had, of 2 of meer paginaweergaven had."
+msgid "The number of sessions that lasted longer than 10 seconds, or had a conversion event, or had 2 or more page views."
+msgstr "Het aantal sessies dat langer dan 10 seconden duurde, of een conversiegebeurtenis had, of 2 of meer paginaweergaven had."
 
 #: classes/abstracts/analytify-report-abstract.php:173
 #: classes/analytify-rest/endpoints-general.php:217
@@ -265,12 +208,8 @@ msgid "View All Analytics on the WordPress Dashboard"
 msgstr "Bekijk Alle Analytics op het WordPress Dashboard"
 
 #: classes/analytify-dashboard-widget.php:75
-msgid ""
-"Once you install Analytify Dashboard Widget Addon, this dashboard widget "
-"will be filled with Analytics."
-msgstr ""
-"Zodra je de Analytify Dashboard Widget Add-on installeert, zal deze "
-"dashboard widget gevuld worden met Analytics."
+msgid "Once you install Analytify Dashboard Widget Addon, this dashboard widget will be filled with Analytics."
+msgstr "Zodra je de Analytify Dashboard Widget Add-on installeert, zal deze dashboard widget gevuld worden met Analytics."
 
 #: classes/analytify-dashboard-widget.php:78
 #: classes/analytify-dashboard-widget.php:82
@@ -303,28 +242,28 @@ msgstr "Voer e-mailadres ontvanger in"
 msgid "Custom Range"
 msgstr "Aangepaste periode"
 
-#: classes/analytify-email/scheduler.php:149
 #. translators: Weekly engagement.
+#: classes/analytify-email/scheduler.php:149
 msgid "Weekly Engagement Summary of %s"
 msgstr "Wekelijks betrokkenheidsoverzicht van %s"
 
-#: classes/analytify-email/scheduler.php:152
 #. translators: Default email subject when the report uses a saved custom date range. %s: site hostname.
+#: classes/analytify-email/scheduler.php:152
 msgid "Custom Analytics Report for %s"
 msgstr "Aangepast analytics rapport voor %s"
 
-#: classes/analytify-email/scheduler.php:155
 #. translators: Monthly engagement.
+#: classes/analytify-email/scheduler.php:155
 msgid "Monthly Engagement Summary of %s"
 msgstr "Maandelijks betrokkenheidsoverzicht van %s"
 
-#: classes/analytify-email/scheduler.php:158
 #. translators: Previous day engagement.
+#: classes/analytify-email/scheduler.php:158
 msgid "Yesterday's Engagement Summary of %s"
 msgstr "Betrokkenheidsoverzicht van gisteren voor %s"
 
-#: classes/analytify-email/scheduler.php:161
 #. translators: Default subject for scheduled email when schedule type is Custom Range. %s: site hostname.
+#: classes/analytify-email/scheduler.php:161
 msgid "Analytics Report for %s"
 msgstr "Analytics rapport voor %s"
 
@@ -332,8 +271,8 @@ msgstr "Analytics rapport voor %s"
 msgid "Please find below your Google Analytics report for the noted period."
 msgstr "Hieronder vindt u uw Google Analytics-rapport voor de genoemde periode."
 
-#: classes/analytify-email/scheduler.php:317
 #. translators: %s: period label, e.g. Weekly, Monthly, Yesterday, Custom Range.
+#: classes/analytify-email/scheduler.php:317
 msgid "%s Report"
 msgstr "%s Rapport"
 
@@ -347,9 +286,7 @@ msgstr "E-mailrapportage uitschakelen"
 
 #: classes/analytify-email/settings.php:54
 msgid "This option will stop sending all email reports, including test emails."
-msgstr ""
-"Deze optie stopt met het verzenden van alle e-mailrapporten, inclusief "
-"test-e-mails."
+msgstr "Deze optie stopt met het verzenden van alle e-mailrapporten, inclusief test-e-mails."
 
 #: classes/analytify-email/settings.php:59
 msgid "Sender Email Address"
@@ -413,16 +350,16 @@ msgstr "Scrollpercentage"
 msgid "Total Reached"
 msgstr "Totaal Bereikt"
 
+#. translators: %s is the formatted time duration.
 #: classes/analytify-rest-api.php:105
 #: classes/analytify-rest/endpoints-general.php:364
-#. translators: %s is the formatted time duration.
 msgid "Total time visitors spent on your site: %s."
 msgstr "Totale tijd die bezoekers op uw site hebben doorgebracht: %s."
 
-#: classes/analytify-rest-api.php:174
-#: classes/analytify-rest/endpoints-general.php:418
 #. translators: Days.
 #. translators: %s is the number of days.
+#: classes/analytify-rest-api.php:174
+#: classes/analytify-rest/endpoints-general.php:418
 msgid "%s days ago"
 msgstr "%s dagen geleden"
 
@@ -455,8 +392,8 @@ msgstr "Top pagina's en berichten."
 msgid "No sections found."
 msgstr "Geen secties gevonden."
 
-#: classes/analytify-rest/endpoints-content.php:149
 #. translators: Analytics display - %1$s is start date, %2$s is end date.
+#: classes/analytify-rest/endpoints-content.php:149
 msgid "Displaying Analytics of this page from %1$s to %2$s."
 msgstr "Analyse van deze pagina weergeven van %1$s tot %2$s."
 
@@ -577,9 +514,7 @@ msgstr "Betrokkenheidspercentage"
 
 #: classes/analytify-rest/endpoints-general.php:52
 msgid "Page Views are the total number of Pageviews, these include repeated views."
-msgstr ""
-"Paginaweergaven zijn het totale aantal paginaweergaven, deze omvatten "
-"herhaalde weergaven."
+msgstr "Paginaweergaven zijn het totale aantal paginaweergaven, deze omvatten herhaalde weergaven."
 
 #: classes/analytify-rest/endpoints-general.php:57
 msgid "Avg. Time on Site"
@@ -590,12 +525,8 @@ msgid "Pages per Session"
 msgstr "Pagina's per Sessie"
 
 #: classes/analytify-rest/endpoints-general.php:71
-msgid ""
-"Pages per Session is the number of pages viewed by a user during a single "
-"session. Repeated views are counted."
-msgstr ""
-"Pagina's per Sessie is het aantal pagina's dat door een gebruiker tijdens "
-"een enkele sessie is bekeken. Herhaalde weergaven worden geteld."
+msgid "Pages per Session is the number of pages viewed by a user during a single session. Repeated views are counted."
+msgstr "Pagina's per Sessie is het aantal pagina's dat door een gebruiker tijdens een enkele sessie is bekeken. Herhaalde weergaven worden geteld."
 
 #: classes/analytify-rest/endpoints-general.php:76
 msgid "% New Sessions"
@@ -609,119 +540,101 @@ msgstr "Een nieuwe sessie is wanneer een nieuwe gebruiker op uw website komt."
 msgid "Browser Breakdown"
 msgstr "Browseroverzicht"
 
-#: classes/analytify-sanitize.php:48
 #. translators: Array Error.
+#: classes/analytify-sanitize.php:48
 msgid "%1$s was not expecting data to be an array."
 msgstr "%1$s verwachtte niet dat de gegevens een array zou zijn."
 
-#: classes/analytify-sanitize.php:67
 #. translators: Array Error.
+#: classes/analytify-sanitize.php:67
 msgid "%1$s was expecting an array but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een array maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:72
 #. translators: String Error.
+#: classes/analytify-sanitize.php:72
 msgid "%1$s was expecting a string but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een string maar kreeg iets anders: \"%2$s\""
 
+#. translators: Key Error.
 #: classes/analytify-sanitize.php:77
-#. translators: Key Error.
-msgid ""
-"%1$s was expecting a string for key sanitization but got something else: "
-"\"%2$s\""
-msgstr ""
-"%1$s verwachtte een string voor sleutel-sanitization maar kreeg iets "
-"anders: \"%2$s\""
+msgid "%1$s was expecting a string for key sanitization but got something else: \"%2$s\""
+msgstr "%1$s verwachtte een string voor sleutel-sanitization maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:82
 #. translators: Key Error.
+#: classes/analytify-sanitize.php:82
 msgid "%1$s was expecting a valid key but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een geldige sleutel maar kreeg iets anders: \"%2$s\""
 
+#. translators: Text Error.
 #: classes/analytify-sanitize.php:88
-#. translators: Text Error.
-msgid ""
-"%1$s was expecting a string for text sanitization but got something else: "
-"\"%2$s\""
-msgstr ""
-"%1$s verwachtte een string voor tekst-sanitization maar kreeg iets anders: "
-"\"%2$s\""
+msgid "%1$s was expecting a string for text sanitization but got something else: \"%2$s\""
+msgstr "%1$s verwachtte een string voor tekst-sanitization maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:93
 #. translators: Text Error.
+#: classes/analytify-sanitize.php:93
 msgid "%1$s was expecting text but got something else: \"%2$s\""
 msgstr "%1$s verwachtte tekst maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:99
 #. translators: Serialized data error.
+#: classes/analytify-sanitize.php:99
 msgid "%1$s was expecting serialized data but got something else: \"%2$s\""
 msgstr "%1$s verwachtte geserialiseerde gegevens maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:104
 #. translators: Valid numeric error.
+#: classes/analytify-sanitize.php:104
 msgid "%1$s was expecting a valid numeric but got something else: \"%2$s\""
-msgstr ""
-"%1$s verwachtte een geldige numerieke waarde, maar kreeg iets anders: "
-"\"%2$s\""
+msgstr "%1$s verwachtte een geldige numerieke waarde, maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:110
 #. translators: Integer Error.
+#: classes/analytify-sanitize.php:110
 msgid "%1$s was expecting an integer but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een geheel getal, maar kreeg iets anders: \"%2$s\""
 
+#. translators: Positive Integer Error.
 #: classes/analytify-sanitize.php:116
 #: classes/analytify-sanitize.php:121
-#. translators: Positive Integer Error.
 msgid "%1$s was expecting a positive number (int) but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een positief getal (int), maar kreeg iets anders: \"%2$s\""
 
+#. translators: Negative Integer Error.
 #: classes/analytify-sanitize.php:126
 #: classes/analytify-sanitize.php:131
-#. translators: Negative Integer Error.
 msgid "%1$s was expecting a negative number (int) but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een negatief getal (int), maar kreeg iets anders: \"%2$s\""
 
+#. translators: Zero Integer Error.
 #: classes/analytify-sanitize.php:136
 #: classes/analytify-sanitize.php:141
-#. translators: Zero Integer Error.
 msgid "%1$s was expecting 0 (int) but got something else: \"%2$s\""
 msgstr "%1$s verwachtte 0 (int), maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:146
 #. translators: Empty Value Error.
+#: classes/analytify-sanitize.php:146
 msgid "%1$s was expecting an empty value but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een lege waarde, maar kreeg iets anders: \"%2$s\""
 
+#. translators: URL Error.
 #: classes/analytify-sanitize.php:151
-#. translators: URL Error.
-msgid ""
-"%1$s was expecting a string for URL sanitization but got something else: "
-"\"%2$s\""
-msgstr ""
-"%1$s verwachtte een string voor URL-sanitizatie, maar kreeg iets anders: "
-"\"%2$s\""
+msgid "%1$s was expecting a string for URL sanitization but got something else: \"%2$s\""
+msgstr "%1$s verwachtte een string voor URL-sanitizatie, maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:156
 #. translators: URL Error.
+#: classes/analytify-sanitize.php:156
 msgid "%1$s was expecting a URL but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een URL, maar kreeg iets anders: \"%2$s\""
 
+#. translators: Bool Error.
 #: classes/analytify-sanitize.php:162
-#. translators: Bool Error.
-msgid ""
-"%1$s was expecting a string for bool sanitization but got something else: "
-"\"%2$s\""
-msgstr ""
-"%1$s verwachtte een string voor bool-sanitizatie, maar kreeg iets anders: "
-"\"%2$s\""
+msgid "%1$s was expecting a string for bool sanitization but got something else: \"%2$s\""
+msgstr "%1$s verwachtte een string voor bool-sanitizatie, maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:167
 #. translators: Bool Error.
+#: classes/analytify-sanitize.php:167
 msgid "%1$s was expecting a bool but got something else: \"%2$s\""
 msgstr "%1$s verwachtte een bool, maar kreeg iets anders: \"%2$s\""
 
-#: classes/analytify-sanitize.php:172
 #. translators: Unknown Error.
+#: classes/analytify-sanitize.php:172
 msgid "Unknown sanitization rule \"%1$s\" supplied by %2$s"
 msgstr "Onbekende sanitizatieregel \"%1$s\" aangeleverd door %2$s"
 
@@ -819,12 +732,8 @@ msgid "Install Google Analytics tracking code"
 msgstr "Installeer de Google Analytics trackingcode"
 
 #: classes/analytify-settings/fields.php:48
-msgid ""
-"Insert Google Analytics (GA) JavaScript code between the HEADER tags in "
-"your website. Uncheck this option if you have already inserted the GA code."
-msgstr ""
-"Voeg de Google Analytics (GA) JavaScript-code tussen de HEADER-tags op uw "
-"website in. Vink deze optie uit als u de GA-code al heeft ingevoegd."
+msgid "Insert Google Analytics (GA) JavaScript code between the HEADER tags in your website. Uncheck this option if you have already inserted the GA code."
+msgstr "Voeg de Google Analytics (GA) JavaScript-code tussen de HEADER-tags op uw website in. Vink deze optie uit als u de GA-code al heeft ingevoegd."
 
 #: classes/analytify-settings/fields.php:54
 msgid "Exclude users from tracking"
@@ -839,28 +748,17 @@ msgid "Profile for posts (Backend/Front-end)"
 msgstr "Profiel voor berichten (Backend/Front-end)"
 
 #: classes/analytify-settings/fields.php:63
-msgid ""
-"Select your Google Analytics website profile/stream for Analytify "
-"front-end/back-end statistics. <br /><strong>Note:</strong> GA4 properties "
-"from the above list."
-msgstr ""
-"Selecteer uw Google Analytics websiteprofiel/stroom voor Analytify "
-"front-end/back-end statistieken. <br /><strong>Opmerking:</strong> "
-"GA4-eigendommen uit de bovenstaande lijst."
+msgid "Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics. <br /><strong>Note:</strong> GA4 properties from the above list."
+msgstr "Selecteer uw Google Analytics websiteprofiel/stroom voor Analytify front-end/back-end statistieken. <br /><strong>Opmerking:</strong> GA4-eigendommen uit de bovenstaande lijst."
 
 #: classes/analytify-settings/fields.php:71
 msgid "Profile for dashboard"
 msgstr "Profiel voor dashboard"
 
-#: classes/analytify-settings/fields.php:74
 #. translators: %s: documentation link
-msgid ""
-"Select your Google Analytics website profile/stream for Analytify dashboard "
-"statistics. Note: Not seeing new GA4 properties in the above list? See %s."
-msgstr ""
-"Selecteer uw Google Analytics websiteprofiel/stroom voor Analytify "
-"dashboardstatistieken. Opmerking: Geen nieuwe GA4-eigendommen in de "
-"bovenstaande lijst? Zie %s."
+#: classes/analytify-settings/fields.php:74
+msgid "Select your Google Analytics website profile/stream for Analytify dashboard statistics. Note: Not seeing new GA4 properties in the above list? See %s."
+msgstr "Selecteer uw Google Analytics websiteprofiel/stroom voor Analytify dashboardstatistieken. Opmerking: Geen nieuwe GA4-eigendommen in de bovenstaande lijst? Zie %s."
 
 #: classes/analytify-settings/fields.php:79
 msgid "why and how to fix it"
@@ -871,14 +769,8 @@ msgid "Hide profiles list"
 msgstr "Verberg profielenlijst"
 
 #: classes/analytify-settings/fields.php:89
-msgid ""
-"Hide the selection of profiles for the back-end/front-end dashboard and "
-"posts. You might want to do this so clients cannot see other profiles "
-"available."
-msgstr ""
-"Verberg de selectie van profielen voor het back-end/front-end dashboard en "
-"berichten. U wilt dit misschien doen zodat klanten geen andere beschikbare "
-"profielen kunnen zien."
+msgid "Hide the selection of profiles for the back-end/front-end dashboard and posts. You might want to do this so clients cannot see other profiles available."
+msgstr "Verberg de selectie van profielen voor het back-end/front-end dashboard en berichten. U wilt dit misschien doen zodat klanten geen andere beschikbare profielen kunnen zien."
 
 #: classes/analytify-settings/fields.php:96
 msgid "Enable analytics under posts/pages (wp-admin)"
@@ -886,9 +778,7 @@ msgstr "Schakel analytics in onder berichten/pagina's (wp-admin)"
 
 #: classes/analytify-settings/fields.php:97
 msgid "Disable if you don't want to load statistics on all pages by default."
-msgstr ""
-"Deactiveer als je niet wilt dat statistieken standaard op alle pagina's "
-"worden geladen."
+msgstr "Deactiveer als je niet wilt dat statistieken standaard op alle pagina's worden geladen."
 
 #: classes/analytify-settings/fields.php:102
 msgid "Display analytics to roles (posts & pages)"
@@ -896,50 +786,35 @@ msgstr "Toon analytics aan rollen (berichten & pagina's)"
 
 #: classes/analytify-settings/fields.php:103
 msgid "Show analytics under posts and pages to the above selected user roles only."
-msgstr ""
-"Toon analytics onder berichten en pagina's alleen aan de hierboven "
-"geselecteerde gebruikersrollen."
+msgstr "Toon analytics onder berichten en pagina's alleen aan de hierboven geselecteerde gebruikersrollen."
 
 #: classes/analytify-settings/fields.php:110
 msgid "Analytics on post types"
 msgstr "Analytics op berichttypes"
 
-#: classes/analytify-settings/fields.php:112
 #. translators: %1$s is the opening link tag, %1$s is the closing link tag.
+#: classes/analytify-settings/fields.php:112
 msgid "Show Analytics under the above post types only"
 msgstr "Toon analytics onder alleen de hierboven genoemde berichttypes"
 
-#: classes/analytify-settings/fields.php:112
 #. translators: %1$s is the opening link tag, %1$s is the closing link tag.
-msgid ""
-"Show analytics below these post types only. Buy %1$sPremium%1$s version for "
-"Custom Post Types."
-msgstr ""
-"Toon analytics alleen onder deze berichttypes. Koop %1$sPremium%1$s versie "
-"voor Aangepaste Berichttypes."
+#: classes/analytify-settings/fields.php:112
+msgid "Show analytics below these post types only. Buy %1$sPremium%1$s version for Custom Post Types."
+msgstr "Toon analytics alleen onder deze berichttypes. Koop %1$sPremium%1$s versie voor Aangepaste Berichttypes."
 
 #: classes/analytify-settings/fields.php:119
 msgid "Edit posts/pages analytics panels"
 msgstr "Bewerk de analytics-panelen voor berichten/pagina's"
 
-#: classes/analytify-settings/fields.php:121
 #. translators: %1$s is the opening link tag, %2$s is the closing link tag.
+#: classes/analytify-settings/fields.php:121
 msgid "Select which statistic panels you want to display under posts/pages."
-msgstr ""
-"Selecteer welke statistiekpanelen je wilt weergeven onder "
-"berichten/pagina's."
+msgstr "Selecteer welke statistiekpanelen je wilt weergeven onder berichten/pagina's."
 
-#: classes/analytify-settings/fields.php:121
 #. translators: %1$s is the opening link tag, %2$s is the closing link tag.
-msgid ""
-"Select which statistic panels you want to display under posts/pages. Only "
-"\"General Stats\" will visible in Free Version. Buy %1$sPremium%2$s version "
-"to see the full statistics."
-msgstr ""
-"Selecteer welke statistiekpanelen je wilt weergeven onder "
-"berichten/pagina's. Alleen \"Algemene Statistieken\" zullen zichtbaar zijn "
-"in de Gratis Versie. Koop %1$sPremium%2$s versie om de volledige "
-"statistieken te zien."
+#: classes/analytify-settings/fields.php:121
+msgid "Select which statistic panels you want to display under posts/pages. Only \"General Stats\" will visible in Free Version. Buy %1$sPremium%2$s version to see the full statistics."
+msgstr "Selecteer welke statistiekpanelen je wilt weergeven onder berichten/pagina's. Alleen \"Algemene Statistieken\" zullen zichtbaar zijn in de Gratis Versie. Koop %1$sPremium%2$s versie om de volledige statistieken te zien."
 
 #: classes/analytify-settings/fields.php:125
 msgid "General Stats"
@@ -982,12 +857,8 @@ msgid "Exclude analytics on specific pages"
 msgstr "Analytics op specifieke pagina's uitsluiten"
 
 #: classes/analytify-settings/fields.php:139
-msgid ""
-"Enter a comma-separated list of the post/page ID's you do not want to "
-"display analytics for. For example: 21,44,66"
-msgstr ""
-"Voer een door komma's gescheiden lijst in van de post/pagina ID's waarvoor "
-"je geen analytics wilt weergeven. Bijvoorbeeld: 21,44,66"
+msgid "Enter a comma-separated list of the post/page ID's you do not want to display analytics for. For example: 21,44,66"
+msgstr "Voer een door komma's gescheiden lijst in van de post/pagina ID's waarvoor je geen analytics wilt weergeven. Bijvoorbeeld: 21,44,66"
 
 #: classes/analytify-settings/fields.php:147
 msgid "Data Streams"
@@ -1002,29 +873,17 @@ msgid "Measurement Protocol Secret"
 msgstr "Meetprotocol Geheim"
 
 #: classes/analytify-settings/fields.php:155
-msgid ""
-"Analytify creates measurement protocol secret itself, however you can also "
-"create your own secret key."
-msgstr ""
-"Analytify maakt zelf het meetprotocol geheim aan, maar je kunt ook je eigen "
-"geheime sleutel maken."
+msgid "Analytify creates measurement protocol secret itself, however you can also create your own secret key."
+msgstr "Analytify maakt zelf het meetprotocol geheim aan, maar je kunt ook je eigen geheime sleutel maken."
 
 #: classes/analytify-settings/fields.php:161
 msgid "Setup Custom API keys?"
 msgstr "Aangepaste API-sleutels instellen?"
 
-#: classes/analytify-settings/fields.php:163
 #. translators: %1$s is line break, %2$s is Google Console link, %3$s is line break, %4$s is video guide link, %5$s is closing link tag.
-msgid ""
-"It is highly recommended by Google to use your own API keys. %1$sYou need "
-"to create a Project in Google %2$s. %3$sHere is a short %4$svideo guide%5$s "
-"to get your own ClientID, Client Secret and Redirect URL and enter them in "
-"below inputs."
-msgstr ""
-"Het wordt ten zeerste aanbevolen door Google om je eigen API-sleutels te "
-"gebruiken. %1$sJe moet een Project aanmaken in Google %2$s. %3$sHier is een "
-"korte %4$svideo-gids%5$s om je eigen ClientID, Client Secret en Redirect "
-"URL te verkrijgen en deze in de onderstaande invoervelden in te voeren."
+#: classes/analytify-settings/fields.php:163
+msgid "It is highly recommended by Google to use your own API keys. %1$sYou need to create a Project in Google %2$s. %3$sHere is a short %4$svideo guide%5$s to get your own ClientID, Client Secret and Redirect URL and enter them in below inputs."
+msgstr "Het wordt ten zeerste aanbevolen door Google om je eigen API-sleutels te gebruiken. %1$sJe moet een Project aanmaken in Google %2$s. %3$sHier is een korte %4$svideo-gids%5$s om je eigen ClientID, Client Secret en Redirect URL te verkrijgen en deze in de onderstaande invoervelden in te voeren."
 
 #: classes/analytify-settings/fields.php:169
 msgid "Client ID"
@@ -1046,70 +905,43 @@ msgstr "Je Client Secret"
 msgid "Redirect URL"
 msgstr "Redirect URL"
 
-#: classes/analytify-settings/fields.php:187
 #. translators: %1$s is the admin URL.
-msgid ""
-"( Redirect URL is very important when you are using your own keys. Paste "
-"this into the above field: %1$s )"
-msgstr ""
-"( De omleidings-URL is erg belangrijk wanneer je je eigen sleutels "
-"gebruikt. Plak dit in het bovenstaande veld: %1$s )"
+#: classes/analytify-settings/fields.php:187
+msgid "( Redirect URL is very important when you are using your own keys. Paste this into the above field: %1$s )"
+msgstr "( De omleidings-URL is erg belangrijk wanneer je je eigen sleutels gebruikt. Plak dit in het bovenstaande veld: %1$s )"
 
 #: classes/analytify-settings/fields.php:199
 msgid "Host Google Analytics Locally"
 msgstr "Host Google Analytics Lokaal"
 
 #: classes/analytify-settings/fields.php:200
-msgid ""
-"Hosting Google Analytics locally may improve your site speed and other core "
-"web vitals."
-msgstr ""
-"Het hosten van Google Analytics lokaal kan de snelheid van je site en "
-"andere belangrijke webstatistieken verbeteren."
+msgid "Hosting Google Analytics locally may improve your site speed and other core web vitals."
+msgstr "Het hosten van Google Analytics lokaal kan de snelheid van je site en andere belangrijke webstatistieken verbeteren."
 
 #: classes/analytify-settings/fields.php:205
 msgid "Track User ID"
 msgstr "Volg Gebruikers-ID"
 
-#: classes/analytify-settings/fields.php:207
 #. translators: %1$s is the opening link tag, %2$s is the closing link tag.
-msgid ""
-"Detailed information about Track User ID in Google Analytics can be found "
-"%1$shere%2$s."
-msgstr ""
-"Gedetailleerde informatie over het volgen van Gebruikers-ID in Google "
-"Analytics is %1$shier%2$s te vinden."
+#: classes/analytify-settings/fields.php:207
+msgid "Detailed information about Track User ID in Google Analytics can be found %1$shere%2$s."
+msgstr "Gedetailleerde informatie over het volgen van Gebruikers-ID in Google Analytics is %1$shier%2$s te vinden."
 
 #: classes/analytify-settings/fields.php:213
-msgid ""
-"Track page scroll depth percentage. This will help you figure out the most "
-"highlighted area of the page. Percentage events are fired at the 25%, 50%, "
-"75%, and 100% scrolling points"
-msgstr ""
-"Volg het percentage van de scrolldiepte van de pagina. Dit helpt je om het "
-"meest uitgelichte gebied van de pagina te bepalen. Percentage-evenementen "
-"worden geactiveerd op de scrollpunten van 25%, 50%, 75% en 100%"
+msgid "Track page scroll depth percentage. This will help you figure out the most highlighted area of the page. Percentage events are fired at the 25%, 50%, 75%, and 100% scrolling points"
+msgstr "Volg het percentage van de scrolldiepte van de pagina. Dit helpt je om het meest uitgelichte gebied van de pagina te bepalen. Percentage-evenementen worden geactiveerd op de scrollpunten van 25%, 50%, 75% en 100%"
 
 #: classes/analytify-settings/fields.php:219
-msgid ""
-"Track embedded video interactions such as play, pause, and completion. This "
-"will help you understand user engagement with video content."
-msgstr ""
-"Volg interacties met ingesloten video’s zoals afspelen, pauzeren en "
-"voltooiing. Dit helpt je om de gebruikersbetrokkenheid bij videocontent te "
-"begrijpen."
+msgid "Track embedded video interactions such as play, pause, and completion. This will help you understand user engagement with video content."
+msgstr "Volg interacties met ingesloten video’s zoals afspelen, pauzeren en voltooiing. Dit helpt je om de gebruikersbetrokkenheid bij videocontent te begrijpen."
 
 #: classes/analytify-settings/fields.php:224
 msgid "Demographic & Interest Tracking"
 msgstr "Demografische & Interesse Tracking"
 
 #: classes/analytify-settings/fields.php:225
-msgid ""
-"This allows you to view extra dimensions about users: Age, gender, affinity "
-"categories, in-market segments, etc."
-msgstr ""
-"Hiermee kun je extra dimensies over gebruikers bekijken: Leeftijd, "
-"geslacht, affiniteitcategorieën, in-market segmenten, enz."
+msgid "This allows you to view extra dimensions about users: Age, gender, affinity categories, in-market segments, etc."
+msgstr "Hiermee kun je extra dimensies over gebruikers bekijken: Leeftijd, geslacht, affiniteitcategorieën, in-market segmenten, enz."
 
 #: classes/analytify-settings/fields.php:230
 msgid "Page Not Found (404)"
@@ -1139,14 +971,10 @@ msgstr "Houd alle AJAX-fouten bij."
 msgid "Setup Cross-domain Tracking"
 msgstr "Stel cross-domain tracking in"
 
-#: classes/analytify-settings/fields.php:250
 #. translators: %1$s is the code tag, %2$s is the opening link tag, %3$s is the closing link tag.
-msgid ""
-"This will add the %1$s tag to your tracking code. Read this %2$sguide%3$s "
-"for more information."
-msgstr ""
-"Dit voegt de %1$s-tag toe aan je trackingcode. Lees deze %2$sgids%3$s voor "
-"meer informatie."
+#: classes/analytify-settings/fields.php:250
+msgid "This will add the %1$s tag to your tracking code. Read this %2$sguide%3$s for more information."
+msgstr "Dit voegt de %1$s-tag toe aan je trackingcode. Lees deze %2$sgids%3$s voor meer informatie."
 
 #: classes/analytify-settings/fields.php:256
 msgid "Domain"
@@ -1161,62 +989,40 @@ msgid "Exclude URL Query Parameters"
 msgstr "Sluit URL-queryparameters uit"
 
 #: classes/analytify-settings/fields.php:271
-msgid ""
-"Filter out specific URL query parameters from being tracked inside Google "
-"Analytics."
-msgstr ""
-"Filter specifieke URL-queryparameters uit die worden gevolgd in Google "
-"Analytics."
+msgid "Filter out specific URL query parameters from being tracked inside Google Analytics."
+msgstr "Filter specifieke URL-queryparameters uit die worden gevolgd in Google Analytics."
 
 #: classes/analytify-settings/fields.php:277
 msgid "Exclude Query Parameters"
 msgstr "Sluit Queryparameters uit"
 
 #: classes/analytify-settings/fields.php:278
-msgid ""
-"Enter comma-separated query parameters to exclude (e.g. fbclid, ref). Only "
-"letters, numbers, underscores and hyphens are allowed."
-msgstr ""
-"Voer komma-gescheiden queryparameters in om uit te sluiten (bijv. fbclid, "
-"ref). Alleen letters, cijfers, onderstrepingstekens en koppeltekens zijn "
-"toegestaan."
+msgid "Enter comma-separated query parameters to exclude (e.g. fbclid, ref). Only letters, numbers, underscores and hyphens are allowed."
+msgstr "Voer komma-gescheiden queryparameters in om uit te sluiten (bijv. fbclid, ref). Alleen letters, cijfers, onderstrepingstekens en koppeltekens zijn toegestaan."
 
 #: classes/analytify-settings/fields.php:285
 msgid "Reauthentication Email Alert"
 msgstr "Herauthenticatie E-mailmelding"
 
 #: classes/analytify-settings/fields.php:286
-msgid ""
-"Get an email notification when your site needs you to sign in again due to "
-"a Google error or revoked refresh token."
-msgstr ""
-"Ontvang een e-mailmelding wanneer uw site u vraagt opnieuw in te loggen "
-"vanwege een Google-fout of ingetrokken vernieuwings-token."
+msgid "Get an email notification when your site needs you to sign in again due to a Google error or revoked refresh token."
+msgstr "Ontvang een e-mailmelding wanneer uw site u vraagt opnieuw in te loggen vanwege een Google-fout of ingetrokken vernieuwings-token."
 
 #: classes/analytify-settings/fields.php:292
 msgid "Remove All Data On Uninstall"
 msgstr "Verwijder Alle Gegevens Bij Verwijderen"
 
 #: classes/analytify-settings/fields.php:293
-msgid ""
-"Upon uninstall, this will remove all defined settings and their data from "
-"your website and reset them to default."
-msgstr ""
-"Bij het verwijderen worden alle gedefinieerde instellingen en hun gegevens "
-"van uw website verwijderd en worden ze opnieuw ingesteld op de "
-"standaardwaarden."
+msgid "Upon uninstall, this will remove all defined settings and their data from your website and reset them to default."
+msgstr "Bij het verwijderen worden alle gedefinieerde instellingen en hun gegevens van uw website verwijderd en worden ze opnieuw ingesteld op de standaardwaarden."
 
 #: classes/analytify-settings/fields.php:298
 msgid "Custom JavaScript Code"
 msgstr "Aangepaste JavaScript-code"
 
 #: classes/analytify-settings/fields.php:299
-msgid ""
-"This will add inline tracking code before sending the pageview hit to "
-"Google Analytics."
-msgstr ""
-"Dit voegt inline trackingcode toe voordat de pageview-hit naar Google "
-"Analytics wordt verzonden."
+msgid "This will add inline tracking code before sending the pageview hit to Google Analytics."
+msgstr "Dit voegt inline trackingcode toe voordat de pageview-hit naar Google Analytics wordt verzonden."
 
 #: classes/analytify-settings/fields.php:304
 msgid "Custom CSS Code"
@@ -1224,9 +1030,7 @@ msgstr "Aangepaste CSS-code"
 
 #: classes/analytify-settings/fields.php:305
 msgid "This will add inline css code in admin dashboard pages of Analytify"
-msgstr ""
-"Dit voegt inline css-code toe aan de beheerdersdashboardpagina's van "
-"Analytify"
+msgstr "Dit voegt inline css-code toe aan de beheerdersdashboardpagina's van Analytify"
 
 #: classes/analytify-settings/promo-helpers.php:43
 #: views/default/admin/addons-promo.php:84
@@ -1254,20 +1058,8 @@ msgstr "Ontgrendel Evenementen Tracking"
 #: classes/analytify-settings/promo-helpers.php:96
 #: classes/analytify-settings/promo-helpers.php:221
 #: views/default/admin/addons-promo.php:75
-msgid ""
-"Our Events tracking feature helps you to setup and track custom events on "
-"your WordPress website. Custom events will help you track and measure the "
-"performance of the most important Outbound links like Affiliate links. "
-"Setting up custom events is tricky for the beginners. But with the "
-"Analytify's Events Tracking you can easily acheive this on your WordPress "
-"websites."
-msgstr ""
-"Onze evenementen-trackingfunctie helpt je bij het instellen en volgen van "
-"aangepaste evenementen op je WordPress-website. Aangepaste evenementen "
-"helpen je om de prestaties van de belangrijkste uitgaande links, zoals "
-"affiliate-links, te volgen en te meten. Het instellen van aangepaste "
-"evenementen is lastig voor beginners. Maar met de evenementen-tracking van "
-"Analytify kun je dit eenvoudig bereiken op je WordPress-websites."
+msgid "Our Events tracking feature helps you to setup and track custom events on your WordPress website. Custom events will help you track and measure the performance of the most important Outbound links like Affiliate links. Setting up custom events is tricky for the beginners. But with the Analytify's Events Tracking you can easily acheive this on your WordPress websites."
+msgstr "Onze evenementen-trackingfunctie helpt je bij het instellen en volgen van aangepaste evenementen op je WordPress-website. Aangepaste evenementen helpen je om de prestaties van de belangrijkste uitgaande links, zoals affiliate-links, te volgen en te meten. Het instellen van aangepaste evenementen is lastig voor beginners. Maar met de evenementen-tracking van Analytify kun je dit eenvoudig bereiken op je WordPress-websites."
 
 #: classes/analytify-settings/promo-helpers.php:98
 #: classes/analytify-settings/promo-helpers.php:223
@@ -1314,14 +1106,8 @@ msgstr "Ontgrendel Google Custom Dimensions Tracking"
 #: classes/analytify-settings/promo-helpers.php:115
 #: classes/analytify-settings/promo-helpers.php:240
 #: views/default/admin/addons-promo.php:373
-msgid ""
-"Custom Dimensions helps you to track Categories, Tags, Post Types, and "
-"logged in activities within Google Analytics. Remember, you have to setup "
-"Custom Dimensions in Google Analytics as well."
-msgstr ""
-"Aangepaste dimensies helpen je om categorieën, tags, posttypes en ingelogde "
-"activiteiten binnen Google Analytics te volgen. Vergeet niet dat je ook "
-"aangepaste dimensies in Google Analytics moet instellen."
+msgid "Custom Dimensions helps you to track Categories, Tags, Post Types, and logged in activities within Google Analytics. Remember, you have to setup Custom Dimensions in Google Analytics as well."
+msgstr "Aangepaste dimensies helpen je om categorieën, tags, posttypes en ingelogde activiteiten binnen Google Analytics te volgen. Vergeet niet dat je ook aangepaste dimensies in Google Analytics moet instellen."
 
 #: classes/analytify-settings/promo-helpers.php:117
 #: classes/analytify-settings/promo-helpers.php:242
@@ -1377,18 +1163,8 @@ msgstr "Ontgrendel Forms Tracking Addon"
 #: classes/analytify-settings/promo-helpers.php:134
 #: classes/analytify-settings/promo-helpers.php:259
 #: views/default/admin/addons-promo.php:52
-msgid ""
-"Would you like to track your WordPress website forms? Analytify Forms "
-"Tracking addon helps you to track the number of impressions and forms "
-"conversions/submissions. This Addon works with any popular WordPress form "
-"plugins like Gravity forms, Ninja Forms, Formidable forms and more, even "
-"including Custom WordPress forms."
-msgstr ""
-"Wilt u de formulieren van uw WordPress-website volgen? De Analytify Forms "
-"Tracking-addon helpt u bij het volgen van het aantal impressies en "
-"conversies/inzendingen van formulieren. Deze addon werkt met populaire "
-"WordPress-formulierplugins zoals Gravity Forms, Ninja Forms, Formidable "
-"Forms en meer, inclusief aangepaste WordPress-formulieren."
+msgid "Would you like to track your WordPress website forms? Analytify Forms Tracking addon helps you to track the number of impressions and forms conversions/submissions. This Addon works with any popular WordPress form plugins like Gravity forms, Ninja Forms, Formidable forms and more, even including Custom WordPress forms."
+msgstr "Wilt u de formulieren van uw WordPress-website volgen? De Analytify Forms Tracking-addon helpt u bij het volgen van het aantal impressies en conversies/inzendingen van formulieren. Deze addon werkt met populaire WordPress-formulierplugins zoals Gravity Forms, Ninja Forms, Formidable Forms en meer, inclusief aangepaste WordPress-formulieren."
 
 #: classes/analytify-settings/promo-helpers.php:136
 #: classes/analytify-settings/promo-helpers.php:261
@@ -1439,12 +1215,8 @@ msgstr "Ontgrendel Google Ads conversietracking."
 
 #: classes/analytify-settings/promo-helpers.php:153
 #: classes/analytify-settings/promo-helpers.php:278
-msgid ""
-"Track Your Woocommerce and EDD purchases as conversion in Google Ads using "
-"our Conversion Tracking addon."
-msgstr ""
-"Volg uw Woocommerce- en EDD-aankopen als conversies in Google Ads met onze "
-"conversietracking-addon."
+msgid "Track Your Woocommerce and EDD purchases as conversion in Google Ads using our Conversion Tracking addon."
+msgstr "Volg uw Woocommerce- en EDD-aankopen als conversies in Google Ads met onze conversietracking-addon."
 
 #: classes/analytify-settings/promo-helpers.php:163
 #: classes/analytify-settings/promo-helpers.php:295
@@ -1453,14 +1225,8 @@ msgstr "Ontgrendel Pixels Tracking"
 
 #: classes/analytify-settings/promo-helpers.php:164
 #: classes/analytify-settings/promo-helpers.php:296
-msgid ""
-"Track your website visitors with Meta Pixel and TikTok Pixel for better "
-"conversion tracking and retargeting campaigns. Easily add and manage your "
-"pixel tracking codes."
-msgstr ""
-"Volg uw websitebezoekers met Meta Pixel en TikTok Pixel voor betere "
-"conversietracking en retargetingcampagnes. Voeg eenvoudig uw "
-"pixeltrackingcodes toe en beheer ze."
+msgid "Track your website visitors with Meta Pixel and TikTok Pixel for better conversion tracking and retargeting campaigns. Easily add and manage your pixel tracking codes."
+msgstr "Volg uw websitebezoekers met Meta Pixel en TikTok Pixel voor betere conversietracking en retargetingcampagnes. Voeg eenvoudig uw pixeltrackingcodes toe en beheer ze."
 
 #: classes/analytify-settings/promo-helpers.php:166
 #: classes/analytify-settings/promo-helpers.php:298
@@ -1519,14 +1285,8 @@ msgid "Update Analytify Pro for Pixels Tracking"
 msgstr "Update Analytify Pro voor Pixels Tracking"
 
 #: classes/analytify-settings/promo-helpers.php:317
-msgid ""
-"Pixels Tracking is enabled for your site, but this copy of Analytify Pro "
-"does not include the Pixels module files yet. Update Analytify Pro to the "
-"latest release to load the settings screen."
-msgstr ""
-"Pixels Tracking is ingeschakeld voor uw site, maar deze versie van "
-"Analytify Pro bevat nog niet de Pixels modulebestanden. Update Analytify "
-"Pro naar de laatste release om het instellingen scherm te laden."
+msgid "Pixels Tracking is enabled for your site, but this copy of Analytify Pro does not include the Pixels module files yet. Update Analytify Pro to the latest release to load the settings screen."
+msgstr "Pixels Tracking is ingeschakeld voor uw site, maar deze versie van Analytify Pro bevat nog niet de Pixels modulebestanden. Update Analytify Pro naar de laatste release om het instellingen scherm te laden."
 
 #: classes/analytify-settings/promo-helpers.php:322
 msgid "Additional ad pixels"
@@ -1576,19 +1336,10 @@ msgstr "Affiliates mogen niet leeg zijn!"
 msgid "Add Affiliate Link"
 msgstr "Voeg Affiliate Link toe"
 
-#: classes/analytify-settings/render.php:481
 #. translators: %1$s is bold opening tag, %2$s is bold closing tag, %3$s is tutorial link opening tag, %4$s is tutorial link closing tag, %5$s is paragraph opening tag, %6$s is paragraph closing tag.
-msgid ""
-"%5$s%1$sDaily Limit Exceeded:%2$s This Indicates that user has exceeded the "
-"daily quota (either per project or per view (profile)). Please %3$sfollow "
-"this tutorial%4$s to fix this issue. let us know this issue (if it still "
-"doesn't work) in the Help tab of Analytify->settings page.%6$s"
-msgstr ""
-"%5$s%1$sDaglimiet Overschreden:%2$s Dit geeft aan dat de gebruiker de "
-"dagelijkse limiet heeft overschreden (of per project of per weergave "
-"(profiel)). Gelieve %3$stutorial te volgen%4$s om dit probleem op te "
-"lossen. Laat het ons weten als dit probleem zich blijft voordoen in het "
-"Help-tabblad van Analytify->instellingen pagina.%6$s"
+#: classes/analytify-settings/render.php:481
+msgid "%5$s%1$sDaily Limit Exceeded:%2$s This Indicates that user has exceeded the daily quota (either per project or per view (profile)). Please %3$sfollow this tutorial%4$s to fix this issue. let us know this issue (if it still doesn't work) in the Help tab of Analytify->settings page.%6$s"
+msgstr "%5$s%1$sDaglimiet Overschreden:%2$s Dit geeft aan dat de gebruiker de dagelijkse limiet heeft overschreden (of per project of per weergave (profiel)). Gelieve %3$stutorial te volgen%4$s om dit probleem op te lossen. Laat het ons weten als dit probleem zich blijft voordoen in het Help-tabblad van Analytify->instellingen pagina.%6$s"
 
 #: classes/analytify-settings/render.php:484
 #: classes/analytify-settings/render.php:490
@@ -1615,12 +1366,8 @@ msgid "to setup it properly."
 msgstr "om het correct in te stellen."
 
 #: classes/analytify-settings/render.php:487
-msgid ""
-"An unexpected error occurred while getting profiles list from the Google "
-"Analytics account."
-msgstr ""
-"Er is een onverwachte fout opgetreden tijdens het ophalen van de "
-"profielenlijst van het Google Analytics-account."
+msgid "An unexpected error occurred while getting profiles list from the Google Analytics account."
+msgstr "Er is een onverwachte fout opgetreden tijdens het ophalen van de profielenlijst van het Google Analytics-account."
 
 #: classes/analytify-settings/render.php:487
 msgid "let us know this issue from the Help tab."
@@ -1646,42 +1393,27 @@ msgstr "Stel een verbinding in tussen Analytify & je Google Analytics-account."
 msgid "Log in with your Google Analytics Account"
 msgstr "Log in met je Google Analytics-account"
 
-#: classes/analytify-settings/render.php:680
 #. translators: %1$s is setup account link opening tag, %2$s is setup account link closing tag, %3$s is Google Analytics link opening tag, %4$s is Google Analytics link closing tag.
-msgid ""
-"It is required to %1$sSet up your account%2$s and a website profile at "
-"%3$sGoogle Analytics%4$s to see Analytify Dashboard reports."
-msgstr ""
-"Het is vereist om %1$sJe account in te stellen%2$s en een websiteprofiel "
-"bij %3$sGoogle Analytics%4$s om Analytify Dashboard-rapporten te zien."
+#: classes/analytify-settings/render.php:680
+msgid "It is required to %1$sSet up your account%2$s and a website profile at %3$sGoogle Analytics%4$s to see Analytify Dashboard reports."
+msgstr "Het is vereist om %1$sJe account in te stellen%2$s en een websiteprofiel bij %3$sGoogle Analytics%4$s om Analytify Dashboard-rapporten te zien."
 
 #: classes/analytify-settings/render.php:708
 msgid "Support"
 msgstr "Ondersteuning"
 
-#: classes/analytify-settings/render.php:713
 #. translators: Support.
-msgid ""
-"As this is a free plugin, Post all of your questions to the %1$s "
-"WordPress.org support forum %2$s. Response time can range from a couple of "
-"days to a week as this is a free support."
-msgstr ""
-"Aangezien dit een gratis plugin is, plaats al je vragen op het %1$s "
-"WordPress.org ondersteuningsforum %2$s. De responstijd kan variëren van een "
-"paar dagen tot een week, aangezien dit gratis ondersteuning is."
+#: classes/analytify-settings/render.php:713
+msgid "As this is a free plugin, Post all of your questions to the %1$s WordPress.org support forum %2$s. Response time can range from a couple of days to a week as this is a free support."
+msgstr "Aangezien dit een gratis plugin is, plaats al je vragen op het %1$s WordPress.org ondersteuningsforum %2$s. De responstijd kan variëren van een paar dagen tot een week, aangezien dit gratis ondersteuning is."
 
-#: classes/analytify-settings/render.php:723
 #. translators: Upgrade to Pro.
-msgid ""
-"If you want a %1$s timely response via email from a developer %2$s who "
-"works on this plugin, %3$s upgrade to Analytify Pro %4$s &&send us an email."
-msgstr ""
-"Als je een %1$s tijdige reactie via e-mail wilt van een ontwikkelaar %2$s "
-"die aan deze plugin werkt, %3$s upgrade dan naar Analytify Pro %4$s && "
-"stuur ons een e-mail."
+#: classes/analytify-settings/render.php:723
+msgid "If you want a %1$s timely response via email from a developer %2$s who works on this plugin, %3$s upgrade to Analytify Pro %4$s &&send us an email."
+msgstr "Als je een %1$s tijdige reactie via e-mail wilt van een ontwikkelaar %2$s die aan deze plugin werkt, %3$s upgrade dan naar Analytify Pro %4$s && stuur ons een e-mail."
 
-#: classes/analytify-settings/render.php:735
 #. translators: Notify the bug.
+#: classes/analytify-settings/render.php:735
 msgid "If you've found a bug, please %1$s submit an issue at Github %2$s."
 msgstr "Als je een bug hebt gevonden, %1$s dien dan een probleem in op Github %2$s."
 
@@ -1726,12 +1458,8 @@ msgid "Select the export file and click on Upload Import File button."
 msgstr "Selecteer het exportbestand en klik op de knop Importbestand uploaden."
 
 #: classes/analytify-settings/render.php:774
-msgid ""
-"This will not include your Google authentication, you might need to "
-"authenticate again after import."
-msgstr ""
-"Dit omvat uw Google-authenticatie niet, u moet mogelijk opnieuw "
-"authentiseren na de import."
+msgid "This will not include your Google authentication, you might need to authenticate again after import."
+msgstr "Dit omvat uw Google-authenticatie niet, u moet mogelijk opnieuw authentiseren na de import."
 
 #: classes/analytify-settings/render.php:778
 msgid "Upload Import File"
@@ -1752,9 +1480,7 @@ msgstr "Statistieken vernieuwen"
 
 #: classes/analytify-settings/render.php:789
 msgid "Clear cached data to update your analytics with the latest stats."
-msgstr ""
-"Wis gecachte gegevens om uw analyses bij te werken met de nieuwste "
-"statistieken."
+msgstr "Wis gecachte gegevens om uw analyses bij te werken met de nieuwste statistieken."
 
 #: classes/analytify-settings/render.php:795
 msgid "Refresh All Stats"
@@ -1765,24 +1491,16 @@ msgid "Factory Reset"
 msgstr "Fabrieksinstellingen herstellen"
 
 #: classes/analytify-settings/render.php:801
-msgid ""
-"Restore all settings to their defaults. This will log you out and remove "
-"any saved configurations."
-msgstr ""
-"Herstel alle instellingen naar hun standaardwaarden. Dit logt je uit en "
-"verwijdert alle opgeslagen configuraties."
+msgid "Restore all settings to their defaults. This will log you out and remove any saved configurations."
+msgstr "Herstel alle instellingen naar hun standaardwaarden. Dit logt je uit en verwijdert alle opgeslagen configuraties."
 
 #: classes/analytify-settings/render.php:804
 msgid "Reset Plugin Settings"
 msgstr "Reset Plugin Instellingen"
 
 #: classes/analytify-settings/render.php:815
-msgid ""
-"Are you sure you want to reset the plugin? This will delete all settings "
-"and data. This cannot be undone."
-msgstr ""
-"Weet je zeker dat je de plugin wilt resetten? Dit verwijdert alle "
-"instellingen en gegevens. Dit kan niet ongedaan gemaakt worden."
+msgid "Are you sure you want to reset the plugin? This will delete all settings and data. This cannot be undone."
+msgstr "Weet je zeker dat je de plugin wilt resetten? Dit verwijdert alle instellingen en gegevens. Dit kan niet ongedaan gemaakt worden."
 
 #: classes/analytify-settings/render.php:833
 msgid "Plugin reset successfully. Reloading..."
@@ -1796,8 +1514,8 @@ msgstr "Fout bij het resetten van de plugin."
 msgid "Error resetting plugin. Please try again."
 msgstr "Fout bij het resetten van de plugin. Probeer het opnieuw."
 
-#: classes/analytify-settings/render.php:855
 #. translators: Video.
+#: classes/analytify-settings/render.php:855
 msgid "Videos %1$s (Subscribe To Our Youtube Channel) %2$s"
 msgstr "Video's %1$s (Abonneer je op ons Youtube-kanaal) %2$s"
 
@@ -1818,14 +1536,8 @@ msgid "Unlock weekly and monthly reports"
 msgstr "Ontgrendel wekelijkse en maandelijkse rapporten"
 
 #: classes/analytify-settings/render.php:903
-msgid ""
-"Email notifications add-on extends the Analytify Pro, and enables more "
-"control on customizing Analytics Email reports for your websites, delivers "
-"Analytics summaries straight in your inbox weekly and monthly."
-msgstr ""
-"E-mailmeldingen add-on breidt de Analytify Pro uit en biedt meer controle "
-"over het aanpassen van Analytics E-mailrapporten voor uw websites, levert "
-"wekelijks en maandelijks Analytics-samenvattingen rechtstreeks in uw inbox."
+msgid "Email notifications add-on extends the Analytify Pro, and enables more control on customizing Analytics Email reports for your websites, delivers Analytics summaries straight in your inbox weekly and monthly."
+msgstr "E-mailmeldingen add-on breidt de Analytify Pro uit en biedt meer controle over het aanpassen van Analytics E-mailrapporten voor uw websites, levert wekelijks en maandelijks Analytics-samenvattingen rechtstreeks in uw inbox."
 
 #: classes/analytify-settings/render.php:905
 msgid "Add your logo"
@@ -1857,9 +1569,7 @@ msgstr "Test E-mail"
 
 #: classes/analytify-settings/render.php:928
 msgid "Note: Please save changes before sending a test email."
-msgstr ""
-"Opmerking: Sla alstublieft wijzigingen op voordat u een test-e-mail "
-"verzendt."
+msgstr "Opmerking: Sla alstublieft wijzigingen op voordat u een test-e-mail verzendt."
 
 #: classes/analytify-utils/analytify-utils-ui.php:35
 msgid "Today"
@@ -1935,141 +1645,74 @@ msgid "Thanks. Google Analytics data collection is enabled for you."
 msgstr "Bedankt. Google Analytics gegevensverzameling is voor jou ingeschakeld."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:350
-msgid ""
-"Connect and manage multiple ad pixels, including Meta, TikTok, Pinterest, "
-"and more, to track conversions and power smarter retargeting campaigns "
-"across all your platforms."
-msgstr ""
-"Verbind en beheer meerdere advertentiepixels, waaronder Meta, TikTok, "
-"Pinterest en meer, om conversies te volgen en slimmer retargetingcampagnes "
-"over al je platforms te voeren."
+msgid "Connect and manage multiple ad pixels, including Meta, TikTok, Pinterest, and more, to track conversions and power smarter retargeting campaigns across all your platforms."
+msgstr "Verbind en beheer meerdere advertentiepixels, waaronder Meta, TikTok, Pinterest en meer, om conversies te volgen en slimmer retargetingcampagnes over al je platforms te voeren."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:359
-msgid ""
-"View and segment your analytics data using custom dimensions tailored to "
-"your business. Organize insights the way that works best for you."
-msgstr ""
-"Bekijk en segmenteer je analytische gegevens met behulp van aangepaste "
-"dimensies die zijn afgestemd op jouw bedrijf. Organiseer inzichten op de "
-"manier die het beste voor jou werkt."
+msgid "View and segment your analytics data using custom dimensions tailored to your business. Organize insights the way that works best for you."
+msgstr "Bekijk en segmenteer je analytische gegevens met behulp van aangepaste dimensies die zijn afgestemd op jouw bedrijf. Organiseer inzichten op de manier die het beste voor jou werkt."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:367
 msgid "AMP"
 msgstr "AMP"
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:368
-msgid ""
-"Track and report on mobile visitors to your AMP pages with full accuracy. "
-"Gain clear insights into how your accelerated pages perform."
-msgstr ""
-"Volg en rapporteer mobiele bezoekers op uw AMP-pagina's met volledige "
-"nauwkeurigheid. Verkrijg duidelijke inzichten in hoe uw versnelde pagina's "
-"presteren."
+msgid "Track and report on mobile visitors to your AMP pages with full accuracy. Gain clear insights into how your accelerated pages perform."
+msgstr "Volg en rapporteer mobiele bezoekers op uw AMP-pagina's met volledige nauwkeurigheid. Verkrijg duidelijke inzichten in hoe uw versnelde pagina's presteren."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:377
-msgid ""
-"Track custom events on your WordPress site in a clear, intuitive way "
-"designed for all skill levels. No technical knowledge required to get "
-"started."
-msgstr ""
-"Volg aangepaste evenementen op uw WordPress-site op een duidelijke, "
-"intuïtieve manier die is ontworpen voor alle vaardigheidsniveaus. Geen "
-"technische kennis vereist om te beginnen."
+msgid "Track custom events on your WordPress site in a clear, intuitive way designed for all skill levels. No technical knowledge required to get started."
+msgstr "Volg aangepaste evenementen op uw WordPress-site op een duidelijke, intuïtieve manier die is ontworpen voor alle vaardigheidsniveaus. Geen technische kennis vereist om te beginnen."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:386
-msgid ""
-"Track Google Ads conversions seamlessly for WooCommerce and Easy Digital "
-"Downloads stores."
-msgstr ""
-"Volg Google Ads-conversies naadloos voor WooCommerce en Easy Digital "
-"Downloads-winkels."
+msgid "Track Google Ads conversions seamlessly for WooCommerce and Easy Digital Downloads stores."
+msgstr "Volg Google Ads-conversies naadloos voor WooCommerce en Easy Digital Downloads-winkels."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:394
 msgid "Paid Memberships Pro Tracking"
 msgstr "Betaalde lidmaatschappen Pro Tracking"
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:395
-msgid ""
-"Track membership conversions, revenue, and member activity directly within "
-"Analytify. Get detailed insights into membership levels, payment gateways, "
-"and user behavior."
-msgstr ""
-"Volg lidmaatschapsconversies, inkomsten en lidactiviteit direct binnen "
-"Analytify. Verkrijg gedetailleerde inzichten in lidmaatschapsniveaus, "
-"betalingsgateways en gebruikersgedrag."
+msgid "Track membership conversions, revenue, and member activity directly within Analytify. Get detailed insights into membership levels, payment gateways, and user behavior."
+msgstr "Volg lidmaatschapsconversies, inkomsten en lidactiviteit direct binnen Analytify. Verkrijg gedetailleerde inzichten in lidmaatschapsniveaus, betalingsgateways en gebruikersgedrag."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:403
 msgid "LearnDash Tracking"
 msgstr "LearnDash Tracking"
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:404
-msgid ""
-"Track quiz completions, lesson progress, course enrollments, and student "
-"engagement for your LearnDash e-learning site. Identify drop-off points and "
-"improve course outcomes with detailed reports."
-msgstr ""
-"Volg quizvoltooiingen, lesvoortgang, cursusinschrijvingen en "
-"studentenbetrokkenheid voor uw LearnDash e-learning site. Identificeer "
-"afhaakpunten en verbeter cursusresultaten met gedetailleerde rapporten."
+msgid "Track quiz completions, lesson progress, course enrollments, and student engagement for your LearnDash e-learning site. Identify drop-off points and improve course outcomes with detailed reports."
+msgstr "Volg quizvoltooiingen, lesvoortgang, cursusinschrijvingen en studentenbetrokkenheid voor uw LearnDash e-learning site. Identificeer afhaakpunten en verbeter cursusresultaten met gedetailleerde rapporten."
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:412
 msgid "LifterLMS Tracking"
 msgstr "LifterLMS Tracking"
 
 #: classes/class-wp-analytify-compatibility-upgrade.php:413
-msgid ""
-"Track memberships, course purchases, student enrollments, and revenue for "
-"your LifterLMS site. Understand how learners discover and move through your "
-"courses with clear, visual analytics."
-msgstr ""
-"Volg lidmaatschappen, cursusaankopen, studenteninschrijvingen en inkomsten "
-"voor uw LifterLMS-site. Begrijp hoe leerlingen uw cursussen ontdekken en "
-"doorlopen met duidelijke, visuele analyses."
+msgid "Track memberships, course purchases, student enrollments, and revenue for your LifterLMS site. Understand how learners discover and move through your courses with clear, visual analytics."
+msgstr "Volg lidmaatschappen, cursusaankopen, studenteninschrijvingen en inkomsten voor uw LifterLMS-site. Begrijp hoe leerlingen uw cursussen ontdekken en doorlopen met duidelijke, visuele analyses."
 
-#: inc/admin-notices.php:62
 #. translators: Update notice.
-msgid ""
-"%1$sNote:%2$s Please update to the latest Analytify Pro version to manage "
-"all modules/add-ons from %3$s here %4$s."
-msgstr ""
-"%1$sOpmerking:%2$s Update alstublieft naar de laatste versie van Analytify "
-"Pro om alle modules/add-ons van %3$s hier %4$s te beheren."
+#: inc/admin-notices.php:62
+msgid "%1$sNote:%2$s Please update to the latest Analytify Pro version to manage all modules/add-ons from %3$s here %4$s."
+msgstr "%1$sOpmerking:%2$s Update alstublieft naar de laatste versie van Analytify Pro om alle modules/add-ons van %3$s hier %4$s te beheren."
 
-#: inc/admin-notices.php:84
-#: inc/core-traits/functions-class.php:30
 #. translators: GA4 update notice.
 #. translators: Check GA version.
-msgid ""
-"%1$sAttention:%2$s Switch to GA4 (Google Analytics 4), Your current version "
-"of Google Analytics (UA) is outdated and no longer tracks data. %3$sFollow "
-"the guide%4$s."
-msgstr ""
-"%1$sLet op:%2$s Schakel over naar GA4 (Google Analytics 4). Uw huidige "
-"versie van Google Analytics (UA) is verouderd en volgt geen gegevens meer. "
-"%3$sVolg de gids%4$s."
+#: inc/admin-notices.php:84
+#: inc/core-traits/functions-class.php:30
+msgid "%1$sAttention:%2$s Switch to GA4 (Google Analytics 4), Your current version of Google Analytics (UA) is outdated and no longer tracks data. %3$sFollow the guide%4$s."
+msgstr "%1$sLet op:%2$s Schakel over naar GA4 (Google Analytics 4). Uw huidige versie van Google Analytics (UA) is verouderd en volgt geen gegevens meer. %3$sVolg de gids%4$s."
 
-#: inc/admin-notices.php:99
 #. translators: Update addons.
-msgid ""
-"%1$sNotice:%2$s Please update the following plugins to make them work with "
-"the Analytify 5.0.0 smoothly. %3$s"
-msgstr ""
-"%1$sOpmerking:%2$s Update alstublieft de volgende plugins om ze soepel te "
-"laten werken met Analytify 5.0.0. %3$s"
+#: inc/admin-notices.php:99
+msgid "%1$sNotice:%2$s Please update the following plugins to make them work with the Analytify 5.0.0 smoothly. %3$s"
+msgstr "%1$sOpmerking:%2$s Update alstublieft de volgende plugins om ze soepel te laten werken met Analytify 5.0.0. %3$s"
 
-#: inc/admin-notices.php:162
 #. translators: 1: Opening <b> tag, 2: Closing </b> tag, 3: Opening <a> tag with URL, 4: Closing </a> tag.
-msgid ""
-"%1$sWarning:%2$s Measurement Protocol Secret is missing, so server-side "
-"event tracking for WooCommerce, Forms, and other integrations is disabled. "
-"%3$sConfigure it here%4$s, complete the GA4 User Data Collection "
-"Acknowledgement, and reauthenticate Google Analytics in Analytify settings."
-msgstr ""
-"%1$sWaarschuwing:%2$s Het Measurement Protocol Secret ontbreekt, waardoor "
-"server-side event tracking voor WooCommerce, Formulieren en andere "
-"integraties is uitgeschakeld. %3$sConfigureer het hier%4$s, voltooi de GA4 "
-"Gebruikersgegevensverzameling Erkenning en verifieer Google Analytics "
-"opnieuw in de Analytify-instellingen."
+#: inc/admin-notices.php:162
+msgid "%1$sWarning:%2$s Measurement Protocol Secret is missing, so server-side event tracking for WooCommerce, Forms, and other integrations is disabled. %3$sConfigure it here%4$s, complete the GA4 User Data Collection Acknowledgement, and reauthenticate Google Analytics in Analytify settings."
+msgstr "%1$sWaarschuwing:%2$s Het Measurement Protocol Secret ontbreekt, waardoor server-side event tracking voor WooCommerce, Formulieren en andere integraties is uitgeschakeld. %3$sConfigureer het hier%4$s, voltooi de GA4 Gebruikersgegevensverzameling Erkenning en verifieer Google Analytics opnieuw in de Analytify-instellingen."
 
 #: inc/admin-notices.php:189
 msgid "Analytify statistics refreshed"
@@ -2093,17 +1736,11 @@ msgstr "U heeft geen toestemming om deze actie uit te voeren."
 msgid "Security check failed."
 msgstr "Beveiligingscontrole mislukt."
 
+#. translators: Rank match notice.
 #: inc/admin-notices.php:241
 #: inc/admin-notices.php:267
-#. translators: Rank match notice.
-msgid ""
-"Kindly note that Rank Math Self-Hosted Analytics JS File Feature is "
-"available in %1$s Analytify %2$s as well. We recommend using Analytify for "
-"this functionality."
-msgstr ""
-"%1$sHoud er rekening mee dat de Rank Math Self-Hosted Analytics JS "
-"File-functie ook beschikbaar is in %1$s Analytify %2$s. We raden aan om "
-"Analytify voor deze functionaliteit te gebruiken."
+msgid "Kindly note that Rank Math Self-Hosted Analytics JS File Feature is available in %1$s Analytify %2$s as well. We recommend using Analytify for this functionality."
+msgstr "%1$sHoud er rekening mee dat de Rank Math Self-Hosted Analytics JS File-functie ook beschikbaar is in %1$s Analytify %2$s. We raden aan om Analytify voor deze functionaliteit te gebruiken."
 
 #: inc/ajax-traits/utility.php:30
 msgid "rated"
@@ -2226,13 +1863,13 @@ msgstr "Mislukt"
 msgid "View Stats of"
 msgstr "Bekijk statistieken van"
 
-#: inc/analytify-authentication.php:292
 #. translators: %s: Site name
+#: inc/analytify-authentication.php:292
 msgid "[%s] Analytify: Google Analytics Token Refresh Failed"
 msgstr "[%s] Analytify: Google Analytics Token Vernieuwing Mislukt"
 
-#: inc/analytify-authentication.php:297
 #. translators: 1: Site name, 2: Site URL, 3: Error message, 4: Settings URL
+#: inc/analytify-authentication.php:297
 msgid ""
 "Hello,\n"
 "\n"
@@ -2240,8 +1877,7 @@ msgid ""
 "\n"
 "Error details: %3$s\n"
 "\n"
-"Please re-authenticate your Google Analytics connection in the Analytify "
-"settings to restore functionality.\n"
+"Please re-authenticate your Google Analytics connection in the Analytify settings to restore functionality.\n"
 "\n"
 "You can access the settings here: %4$s\n"
 "\n"
@@ -2253,8 +1889,7 @@ msgstr ""
 "\n"
 "Foutdetails: %3$s\n"
 "\n"
-"Gelieve uw Google Analytics-verbinding opnieuw te authentiseren in de "
-"Analytify-instellingen om de functionaliteit te herstellen.\n"
+"Gelieve uw Google Analytics-verbinding opnieuw te authentiseren in de Analytify-instellingen om de functionaliteit te herstellen.\n"
 "\n"
 "U kunt de instellingen hier openen: %4$s\n"
 "\n"
@@ -2274,12 +1909,8 @@ msgid "I upgraded to Analytify Pro"
 msgstr "Ik ben geüpgraded naar Analytify Pro"
 
 #: inc/analytify-deactivate-form.php:111
-msgid ""
-"No need to deactivate this Analytify Core version. Pro version works as an "
-"add-on with Core version."
-msgstr ""
-"Geen reden om deze Analytify Core versie te deactiveren. De Pro versie "
-"werkt als een uitbreiding met de Core versie."
+msgid "No need to deactivate this Analytify Core version. Pro version works as an add-on with Core version."
+msgstr "Geen reden om deze Analytify Core versie te deactiveren. De Pro versie werkt als een uitbreiding met de Core versie."
 
 #: inc/analytify-deactivate-form.php:118
 #: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:116
@@ -2314,9 +1945,7 @@ msgstr "Ik heb de plugin niet langer nodig"
 #: inc/analytify-deactivate-form.php:164
 #: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:155
 msgid "It's a temporary deactivation. I'm just debugging an issue."
-msgstr ""
-"Het is een tijdelijke deactivatie. Ik ben gewoon een probleem aan het "
-"debuggen."
+msgstr "Het is een tijdelijke deactivatie. Ik ben gewoon een probleem aan het debuggen."
 
 #: inc/analytify-deactivate-form.php:173
 #: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:162
@@ -2341,9 +1970,7 @@ msgstr "Annuleren"
 
 #: inc/analytify-ga4-core.php:368
 msgid "Error: Invalid or missing Google Analytics token. Please re-authenticate."
-msgstr ""
-"Fout: Ongeldig of ontbrekend Google Analytics-token. Gelieve opnieuw te "
-"authenticeren."
+msgstr "Fout: Ongeldig of ontbrekend Google Analytics-token. Gelieve opnieuw te authenticeren."
 
 #: inc/analytify-ga4-core.php:375
 msgid "Error: Unable to authenticate with Google Analytics."
@@ -2351,9 +1978,7 @@ msgstr "Fout: Kan niet authenticeren met Google Analytics."
 
 #: inc/analytify-ga4-core.php:391
 msgid "Error: Token expired and could not be refreshed. Please re-authenticate."
-msgstr ""
-"Fout: Token is verlopen en kon niet worden vernieuwd. Gelieve opnieuw te "
-"authenticeren."
+msgstr "Fout: Token is verlopen en kon niet worden vernieuwd. Gelieve opnieuw te authenticeren."
 
 #: inc/analytify-ga4-core.php:405
 msgid "Notice: You must authenticate to access your web profiles."
@@ -2399,8 +2024,8 @@ msgstr "Formulieren Tracking (addon)"
 msgid "Enhanced E-Commerce for WooCommerce (addon)"
 msgstr "Verbeterde E-Commerce voor WooCommerce (addon)"
 
-#: inc/analytify-go-pro.php:307
 #. translators: EDD is the usual abbreviation for Easy Digital Downloads.
+#: inc/analytify-go-pro.php:307
 msgid "Enhanced E-Commerce for EDD (addon)"
 msgstr "Verbeterde E-Commerce voor EDD (addon)"
 
@@ -2535,8 +2160,8 @@ msgstr "Pro"
 msgid "Advanced Tracking"
 msgstr "Geavanceerde Tracking"
 
-#: inc/analytify-go-pro.php:512
 #. translators: 1: discount code.
+#: inc/analytify-go-pro.php:512
 msgid "Use %1$s for 60%% off."
 msgstr "Gebruik %1$s voor 60%% korting."
 
@@ -2544,8 +2169,8 @@ msgstr "Gebruik %1$s voor 60%% korting."
 msgid "Delete log"
 msgstr "Logboek verwijderen"
 
-#: inc/analytify-logs.php:86
 #. translators: 1: last access date 2: last access time
+#: inc/analytify-logs.php:86
 msgid "%1$s at %2$s"
 msgstr "%1$s om %2$s"
 
@@ -2561,20 +2186,10 @@ msgstr "Er zijn momenteel geen logboeken om te bekijken."
 msgid "Welcome to Google Analytics by Analytify"
 msgstr "Welkom bij Google Analytics van Analytify"
 
-#: inc/analytify-optin-form.php:33
 #. translators: Opt-in notice.
-msgid ""
-"Hey %2$s,  %4$s If you opt-in some data about your installation of "
-"Analytify will be sent to analytify.io (This doesn't include stats)%4$s and "
-"You will receive new feature updates, security notifications etc %7$sNo "
-"Spam, I promise.%8$s %4$s%4$s Help us %5$sImprove Google Analytics by "
-"Analytify%6$s %4$s %4$s "
-msgstr ""
-"Hey %2$s,  %4$s Als je je aanmeldt, worden er gegevens over je installatie "
-"van Analytify verzonden naar analytify.io (dit omvat geen statistieken)%4$s "
-"en je ontvangt nieuwe functie-updates, beveiligingsmeldingen, enz. %7$sGeen "
-"spam, ik beloof het.%8$s %4$s%4$s Help ons %5$sVerbeter Google Analytics "
-"door Analytify%6$s %4$s %4$s "
+#: inc/analytify-optin-form.php:33
+msgid "Hey %2$s,  %4$s If you opt-in some data about your installation of Analytify will be sent to analytify.io (This doesn't include stats)%4$s and You will receive new feature updates, security notifications etc %7$sNo Spam, I promise.%8$s %4$s%4$s Help us %5$sImprove Google Analytics by Analytify%6$s %4$s %4$s "
+msgstr "Hey %2$s,  %4$s Als je je aanmeldt, worden er gegevens over je installatie van Analytify verzonden naar analytify.io (dit omvat geen statistieken)%4$s en je ontvangt nieuwe functie-updates, beveiligingsmeldingen, enz. %7$sGeen spam, ik beloof het.%8$s %4$s%4$s Help ons %5$sVerbeter Google Analytics door Analytify%6$s %4$s %4$s "
 
 #: inc/analytify-optin-form.php:47
 msgid "Allow and Continue  "
@@ -2593,14 +2208,8 @@ msgid "Your Website Overview"
 msgstr "Overzicht van je Website"
 
 #: inc/analytify-optin-form.php:53
-msgid ""
-"Your Site URL, WordPress & PHP version, plugins & themes. This data lets us "
-"make sure this plugin always stays compatible with the most popular plugins "
-"and themes."
-msgstr ""
-"Je Site-URL, WordPress & PHP-versie, plugins & thema's. Deze gegevens "
-"helpen ons ervoor te zorgen dat deze plugin altijd compatibel blijft met de "
-"meest populaire plugins en thema's."
+msgid "Your Site URL, WordPress & PHP version, plugins & themes. This data lets us make sure this plugin always stays compatible with the most popular plugins and themes."
+msgstr "Je Site-URL, WordPress & PHP-versie, plugins & thema's. Deze gegevens helpen ons ervoor te zorgen dat deze plugin altijd compatibel blijft met de meest populaire plugins en thema's."
 
 #: inc/analytify-optin-form.php:55
 msgid "Your Profile Overview"
@@ -2623,17 +2232,8 @@ msgid "Plugin Actions"
 msgstr "Plugin Acties"
 
 #: inc/analytify-optin-form.php:62
-msgid ""
-"Active, Deactive, Uninstallation and How you use this plugin's features and "
-"settings. This is limited to usage data. It does not include any of your "
-"sensitive Google Analytics data, such as traffic. This data helps us learn "
-"which features are most popular, so we can improve the plugin further."
-msgstr ""
-"Actief, Deactiveren, Verwijderen en Hoe u de functies en instellingen van "
-"deze plugin gebruikt. Dit is beperkt tot gebruiksdata. Het omvat geen van "
-"uw gevoelige Google Analytics-gegevens, zoals verkeer. Deze data helpt ons "
-"te leren welke functies het populairst zijn, zodat we de plugin verder "
-"kunnen verbeteren."
+msgid "Active, Deactive, Uninstallation and How you use this plugin's features and settings. This is limited to usage data. It does not include any of your sensitive Google Analytics data, such as traffic. This data helps us learn which features are most popular, so we can improve the plugin further."
+msgstr "Actief, Deactiveren, Verwijderen en Hoe u de functies en instellingen van deze plugin gebruikt. Dit is beperkt tot gebruiksdata. Het omvat geen van uw gevoelige Google Analytics-gegevens, zoals verkeer. Deze data helpt ons te leren welke functies het populairst zijn, zodat we de plugin verder kunnen verbeteren."
 
 #: inc/analytify-optin-form.php:107
 msgid "Getting Started"
@@ -2647,37 +2247,18 @@ msgstr "Wat is nieuw"
 msgid "Credits"
 msgstr "Credits"
 
-#: inc/analytify-optin-form.php:121
 #. translators: Getting started notice.
-msgid ""
-"Getting started with Analytify, plugin settings are very easy to use and "
-"ready to go in minutes. If there is something you don't understand or "
-"confusing, do ask us on %1$sWordPress.org support forum%2$s without "
-"hesitation."
-msgstr ""
-"Aan de slag met Analytify, de plugininstellingen zijn zeer eenvoudig te "
-"gebruiken en zijn binnen enkele minuten klaar voor gebruik. Als er iets is "
-"dat u niet begrijpt of verwarrend is, vraag het ons dan zonder aarzeling op "
-"het %1$sWordPress.org ondersteuningsforum%2$s."
+#: inc/analytify-optin-form.php:121
+msgid "Getting started with Analytify, plugin settings are very easy to use and ready to go in minutes. If there is something you don't understand or confusing, do ask us on %1$sWordPress.org support forum%2$s without hesitation."
+msgstr "Aan de slag met Analytify, de plugininstellingen zijn zeer eenvoudig te gebruiken en zijn binnen enkele minuten klaar voor gebruik. Als er iets is dat u niet begrijpt of verwarrend is, vraag het ons dan zonder aarzeling op het %1$sWordPress.org ondersteuningsforum%2$s."
 
 #: inc/analytify-optin-form.php:134
 msgid "Step 1: Authentication"
 msgstr "Stap 1: Authenticatie"
 
 #: inc/analytify-optin-form.php:135
-msgid ""
-"You must have a registered Google Analytics account and setup your website "
-"profiles to use with Analytify on your WordPress based sites. Click on "
-"Login button and It will redirect you to separate Google access page. Allow "
-"this plugin to fetch the data from Google Analytics and It will take you "
-"back to your profile tab."
-msgstr ""
-"U moet een geregistreerd Google Analytics-account hebben en uw "
-"websiteprofielen instellen om te gebruiken met Analytify op uw WordPress "
-"gebaseerde sites. Klik op de knop Inloggen en het zal u naar een aparte "
-"Google-toegangspagina omleiden. Sta deze plugin toe om de gegevens van "
-"Google Analytics op te halen en het zal u terugbrengen naar uw "
-"profieltabblad."
+msgid "You must have a registered Google Analytics account and setup your website profiles to use with Analytify on your WordPress based sites. Click on Login button and It will redirect you to separate Google access page. Allow this plugin to fetch the data from Google Analytics and It will take you back to your profile tab."
+msgstr "U moet een geregistreerd Google Analytics-account hebben en uw websiteprofielen instellen om te gebruiken met Analytify op uw WordPress gebaseerde sites. Klik op de knop Inloggen en het zal u naar een aparte Google-toegangspagina omleiden. Sta deze plugin toe om de gegevens van Google Analytics op te halen en het zal u terugbrengen naar uw profieltabblad."
 
 #: inc/analytify-optin-form.php:144
 msgid "Step 2: Setting up profiles"
@@ -2688,79 +2269,48 @@ msgid "Profile Tab"
 msgstr "Profiel Tab"
 
 #: inc/analytify-optin-form.php:150
-msgid ""
-"This tab section consists of many important settings. After Authentication, "
-"Setup your profiles here. All of the options are easy to understand."
-msgstr ""
-"Deze tabsectie bestaat uit vele belangrijke instellingen. Na authenticatie "
-"kunt u hier uw profielen instellen. Alle opties zijn gemakkelijk te "
-"begrijpen."
+msgid "This tab section consists of many important settings. After Authentication, Setup your profiles here. All of the options are easy to understand."
+msgstr "Deze tabsectie bestaat uit vele belangrijke instellingen. Na authenticatie kunt u hier uw profielen instellen. Alle opties zijn gemakkelijk te begrijpen."
 
 #: inc/analytify-optin-form.php:152
 msgid "a) Install Google Analytics tracking code"
 msgstr "a) Installeer Google Analytics trackingcode"
 
 #: inc/analytify-optin-form.php:153
-msgid ""
-"First, you need to check if you want to install Google Analytics tracking "
-"code by Analytify or uncheck it if you have already installed it manually "
-"or via some other way. "
-msgstr ""
-"Eerst moet u controleren of u de Google Analytics trackingcode van "
-"Analytify wilt installeren of deze uitschakelen als u deze al handmatig of "
-"op een andere manier heeft geïnstalleerd. "
+msgid "First, you need to check if you want to install Google Analytics tracking code by Analytify or uncheck it if you have already installed it manually or via some other way. "
+msgstr "Eerst moet u controleren of u de Google Analytics trackingcode van Analytify wilt installeren of deze uitschakelen als u deze al handmatig of op een andere manier heeft geïnstalleerd. "
 
 #: inc/analytify-optin-form.php:155
 msgid "b) Exclude users from tracking"
 msgstr "b) Uitsluiten van gebruikers van tracking"
 
 #: inc/analytify-optin-form.php:156
-msgid ""
-"Usually Administrators don't want to track themselves. So, this option can "
-"be commonly used if you want to exclude your special users from tracking "
-"data."
-msgstr ""
-"Gewoonlijk willen beheerders zichzelf niet volgen. Deze optie kan dus vaak "
-"worden gebruikt als u speciale gebruikers wilt uitsluiten van "
-"trackinggegevens."
+msgid "Usually Administrators don't want to track themselves. So, this option can be commonly used if you want to exclude your special users from tracking data."
+msgstr "Gewoonlijk willen beheerders zichzelf niet volgen. Deze optie kan dus vaak worden gebruikt als u speciale gebruikers wilt uitsluiten van trackinggegevens."
 
 #: inc/analytify-optin-form.php:158
 msgid "c) Tracking code type"
 msgstr "c) Type trackingcode"
 
 #: inc/analytify-optin-form.php:159
-msgid ""
-"Google recommends to use Analytics.js (Universal Tracking) now. So, we "
-"recommend to use this option."
-msgstr ""
-"Google raadt nu aan om Analytics.js (Universal Tracking) te gebruiken. Dus, "
-"we raden aan deze optie te gebruiken."
+msgid "Google recommends to use Analytics.js (Universal Tracking) now. So, we recommend to use this option."
+msgstr "Google raadt nu aan om Analytics.js (Universal Tracking) te gebruiken. Dus, we raden aan deze optie te gebruiken."
 
 #: inc/analytify-optin-form.php:161
 msgid "d) Profile for posts (Backend/Front-end)"
 msgstr "d) Profiel voor berichten (Backend/Frontend)"
 
 #: inc/analytify-optin-form.php:162
-msgid ""
-"Select your website profile for wp-admin edit pages and Front-end pages. "
-"Select profile which matches your current WordPress website."
-msgstr ""
-"Selecteer uw websiteprofiel voor wp-admin bewerkingspagina's en Frontend "
-"pagina's. Selecteer een profiel dat overeenkomt met uw huidige "
-"WordPress-website."
+msgid "Select your website profile for wp-admin edit pages and Front-end pages. Select profile which matches your current WordPress website."
+msgstr "Selecteer uw websiteprofiel voor wp-admin bewerkingspagina's en Frontend pagina's. Selecteer een profiel dat overeenkomt met uw huidige WordPress-website."
 
 #: inc/analytify-optin-form.php:164
 msgid "e) Profile for Dashboard"
 msgstr "e) Profiel voor Dashboard"
 
 #: inc/analytify-optin-form.php:165
-msgid ""
-"Select your website profile for Dashboard Stats. You can select your any "
-"Website profile. It will show Analytics for your selected website profile."
-msgstr ""
-"Selecteer uw websiteprofiel voor Dashboard-statistieken. U kunt elk "
-"websiteprofiel selecteren. Het zal Analytics tonen voor uw geselecteerde "
-"websiteprofiel."
+msgid "Select your website profile for Dashboard Stats. You can select your any Website profile. It will show Analytics for your selected website profile."
+msgstr "Selecteer uw websiteprofiel voor Dashboard-statistieken. U kunt elk websiteprofiel selecteren. Het zal Analytics tonen voor uw geselecteerde websiteprofiel."
 
 #: inc/analytify-optin-form.php:172
 msgid "Step 3: Display Statistics at front-end pages"
@@ -2770,23 +2320,10 @@ msgstr "Stap 3: Statistieken weergeven op de front-end pagina's"
 msgid "Front Tab"
 msgstr "Front-tab"
 
-#: inc/analytify-optin-form.php:183
 #. translators: Front-end analytics notice.
-msgid ""
-"In version %4$s, We have introduced the %1$s New Front-end Analytics%2$s "
-"which will fetch the stats like backend but with an awesome UI for "
-"front-end stats. It was a long awaited feature which was under development "
-"since 1.0 but finally It is here. It can be customized (if you are good at "
-"CSS) according to your website look and feel. %3$s Below are it's important "
-"options: "
-msgstr ""
-"In versie %4$s hebben we de %1$s Nieuwe Front-end Analytics%2$s "
-"geïntroduceerd, die de statistieken zoals de backend ophaalt, maar met een "
-"geweldige gebruikersinterface voor front-end statistieken. Het was een "
-"langverwachte functie die in ontwikkeling was sinds 1.0, maar het is er "
-"eindelijk. Het kan worden aangepast (als u goed bent in CSS) volgens de "
-"uitstraling en het gevoel van uw website. %3$s Hieronder staan de "
-"belangrijke opties:"
+#: inc/analytify-optin-form.php:183
+msgid "In version %4$s, We have introduced the %1$s New Front-end Analytics%2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development since 1.0 but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s Below are it's important options: "
+msgstr "In versie %4$s hebben we de %1$s Nieuwe Front-end Analytics%2$s geïntroduceerd, die de statistieken zoals de backend ophaalt, maar met een geweldige gebruikersinterface voor front-end statistieken. Het was een langverwachte functie die in ontwikkeling was sinds 1.0, maar het is er eindelijk. Het kan worden aangepast (als u goed bent in CSS) volgens de uitstraling en het gevoel van uw website. %3$s Hieronder staan de belangrijke opties:"
 
 #: inc/analytify-optin-form.php:193
 #: inc/analytify-optin-form.php:374
@@ -2795,14 +2332,8 @@ msgstr "Deactiveer front-end"
 
 #: inc/analytify-optin-form.php:194
 #: inc/analytify-optin-form.php:376
-msgid ""
-"We introduced the ability to disable the front-end stats on the full site. "
-"Check it, if you don't want to load Analytics at all. Remember, you can use "
-"Shortcodes still."
-msgstr ""
-"We hebben de mogelijkheid geïntroduceerd om de front-end statistieken op de "
-"volledige site te deactiveren. Vink het aan als u Analytics helemaal niet "
-"wilt laden. Vergeet niet dat u nog steeds Shortcodes kunt gebruiken."
+msgid "We introduced the ability to disable the front-end stats on the full site. Check it, if you don't want to load Analytics at all. Remember, you can use Shortcodes still."
+msgstr "We hebben de mogelijkheid geïntroduceerd om de front-end statistieken op de volledige site te deactiveren. Vink het aan als u Analytics helemaal niet wilt laden. Vergeet niet dat u nog steeds Shortcodes kunt gebruiken."
 
 #: inc/analytify-optin-form.php:196
 #: inc/analytify-optin-form.php:240
@@ -2810,8 +2341,8 @@ msgstr ""
 msgid "Display Analytics to Users"
 msgstr "Toon Analytics aan Gebruikers"
 
-#: inc/analytify-optin-form.php:201
 #. translators: Display analytics to users.
+#: inc/analytify-optin-form.php:201
 msgid "Show %1$sfront-end%2$s Analytics to selected user roles only."
 msgstr "Toon %1$sfront-end%2$s Analytics alleen aan geselecteerde gebruikersrollen."
 
@@ -2824,12 +2355,8 @@ msgstr "Analytics op Berichten typen"
 #: inc/analytify-optin-form.php:211
 #: inc/analytify-optin-form.php:255
 #: inc/analytify-optin-form.php:394
-msgid ""
-"Show Analytics under the selected post types only. You can select your "
-"custom post types as well."
-msgstr ""
-"Toon Analytics alleen onder de geselecteerde berichttypen. U kunt ook uw "
-"eigen aangepaste berichttypen selecteren."
+msgid "Show Analytics under the selected post types only. You can select your custom post types as well."
+msgstr "Toon Analytics alleen onder de geselecteerde berichttypen. U kunt ook uw eigen aangepaste berichttypen selecteren."
 
 #: inc/analytify-optin-form.php:213
 #: inc/analytify-optin-form.php:396
@@ -2838,12 +2365,8 @@ msgstr "Front-end Analytics panelen"
 
 #: inc/analytify-optin-form.php:214
 #: inc/analytify-optin-form.php:397
-msgid ""
-"Select which Stats panels you want to display at front-end. We recommend to "
-"use upto 8 Panels for better page speed."
-msgstr ""
-"Selecteer welke Statistiekenpanelen je wilt weergeven aan de voorkant. We "
-"raden aan om maximaal 8 panelen te gebruiken voor betere laadsnelheid."
+msgid "Select which Stats panels you want to display at front-end. We recommend to use upto 8 Panels for better page speed."
+msgstr "Selecteer welke Statistiekenpanelen je wilt weergeven aan de voorkant. We raden aan om maximaal 8 panelen te gebruiken voor betere laadsnelheid."
 
 #: inc/analytify-optin-form.php:218
 #: inc/analytify-optin-form.php:262
@@ -2866,29 +2389,19 @@ msgid "Admin Tab"
 msgstr "Beheer Tab"
 
 #: inc/analytify-optin-form.php:233
-msgid ""
-"Admin tab section is to manage the Analytics panels under EDIT screen of "
-"post/pages in wp-admin."
-msgstr ""
-"Het gedeelte Beheer tab is om de Analytics panelen te beheren onder het "
-"BEWERKEN-scherm van berichten/pagina's in wp-admin."
+msgid "Admin tab section is to manage the Analytics panels under EDIT screen of post/pages in wp-admin."
+msgstr "Het gedeelte Beheer tab is om de Analytics panelen te beheren onder het BEWERKEN-scherm van berichten/pagina's in wp-admin."
 
 #: inc/analytify-optin-form.php:237
 msgid "Disable Analytics under posts/pages."
 msgstr "Deactiveer Analytics onder berichten/pagina's."
 
 #: inc/analytify-optin-form.php:238
-msgid ""
-"Check it, If you don't want to load Stats by default on all pages. If you "
-"disable it, you can still fetch the stats under each post/page on single "
-"click."
-msgstr ""
-"Vink het aan, als je niet wilt dat Statistieken standaard op alle pagina's "
-"worden geladen. Als je het deactiveert, kun je de statistieken nog steeds "
-"ophalen onder elk bericht/pagina met een enkele klik."
+msgid "Check it, If you don't want to load Stats by default on all pages. If you disable it, you can still fetch the stats under each post/page on single click."
+msgstr "Vink het aan, als je niet wilt dat Statistieken standaard op alle pagina's worden geladen. Als je het deactiveert, kun je de statistieken nog steeds ophalen onder elk bericht/pagina met een enkele klik."
 
-#: inc/analytify-optin-form.php:245
 #. translators: Display analytics to users.
+#: inc/analytify-optin-form.php:245
 msgid "Show %1$s Google %2$s Analytics to selected user roles only."
 msgstr "Toon %1$s Google %2$s Analytics alleen aan geselecteerde gebruikersrollen."
 
@@ -2897,30 +2410,16 @@ msgid "Edit pages/posts Analytics panels"
 msgstr "Bewerk pagina's/berichten Analytics panelen"
 
 #: inc/analytify-optin-form.php:258
-msgid ""
-"Select which Stats panels you want to display at backend. We recommend to "
-"use upto 10 Panels for better page speed."
-msgstr ""
-"Selecteer welke Statistiek panelen u wilt weergeven in de backend. We raden "
-"aan om maximaal 10 panelen te gebruiken voor een betere pagina snelheid."
+msgid "Select which Stats panels you want to display at backend. We recommend to use upto 10 Panels for better page speed."
+msgstr "Selecteer welke Statistiek panelen u wilt weergeven in de backend. We raden aan om maximaal 10 panelen te gebruiken voor een betere pagina snelheid."
 
 #: inc/analytify-optin-form.php:271
 msgid "Licensing"
 msgstr "Licenties"
 
 #: inc/analytify-optin-form.php:274
-msgid ""
-"We have a year based pricing model as we think this is the best model to "
-"keep our normal lives easier and down the costs of support servers etc. You "
-"need a valid license key if you want to get support and updates in the "
-"future for a year. After a year, you will get discount to renew your "
-"license. "
-msgstr ""
-"We hebben een op jaar gebaseerde prijsstructuur omdat we denken dat dit het "
-"beste model is om ons normale leven gemakkelijker te maken en de kosten van "
-"ondersteuningsservers enz. te verlagen. U heeft een geldige licentiesleutel "
-"nodig als u in de toekomst een jaar lang ondersteuning en updates wilt "
-"ontvangen. Na een jaar krijgt u korting voor het verlengen van uw licentie. "
+msgid "We have a year based pricing model as we think this is the best model to keep our normal lives easier and down the costs of support servers etc. You need a valid license key if you want to get support and updates in the future for a year. After a year, you will get discount to renew your license. "
+msgstr "We hebben een op jaar gebaseerde prijsstructuur omdat we denken dat dit het beste model is om ons normale leven gemakkelijker te maken en de kosten van ondersteuningsservers enz. te verlagen. U heeft een geldige licentiesleutel nodig als u in de toekomst een jaar lang ondersteuning en updates wilt ontvangen. Na een jaar krijgt u korting voor het verlengen van uw licentie. "
 
 #: inc/analytify-optin-form.php:282
 msgid "New features"
@@ -2932,110 +2431,57 @@ msgstr "Eenvoudige Authenticatie"
 
 #: inc/analytify-optin-form.php:290
 msgid "You don't need to worry about copy and paste access code any more. "
-msgstr ""
-"U hoeft zich geen zorgen meer te maken over het kopiëren en plakken van "
-"toegangscode. "
+msgstr "U hoeft zich geen zorgen meer te maken over het kopiëren en plakken van toegangscode. "
 
 #: inc/analytify-optin-form.php:293
 msgid "Translation ready"
 msgstr "Vertaling gereed"
 
-#: inc/analytify-optin-form.php:298
 #. translators: Translation ready description.
-msgid ""
-"Analytify %1$s contains all the strings ready to translate in any language. "
-"%2$s Click here %3$s to start translating this plugin into your language "
-"and don't forget to share your language files with us to ease for other "
-"users."
-msgstr ""
-"Analytify %1$s bevat alle strings die klaar zijn om in elke taal te "
-"vertalen. %2$s Klik hier %3$s om deze plugin in uw taal te vertalen en "
-"vergeet niet om uw taalbestanden met ons te delen om het voor andere "
-"gebruikers gemakkelijker te maken."
+#: inc/analytify-optin-form.php:298
+msgid "Analytify %1$s contains all the strings ready to translate in any language. %2$s Click here %3$s to start translating this plugin into your language and don't forget to share your language files with us to ease for other users."
+msgstr "Analytify %1$s bevat alle strings die klaar zijn om in elke taal te vertalen. %2$s Klik hier %3$s om deze plugin in uw taal te vertalen en vergeet niet om uw taalbestanden met ons te delen om het voor andere gebruikers gemakkelijker te maken."
 
 #: inc/analytify-optin-form.php:317
 msgid "Analytify Shortcodes"
 msgstr "Analytify Shortcodes"
 
-#: inc/analytify-optin-form.php:322
 #. translators: Analytify shortcodes.
-msgid ""
-"Analytify shortcodes can be used for multiple purposes. It gives you more "
-"flexibility than the front-end statistics. You can disable front-end stats "
-"and use these shortcodes in any of your pages/posts to show Analytics in "
-"tabular style. If you are familiar with CSS, It can be easily modified to "
-"match with your website look and feel. %1$s Following are two types of "
-"shortcodes:"
-msgstr ""
-"Analytify-shortcodes kunnen voor meerdere doeleinden worden gebruikt. Het "
-"biedt je meer flexibiliteit dan de front-end statistieken. Je kunt "
-"front-end statistieken uitschakelen en deze shortcodes gebruiken op een van "
-"je pagina's/posts om Analytics in tabelvorm te tonen. Als je bekend bent "
-"met CSS, kan het gemakkelijk worden aangepast aan de uitstraling van je "
-"website. %1$s Hieronder staan twee soorten shortcodes:"
+#: inc/analytify-optin-form.php:322
+msgid "Analytify shortcodes can be used for multiple purposes. It gives you more flexibility than the front-end statistics. You can disable front-end stats and use these shortcodes in any of your pages/posts to show Analytics in tabular style. If you are familiar with CSS, It can be easily modified to match with your website look and feel. %1$s Following are two types of shortcodes:"
+msgstr "Analytify-shortcodes kunnen voor meerdere doeleinden worden gebruikt. Het biedt je meer flexibiliteit dan de front-end statistieken. Je kunt front-end statistieken uitschakelen en deze shortcodes gebruiken op een van je pagina's/posts om Analytics in tabelvorm te tonen. Als je bekend bent met CSS, kan het gemakkelijk worden aangepast aan de uitstraling van je website. %1$s Hieronder staan twee soorten shortcodes:"
 
 #: inc/analytify-optin-form.php:328
 msgid "a) Simple:"
 msgstr "a) Eenvoudig:"
 
-#: inc/analytify-optin-form.php:333
 #. translators: Simple shortcodes.
-msgid ""
-"Simple Analytify shortcode returns you only the numbers i.e results. It is "
-"useful when you want results of only 1 Metrics and can apply permissions "
-"using roles. You can fetch numbers of %1$s Sessions, Pageviews, Bounce Rate "
-"and Users %2$s etc"
-msgstr ""
-"Eenvoudige Analytify shortcode geeft je alleen de nummers, dat wil zeggen, "
-"de resultaten. Het is nuttig wanneer je resultaten wilt van slechts 1 "
-"metriek en je kunt rechten toepassen met behulp van rollen. Je kunt het "
-"aantal %1$s Sessies, Paginaweergaven, Bouncepercentage en Gebruikers %2$s "
-"etc. ophalen"
+#: inc/analytify-optin-form.php:333
+msgid "Simple Analytify shortcode returns you only the numbers i.e results. It is useful when you want results of only 1 Metrics and can apply permissions using roles. You can fetch numbers of %1$s Sessions, Pageviews, Bounce Rate and Users %2$s etc"
+msgstr "Eenvoudige Analytify shortcode geeft je alleen de nummers, dat wil zeggen, de resultaten. Het is nuttig wanneer je resultaten wilt van slechts 1 metriek en je kunt rechten toepassen met behulp van rollen. Je kunt het aantal %1$s Sessies, Paginaweergaven, Bouncepercentage en Gebruikers %2$s etc. ophalen"
 
 #: inc/analytify-optin-form.php:340
 msgid "b) Advanced:"
 msgstr "b) Geavanceerd:"
 
-#: inc/analytify-optin-form.php:345
 #. translators: Advanced shortcodes.
-msgid ""
-"With this Advanced option, You can choose %1$s more than 1 Metrics and "
-"Dimensions, Sort the results, get maximum rows, apply permissions and fetch "
-"Analytics with specified start-date and end-date. %2$s Advanced shortcode "
-"returns results in table form which can be styled according to your website."
-msgstr ""
-"Met deze geavanceerde optie kun je %1$s meer dan 1 metriek en dimensies "
-"kiezen, de resultaten sorteren, maximaal aantal rijen ophalen, rechten "
-"toepassen en Analytics ophalen met een gespecificeerde startdatum en "
-"einddatum. %2$s Geavanceerde shortcode geeft resultaten terug in tabelvorm "
-"die kan worden gestyled volgens je website."
+#: inc/analytify-optin-form.php:345
+msgid "With this Advanced option, You can choose %1$s more than 1 Metrics and Dimensions, Sort the results, get maximum rows, apply permissions and fetch Analytics with specified start-date and end-date. %2$s Advanced shortcode returns results in table form which can be styled according to your website."
+msgstr "Met deze geavanceerde optie kun je %1$s meer dan 1 metriek en dimensies kiezen, de resultaten sorteren, maximaal aantal rijen ophalen, rechten toepassen en Analytics ophalen met een gespecificeerde startdatum en einddatum. %2$s Geavanceerde shortcode geeft resultaten terug in tabelvorm die kan worden gestyled volgens je website."
 
 #: inc/analytify-optin-form.php:359
 msgid "Front-end Statistics"
 msgstr "Front-end Statistieken"
 
-#: inc/analytify-optin-form.php:364
 #. translators: Simple shortcodes.
-msgid ""
-"We have introduced the %1$s New Front-end Analytics %2$s which will fetch "
-"the stats like backend but with an awesome UI for front-end stats. It was a "
-"long awaited feature which was under development but finally It is here. It "
-"can be customized (if you are good at CSS) according to your website look "
-"and feel. %3$s below are it's important options: "
-msgstr ""
-"We hebben de %1$s Nieuwe Front-end Analytics %2$s geïntroduceerd die de "
-"statistieken zoals de backend zal ophalen, maar met een geweldige UI voor "
-"front-end statistieken. Het was een langverwachte functie die in "
-"ontwikkeling was, maar het is eindelijk hier. Het kan worden aangepast (als "
-"je goed bent in CSS) aan de uitstraling van je website. %3$s hieronder zijn "
-"de belangrijkste opties: "
+#: inc/analytify-optin-form.php:364
+msgid "We have introduced the %1$s New Front-end Analytics %2$s which will fetch the stats like backend but with an awesome UI for front-end stats. It was a long awaited feature which was under development but finally It is here. It can be customized (if you are good at CSS) according to your website look and feel. %3$s below are it's important options: "
+msgstr "We hebben de %1$s Nieuwe Front-end Analytics %2$s geïntroduceerd die de statistieken zoals de backend zal ophalen, maar met een geweldige UI voor front-end statistieken. Het was een langverwachte functie die in ontwikkeling was, maar het is eindelijk hier. Het kan worden aangepast (als je goed bent in CSS) aan de uitstraling van je website. %3$s hieronder zijn de belangrijkste opties: "
 
-#: inc/analytify-optin-form.php:384
 #. translators: Show analytics to users.
+#: inc/analytify-optin-form.php:384
 msgid "Show %1$s front-end %2$s Analytics to selected user roles only."
-msgstr ""
-"Toon %1$s front-end %2$s Analytics alleen aan geselecteerde "
-"gebruikersrollen."
+msgstr "Toon %1$s front-end %2$s Analytics alleen aan geselecteerde gebruikersrollen."
 
 #: inc/analytify-optin-form.php:470
 msgid "Go to Analytify Settings"
@@ -3045,13 +2491,13 @@ msgstr "Ga naar Analytify Instellingen"
 msgid "View the Full Changelog"
 msgstr "Bekijk de Volledige Changelog"
 
-#: inc/analytify-utilities.php:65
 #. translators: %s is the action name.
+#: inc/analytify-utilities.php:65
 msgid "Invalid nonce for: %s"
 msgstr "Ongeldige nonce voor: %s"
 
-#: inc/analytify-utilities.php:77
 #. translators: %s is the action name.
+#: inc/analytify-utilities.php:77
 msgid "Access denied for: %s"
 msgstr "Toegang geweigerd voor: %s"
 
@@ -3114,28 +2560,19 @@ msgstr "Vorig Jaar"
 msgid "All Time"
 msgstr "Alle Tijden"
 
-#: inc/core-traits/admin-footer.php:36
 #. translators: Analytify rating.
-msgid ""
-"If you like %1$s Analytify %2$s please leave us a %5$s %3$s %6$s rating. "
-"%4$s A huge thank you from %1$s WPBrigade %2$s in advance!"
-msgstr ""
-"Als je %1$s Analytify %2$s leuk vindt, laat ons dan alstublieft een %5$s "
-"%3$s %6$s beoordeling achter. %4$s Een grote dank aan %1$s WPBrigade %2$s "
-"bij voorbaat!"
+#: inc/core-traits/admin-footer.php:36
+msgid "If you like %1$s Analytify %2$s please leave us a %5$s %3$s %6$s rating. %4$s A huge thank you from %1$s WPBrigade %2$s in advance!"
+msgstr "Als je %1$s Analytify %2$s leuk vindt, laat ons dan alstublieft een %5$s %3$s %6$s beoordeling achter. %4$s Een grote dank aan %1$s WPBrigade %2$s bij voorbaat!"
 
 #: inc/core-traits/admin-footer.php:53
 msgid "Thank you for tracking with Analytify."
 msgstr "Bedankt voor het volgen met Analytify."
 
-#: inc/core-traits/functions-class.php:62
 #. translators: No profile selected notice.
-msgid ""
-"%1$s Dashboard can't be loaded until you select your website profile %2$s "
-"here%3$s."
-msgstr ""
-"%1$s Dashboard kan niet worden geladen totdat je hier je websiteprofiel "
-"%2$s selecteert%3$s."
+#: inc/core-traits/functions-class.php:62
+msgid "%1$s Dashboard can't be loaded until you select your website profile %2$s here%3$s."
+msgstr "%1$s Dashboard kan niet worden geladen totdat je hier je websiteprofiel %2$s selecteert%3$s."
 
 #: inc/core-traits/functions-class.php:420
 #: inc/core-traits/functions-class.php:453
@@ -3155,38 +2592,38 @@ msgstr "Analytify - Uitsluiten van Analytics"
 msgid "Exclude this page from Analytics tracking"
 msgstr "Sluit deze pagina uit van Analytics-tracking"
 
+#. translators: Deactivate add-on.
 #: inc/page-addons.php:459
 #: inc/page-addons.php:494
 #: inc/page-addons.php:703
-#. translators: Deactivate add-on.
 msgid "%1$s Deactivate add-on %2$s"
 msgstr "%1$s Deactiveer add-on %2$s"
 
+#. translators: Activate add-on.
 #: inc/page-addons.php:469
 #: inc/page-addons.php:509
 #: inc/page-addons.php:707
 #: inc/page-addons.php:711
-#. translators: Activate add-on.
 msgid "%1$s Activate add-on %2$s"
 msgstr "%1$s Activeer add-on %2$s"
 
-#: inc/page-addons.php:515
 #. translators: Simple shortcodes.
+#: inc/page-addons.php:515
 msgid "%1$s Download %2$s"
 msgstr "%1$s Download %2$s"
 
+#. translators: Get add-on.
+#. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag for the purchase link.
 #: inc/page-addons.php:518
 #: inc/page-addons.php:715
 #: inc/page-addons.php:858
-#. translators: Get add-on.
-#. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag for the purchase link.
 msgid "%1$s Get this add-on %2$s"
 msgstr "%1$s Verkrijg deze add-on %2$s"
 
-#: inc/page-addons.php:675
-#: inc/page-addons.php:694
 #. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag.
 #. translators: %1$s: opening anchor tag, %2$s: closing anchor tag.
+#: inc/page-addons.php:675
+#: inc/page-addons.php:694
 msgid "%1$s Update Analytify Pro %2$s"
 msgstr "%1$s Update Analytify Pro %2$s"
 
@@ -3219,12 +2656,8 @@ msgid "Powerful Add-ons to Get More from Analytify."
 msgstr "Krachtige add-ons om meer uit Analytify te halen."
 
 #: inc/page-addons.php:1154
-msgid ""
-"Unable to load addons. Please check your internet connection and try "
-"refreshing the page."
-msgstr ""
-"Kan add-ons niet laden. Controleer alstublieft uw internetverbinding en "
-"probeer de pagina te vernieuwen."
+msgid "Unable to load addons. Please check your internet connection and try refreshing the page."
+msgstr "Kan add-ons niet laden. Controleer alstublieft uw internetverbinding en probeer de pagina te vernieuwen."
 
 #: inc/promotions.php:48
 msgid "We're sorry to see you go!"
@@ -3232,9 +2665,7 @@ msgstr "Het spijt ons u te zien vertrekken!"
 
 #: inc/promotions.php:49
 msgid "Before you deactivate Analytify, would you mind sharing why you're leaving?"
-msgstr ""
-"Voordat u Analytify deactiveert, zou u ons willen vertellen waarom u "
-"vertrekt?"
+msgstr "Voordat u Analytify deactiveert, zou u ons willen vertellen waarom u vertrekt?"
 
 #: inc/promotions.php:50
 msgid "Please share your feedback..."
@@ -3248,31 +2679,23 @@ msgstr "Indienen & Deactiveren"
 msgid "Frontend"
 msgstr "Frontend"
 
-#: inc/promotions.php:117
 #. translators: %s is the admin URL.
+#: inc/promotions.php:117
 msgid "Please <a href=\"%s\">select your website profile</a> to view Analytics."
 msgstr "Selecteer uw websiteprofiel om Analytics te bekijken."
 
-#: inc/promotions.php:135
 #. translators: 1: Opening anchor tag, 2: Closing anchor tag.
-msgid ""
-"Analytify now supports GA4! %1$sClick here%2$s to learn more about the new "
-"features."
-msgstr ""
-"Analytify ondersteunt nu GA4! %1$sKlik hier%2$s om meer te leren over de "
-"nieuwe functies."
+#: inc/promotions.php:135
+msgid "Analytify now supports GA4! %1$sClick here%2$s to learn more about the new features."
+msgstr "Analytify ondersteunt nu GA4! %1$sKlik hier%2$s om meer te leren over de nieuwe functies."
 
 #: inc/promotions.php:232
 msgid "How's Analytify going, impressed?"
 msgstr "Hoe gaat het met Analytify, onder de indruk?"
 
 #: inc/promotions.php:233
-msgid ""
-"We hope you've enjoyed using Analytify! Would you consider leaving us a "
-"5-star review on WordPress.org?"
-msgstr ""
-"We hopen dat u genoten heeft van het gebruik van Analytify! Zou u overwegen "
-"om ons een 5-sterrenbeoordeling achter te laten op WordPress.org?"
+msgid "We hope you've enjoyed using Analytify! Would you consider leaving us a 5-star review on WordPress.org?"
+msgstr "We hopen dat u genoten heeft van het gebruik van Analytify! Zou u overwegen om ons een 5-sterrenbeoordeling achter te laten op WordPress.org?"
 
 #: inc/promotions.php:235
 msgid "Sure! I'd love to!"
@@ -3432,12 +2855,8 @@ msgid "Copied!"
 msgstr "Gekopieerd!"
 
 #: inc/scripts-styles.php:296
-msgid ""
-"No diagnostic information available to copy. Please load the diagnostic log "
-"first."
-msgstr ""
-"Geen diagnostische informatie beschikbaar om te kopiëren. Laad eerst het "
-"diagnostische logboek."
+msgid "No diagnostic information available to copy. Please load the diagnostic log first."
+msgstr "Geen diagnostische informatie beschikbaar om te kopiëren. Laad eerst het diagnostische logboek."
 
 #: inc/scripts-styles.php:412
 msgid "Please enter your license key."
@@ -3445,26 +2864,18 @@ msgstr "Voer uw licentiesleutel in."
 
 #: inc/scripts-styles.php:413
 msgid "A problem occurred when trying to register the license, please try again."
-msgstr ""
-"Er deed zich een probleem voor bij het registreren van de licentie, probeer "
-"het alstublieft opnieuw."
+msgstr "Er deed zich een probleem voor bij het registreren van de licentie, probeer het alstublieft opnieuw."
 
 #: inc/scripts-styles.php:414
 msgid "A problem occurred when trying to check the license, please try again."
-msgstr ""
-"Er deed zich een probleem voor bij het controleren van de licentie, probeer "
-"het alstublieft opnieuw."
+msgstr "Er deed zich een probleem voor bij het controleren van de licentie, probeer het alstublieft opnieuw."
 
 #: inc/scripts-styles.php:415
-msgid ""
-"Your license has been activated. You will now receive automatic updates and "
-"access to email support."
-msgstr ""
-"Uw licentie is geactiveerd. U ontvangt nu automatische updates en toegang "
-"tot e-mailondersteuning."
+msgid "Your license has been activated. You will now receive automatic updates and access to email support."
+msgstr "Uw licentie is geactiveerd. U ontvangt nu automatische updates en toegang tot e-mailondersteuning."
 
-#: lib/logs/class-analytify-logger.php:124
 #. translators: Invalid level
+#: lib/logs/class-analytify-logger.php:124
 msgid "%1$s was called with an invalid level \"%2$s\"."
 msgstr "%1$s is aangeroepen met een ongeldige niveau \"%2$s\"."
 
@@ -3489,12 +2900,8 @@ msgid "Admin-only debug page."
 msgstr "Alleen voor beheerders debugpagina."
 
 #: lib/wpb-sdk/views/wpb-debug.php:232
-msgid ""
-"This page shows sensitive data (keys, paths, user info). Do not share "
-"screenshots or leave unattended."
-msgstr ""
-"Deze pagina toont gevoelige gegevens (sleutels, paden, "
-"gebruikersinformatie). Deel geen screenshots of laat het onbeheerd achter."
+msgid "This page shows sensitive data (keys, paths, user info). Do not share screenshots or leave unattended."
+msgstr "Deze pagina toont gevoelige gegevens (sleutels, paden, gebruikersinformatie). Deel geen screenshots of laat het onbeheerd achter."
 
 #: lib/wpb-sdk/views/wpb-debug.php:235
 msgid "Actions"
@@ -3538,12 +2945,8 @@ msgstr "Ontgrendel UTM Campagnes Tracking"
 #: views/default/admin/addons-promo.php:450
 #: views/default/admin/addons-promo.php:481
 #: views/default/admin/addons-promo.php:512
-msgid ""
-"Upgrading to Analytify Premium plan gives access to a lot of amazing "
-"features."
-msgstr ""
-"Upgraden naar het Analytify Premium plan geeft toegang tot veel geweldige "
-"functies."
+msgid "Upgrading to Analytify Premium plan gives access to a lot of amazing features."
+msgstr "Upgraden naar het Analytify Premium plan geeft toegang tot veel geweldige functies."
 
 #: views/default/admin/addons-promo.php:100
 #: views/default/admin/addons-promo.php:132
@@ -3686,16 +3089,16 @@ msgstr "Wekelijkse & Maandelijkse E-mails"
 msgid "WooCommerce & EDD Tracking"
 msgstr "WooCommerce & EDD Tracking"
 
+#. translators: 1: Coupon code
 #: views/default/admin/addons-promo.php:115
 #: views/default/admin/addons-promo.php:147
 #: views/default/admin/addons-promo.php:179
 #: views/default/admin/addons-promo.php:211
-#. translators: 1: Coupon code
 msgid "Use the coupon code \"%1$s\" to get 60%% discount."
 msgstr "Gebruik de kortingscode \"%1$s\" om 60%% korting te krijgen."
 
-#: views/default/admin/addons-promo.php:116
 #. translators: 1: Coupon code
+#: views/default/admin/addons-promo.php:116
 msgid "Explore Analytify Pro + Campaigns bundle"
 msgstr "Verken het Analytify Pro + Campagnes bundel"
 
@@ -3703,8 +3106,8 @@ msgstr "Verken het Analytify Pro + Campagnes bundel"
 msgid "Unlock Goals Tracking in WordPress"
 msgstr "Ontgrendel Doelen Tracking in WordPress"
 
-#: views/default/admin/addons-promo.php:148
 #. translators: 1: Coupon code
+#: views/default/admin/addons-promo.php:148
 msgid "Explore Analytify Pro + Goals bundle"
 msgstr "Verken het Analytify Pro + Doelen bundel"
 
@@ -3712,8 +3115,8 @@ msgstr "Verken het Analytify Pro + Doelen bundel"
 msgid "Unlock Google Analytics Tracking for WooCommerce"
 msgstr "Ontgrendel Google Analytics Tracking voor WooCommerce"
 
-#: views/default/admin/addons-promo.php:180
 #. translators: 1: Coupon code
+#: views/default/admin/addons-promo.php:180
 msgid "Explore Analytify Pro + WooCommerce Tracking bundle"
 msgstr "Verken Analytify Pro + WooCommerce Tracking bundel"
 
@@ -3721,8 +3124,8 @@ msgstr "Verken Analytify Pro + WooCommerce Tracking bundel"
 msgid "Unlock Google Analytics Tracking for Easy Digital Downloads (EDD)"
 msgstr "Ontgrendel Google Analytics Tracking voor Easy Digital Downloads (EDD)"
 
-#: views/default/admin/addons-promo.php:212
 #. translators: 1: Coupon code
+#: views/default/admin/addons-promo.php:212
 msgid "Explore Analytify Pro + EDD Tracking bundle"
 msgstr "Verken Analytify Pro + EDD Tracking bundel"
 
@@ -3731,14 +3134,8 @@ msgid "Unlock Authors Tracking in WordPress"
 msgstr "Ontgrendel Auteurs Tracking in WordPress"
 
 #: views/default/admin/addons-promo.php:226
-msgid ""
-"Track your website/blog author’s content performance by analyzing the "
-"insights of their published content with Authors Tracking Addon. You can "
-"easily view the following author’s analytics."
-msgstr ""
-"Volg de contentprestaties van uw website/blog auteur door de inzichten van "
-"hun gepubliceerde content te analyseren met de Auteurs Tracking Addon. U "
-"kunt gemakkelijk de volgende analytics van de auteur bekijken."
+msgid "Track your website/blog author’s content performance by analyzing the insights of their published content with Authors Tracking Addon. You can easily view the following author’s analytics."
+msgstr "Volg de contentprestaties van uw website/blog auteur door de inzichten van hun gepubliceerde content te analyseren met de Auteurs Tracking Addon. U kunt gemakkelijk de volgende analytics van de auteur bekijken."
 
 #: views/default/admin/addons-promo.php:228
 msgid "Total sessions on published content"
@@ -3777,14 +3174,8 @@ msgid "Unlock Google Analytics Tracking for Paid Memberships Pro"
 msgstr "Ontgrendel Google Analytics tracking voor Betaalde Lidmaatschappen Pro"
 
 #: views/default/admin/addons-promo.php:311
-msgid ""
-"Track your membership site performance with detailed analytics for Paid "
-"Memberships Pro. Monitor membership conversions, revenue, and member "
-"engagement."
-msgstr ""
-"Volg de prestaties van uw lidmaatschapsite met gedetailleerde analyses voor "
-"Betaalde Lidmaatschappen Pro. Monitor lidmaatschapsconversies, omzet en "
-"betrokkenheid van leden."
+msgid "Track your membership site performance with detailed analytics for Paid Memberships Pro. Monitor membership conversions, revenue, and member engagement."
+msgstr "Volg de prestaties van uw lidmaatschapsite met gedetailleerde analyses voor Betaalde Lidmaatschappen Pro. Monitor lidmaatschapsconversies, omzet en betrokkenheid van leden."
 
 #: views/default/admin/addons-promo.php:313
 msgid "Membership Checkout Tracking"
@@ -3827,13 +3218,8 @@ msgid "Unlock Google Analytics Tracking for LearnDash"
 msgstr "Ontgrendel Google Analytics Tracking voor LearnDash"
 
 #: views/default/admin/addons-promo.php:396
-msgid ""
-"Track your LearnDash courses, lessons, quizzes, and student progress with "
-"detailed analytics and insights to improve your online learning platform."
-msgstr ""
-"Volg je LearnDash-cursussen, lessen, quizzen en studentenvoortgang met "
-"gedetailleerde analytics en inzichten om je online leerplatform te "
-"verbeteren."
+msgid "Track your LearnDash courses, lessons, quizzes, and student progress with detailed analytics and insights to improve your online learning platform."
+msgstr "Volg je LearnDash-cursussen, lessen, quizzen en studentenvoortgang met gedetailleerde analytics en inzichten om je online leerplatform te verbeteren."
 
 #: views/default/admin/addons-promo.php:398
 msgid "Course Engagement Tracking"
@@ -3876,14 +3262,8 @@ msgid "Unlock Google Analytics Tracking for LifterLMS"
 msgstr "Ontgrendel Google Analytics Tracking voor LifterLMS"
 
 #: views/default/admin/addons-promo.php:422
-msgid ""
-"Track your LifterLMS course performance with comprehensive analytics. "
-"Monitor course views, enrollments, purchases, and revenue to optimize your "
-"online learning business."
-msgstr ""
-"Volg de prestaties van uw LifterLMS-cursus met uitgebreide analyses. Houd "
-"cursusweergaven, inschrijvingen, aankopen en omzet in de gaten om uw online "
-"leerbedrijf te optimaliseren."
+msgid "Track your LifterLMS course performance with comprehensive analytics. Monitor course views, enrollments, purchases, and revenue to optimize your online learning business."
+msgstr "Volg de prestaties van uw LifterLMS-cursus met uitgebreide analyses. Houd cursusweergaven, inschrijvingen, aankopen en omzet in de gaten om uw online leerbedrijf te optimaliseren."
 
 #: views/default/admin/addons-promo.php:424
 msgid "Course Views & Engagement Tracking"
@@ -3956,12 +3336,8 @@ msgid "No records found"
 msgstr "Geen records gevonden"
 
 #: views/default/admin/single-general-stats.php:33
-msgid ""
-"A session is a time period in which a user is actively engaged with your "
-"Website."
-msgstr ""
-"Een sessie is een tijdsperiode waarin een gebruiker actief betrokken is bij "
-"uw website."
+msgid "A session is a time period in which a user is actively engaged with your Website."
+msgstr "Een sessie is een tijdsperiode waarin een gebruiker actief betrokken is bij uw website."
 
 #: views/default/admin/single-general-stats.php:41
 msgid "Users, who complete a minimum one session on your website or content."
@@ -3972,25 +3348,16 @@ msgid "Page views"
 msgstr "Paginaweergaven"
 
 #: views/default/admin/single-general-stats.php:49
-msgid ""
-"Page Views are the total number of Page views, Viewed by visitors including "
-"repeated views."
-msgstr ""
-"Paginaweergaven zijn het totale aantal paginaweergaven, bekeken door "
-"bezoekers inclusief herhaalde weergaven."
+msgid "Page Views are the total number of Page views, Viewed by visitors including repeated views."
+msgstr "Paginaweergaven zijn het totale aantal paginaweergaven, bekeken door bezoekers inclusief herhaalde weergaven."
 
 #: views/default/admin/single-general-stats.php:54
 msgid "Avg. time on Page"
 msgstr "Gem. tijd op pagina"
 
 #: views/default/admin/single-general-stats.php:65
-msgid ""
-"Percentage of Single page visits (i.e Number of visits in which a visitor "
-"leaves your website from the landing page without browsing your website)."
-msgstr ""
-"Percentage van enkele pagina bezoeken (d.w.z. aantal bezoeken waarbij een "
-"bezoeker uw website verlaat vanaf de landingspagina zonder door uw website "
-"te browsen)."
+msgid "Percentage of Single page visits (i.e Number of visits in which a visitor leaves your website from the landing page without browsing your website)."
+msgstr "Percentage van enkele pagina bezoeken (d.w.z. aantal bezoeken waarbij een bezoeker uw website verlaat vanaf de landingspagina zonder door uw website te browsen)."
 
 #: views/default/admin/single-general-stats.php:71
 msgid "Did you know that Average Session Duration of this page is"
@@ -4038,50 +3405,46 @@ msgstr "Een kritisch bestand ontbreekt:"
 msgid "The Analytify plugin needs to be deactivated && re-installed."
 msgstr "De Analytify-plugin moet gedeactiveerd && opnieuw geïnstalleerd worden."
 
-#: wp-analytify.php:468
 #. translators: Nonce verification failed.
-msgid ""
-"Sorry, you are not allowed as nonce verification failed. %1$sClick here to "
-"return to the Dashboard%2$s."
-msgstr ""
-"Sorry, u bent niet toegestaan omdat de nonce verificatie is mislukt. "
-"%1$sKlik hier om terug te keren naar het Dashboard%2$s."
+#: wp-analytify.php:468
+msgid "Sorry, you are not allowed as nonce verification failed. %1$sClick here to return to the Dashboard%2$s."
+msgstr "Sorry, u bent niet toegestaan omdat de nonce verificatie is mislukt. %1$sKlik hier om terug te keren naar het Dashboard%2$s."
 
+#. translators: Tracking code comments.
 #: wp-analytify.php:592
 #: wp-analytify.php:753
-#. translators: Tracking code comments.
 msgid "%2$s This code is added by Analytify (%1$s) %4$s %3$s"
 msgstr "%2$s Deze code is toegevoegd door Analytify (%1$s) %4$s %3$s"
 
+#. translators: Tracking code comments.
 #: wp-analytify.php:727
 #: wp-analytify.php:820
-#. translators: Tracking code comments.
 msgid "%2$s This code is added by Analytify (%1$s) %3$s"
 msgstr "%2$s Deze code is toegevoegd door Analytify (%1$s) %3$s"
 
+#. translators: %1$s opening link tag, %2$s closing link tag
 #: wp-analytify.php:857
 #: wp-analytify.php:875
-#. translators: %1$s opening link tag, %2$s closing link tag
 msgid "%1$s Opt Out %2$s | "
 msgstr "%1$s Afmelden %2$s | "
 
-#: wp-analytify.php:882
 #. translators: %1$s opening link tag, %2$s closing link tag
+#: wp-analytify.php:882
 msgid "%1$s Opt In %2$s | "
 msgstr "%1$s Aanmelden %2$s | "
 
-#: wp-analytify.php:891
 #. translators: %1$s opening link tag, %2$s closing link tag
+#: wp-analytify.php:891
 msgid "%1$s Get Analytify Pro %2$s | "
 msgstr "%1$s Krijg Analytify Pro %2$s | "
 
-#: wp-analytify.php:899
 #. translators: %1$s opening link tag, %2$s closing link tag
+#: wp-analytify.php:899
 msgid "%1$s Settings %2$s"
 msgstr "%1$s Instellingen %2$s"
 
-#: wp-analytify.php:959
 #. translators: Premium features.
+#: wp-analytify.php:959
 msgid "%1$s Explore Premium Features %2$s"
 msgstr "%1$s Ontdek Premiumfuncties %2$s"
 
@@ -4133,8 +3496,8 @@ msgstr "GRATIS vs PRO"
 msgid "Analytify Promo"
 msgstr "Analytify Promo"
 
-#: wp-analytify.php:1406
 #. translators: Login again notice.
+#: wp-analytify.php:1406
 msgid "%1$s %2$s %3$s Authentication Cleared login again. %4$s %5$s %6$s"
 msgstr "%1$s %2$s %3$s Authenticatie gewist, log opnieuw in. %4$s %5$s %6$s"
 

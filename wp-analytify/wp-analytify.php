@@ -3,7 +3,7 @@
  * Plugin Name: Analytify Dashboard
  * Plugin URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=plugin-uri
  * Description: Analytify brings a brand new and modern feeling of Google Analytics superbly integrated within the WordPress.
- * Version: 9.0.1
+ * Version: 9.0.2
  * Author: Analytify
  * Author URI: https://analytify.io/?ref=27&utm_source=wp-org&utm_medium=plugin-header&utm_campaign=pro-upgrade&utm_content=author-uri
  * License: GPLv3
@@ -664,13 +664,12 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 
 			$js_location_logic = '';
 			if ( $exclude_params && '' !== $params_list ) {
-				$params_array = array_map( 'trim', explode( ',', $params_list ) );
-				$params_array = array_map( 'strtolower', $params_array );
-				$params_array = array_values( array_unique( array_filter( $params_array, 'strlen' ) ) );
-				$params_json  = wp_json_encode( $params_array );
+				$params_array = analytify_query_params_to_exclude_keys_array( $params_list );
+				if ( ! empty( $params_array ) ) {
+					$params_json = wp_json_encode( $params_array );
 
-				// Strip only query keys (case-insensitive); path and hash are not altered; no query string / repeated params are safe.
-				$js_location_logic = "
+					// Strip only query keys (case-insensitive); path and hash are not altered; no query string / repeated params are safe.
+					$js_location_logic = "
 			try {
 				var wa_loc = window.location.href;
 				var wa_url = new URL(wa_loc);
@@ -683,6 +682,7 @@ if ( ! class_exists( 'WP_Analytify' ) ) {
 				configuration.page_location = wa_url.toString();
 			} catch (e) {}
 				";
+				}
 			}
 
 			?>

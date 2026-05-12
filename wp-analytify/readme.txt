@@ -4,7 +4,7 @@ Donate link: https://paypal.me/Analytify
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 4.0
 Tested up to: 7.0
-Stable tag: 9.0.1
+Stable tag: 9.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,6 +302,10 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 
 == Changelog ==
+
+= 9.0.2 – 2026-05-12 =
+* Bug Fix: Resolved Dutch, French, and Spanish translation issues.
+* Enhancement: Refactored and optimized code for improved maintainability and performance.
 
 = 9.0.1 – 2026-05-01 =
 * Security: Bundled jsPDF and html2canvas locally for dashboard PDF exports; updated versions.
@@ -1181,7 +1185,7 @@ We listen to each of our users and are active (Monday to Friday) at the <a href=
 
 == Upgrade Notice ==
 
-= 9.0.1 =
+= 9.0.2 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
 
 == Notes ==

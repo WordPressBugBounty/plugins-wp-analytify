@@ -158,11 +158,23 @@ if ( isset( $_POST['background_sync'] ) && 'true' === $_POST['background_sync'] 
 	);
 
 	if ( is_wp_error( $response ) ) {
-		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug view only.
-		error_log( 'Error sending data: ' . $response->get_error_message() );
-	} else {
-		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug view only.
-		error_log( 'Log sent successfully' . wp_json_encode( $data ) );
+		if ( function_exists( 'analytify_log' ) ) {
+			analytify_log(
+				'error',
+				'WPB debug: background sync request failed.',
+				array(
+					'error_message' => $response->get_error_message(),
+				)
+			);
+		}
+	} elseif ( function_exists( 'analytify_log' ) ) {
+		analytify_log(
+			'info',
+			'WPB debug: background sync request completed.',
+			array(
+				'response_code' => wp_remote_retrieve_response_code( $response ),
+			)
+		);
 	}
 }
 

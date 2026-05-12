@@ -134,7 +134,20 @@ class ANALYTIFY_Logger implements ANALYTIFY_Logger_Interface {
 			$message   = apply_filters( 'analytify_logger_log_message', $message, $level, $context );
 
 			foreach ( $this->handlers as $handler ) {
-				$handler->handle( $timestamp, $level, $message, $context );
+				try {
+					$handler->handle( $timestamp, $level, $message, $context );
+				} catch ( \Throwable $e ) {
+					/**
+					 * Fires when a log handler throws. Failures are isolated so other handlers still run
+					 * and the request is not terminated by logging.
+					 *
+					 * @since 9.0.1
+					 *
+					 * @param \Throwable $e       The error or exception.
+					 * @param object     $handler Handler instance.
+					 */
+					do_action( 'analytify_log_handler_failed', $e, $handler );
+				}
 			}
 		}
 	}

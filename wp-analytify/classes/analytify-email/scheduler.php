@@ -471,7 +471,7 @@ trait Analytify_Email_Scheduler {
 			$week_raw   = isset( $time_settings['week'] ) ? $time_settings['week'] : '';
 			$month_raw  = isset( $time_settings['month'] ) ? $time_settings['month'] : '';
 			$week_date  = ( $week_raw && 'false' !== $week_raw ) ? $week_raw : '';
-			$month_date = ( $month_raw && 'false' !== $month_raw ) ? $month_raw : '';
+			$month_date = ( $month_raw && 'false' !== $month_raw ) ? trim( (string) $month_raw ) : '';
 
 			if ( isset( $time_settings['yesterday'] ) && 'enabled' === $time_settings['yesterday'] ) {
 				$when_to_send_email[] = 'yesterday';
@@ -490,9 +490,35 @@ trait Analytify_Email_Scheduler {
 			$month_date = false;
 		}
 
-		$current_day       = gmdate( 'l' ); // Sunday through Saturday.
-		$current_date      = gmdate( 'j' ); // Day of the month without leading zeros.
-		$last_day_of_month = gmdate( 't' ); // Number of days in the given month.
+		/**
+		 * PHPUnit may set `$GLOBALS['analytify_tests_email_schedule_clock']` to an array with optional
+		 * keys `l` (weekday), `j` (day of month), `t` (days in month) before calling schedule logic.
+		 *
+		 * Filters the calendar values used for weekly / monthly schedule matching in email reports.
+		 *
+		 * Return an array with optional keys: `l` weekday name (e.g. Wednesday), `j` day of month (1-31),
+		 * `t` number of days in the month. Omit a key to keep the live `gmdate()` value for that part.
+		 *
+		 * @since 9.0.1
+		 *
+		 * @param array<string, string|int>|null $clock Optional clock override.
+		 */
+		$clock = null;
+		if ( isset( $GLOBALS['analytify_tests_email_schedule_clock'] ) && is_array( $GLOBALS['analytify_tests_email_schedule_clock'] ) ) {
+			$clock = $GLOBALS['analytify_tests_email_schedule_clock'];
+		}
+		if ( null === $clock ) {
+			$clock = apply_filters( 'analytify_email_schedule_clock', null );
+		}
+		if ( is_array( $clock ) ) {
+			$current_day       = isset( $clock['l'] ) ? (string) $clock['l'] : gmdate( 'l' );
+			$current_date      = isset( $clock['j'] ) ? (string) (int) $clock['j'] : gmdate( 'j' );
+			$last_day_of_month = isset( $clock['t'] ) ? (string) (int) $clock['t'] : gmdate( 't' );
+		} else {
+			$current_day       = gmdate( 'l' ); // Sunday through Saturday.
+			$current_date      = gmdate( 'j' ); // Day of the month without leading zeros.
+			$last_day_of_month = gmdate( 't' ); // Number of days in the given month.
+		}
 
 		if ( $week_date && $current_day === $week_date ) {
 			$when_to_send_email[] = 'week';
@@ -500,7 +526,8 @@ trait Analytify_Email_Scheduler {
 
 		// Monthly: specific calendar day, numeric last-day match, or Pro "Last Day" option.
 		if ( $month_date ) {
-			if ( 'last_day' === $month_date ) {
+			$is_last_day_token = (bool) preg_match( '/^last[_\s-]?day$/i', (string) $month_date );
+			if ( $is_last_day_token ) {
 				if ( (string) $current_date === (string) $last_day_of_month ) {
 					$when_to_send_email[] = 'month';
 				}

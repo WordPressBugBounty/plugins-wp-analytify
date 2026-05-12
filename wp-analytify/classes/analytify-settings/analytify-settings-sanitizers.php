@@ -38,3 +38,26 @@ function analytify_sanitize_query_params_to_exclude( $value ) {
 	$keep = array_unique( $keep );
 	return implode( ', ', $keep );
 }
+
+/**
+ * Normalized query-parameter keys for inline gtag page_location stripping.
+ *
+ * Uses the same rules as {@see analytify_sanitize_query_params_to_exclude()} then returns
+ * a deduplicated lowercase list suitable for `wp_json_encode()` into the tracking script.
+ *
+ * @since 9.0.0
+ * @param mixed $value Raw option value (comma-separated string from settings).
+ * @return list<string>
+ */
+function analytify_query_params_to_exclude_keys_array( $value ) {
+	if ( ! is_string( $value ) ) {
+		return array();
+	}
+	$sanitized = analytify_sanitize_query_params_to_exclude( $value );
+	if ( '' === $sanitized ) {
+		return array();
+	}
+	$parts = array_map( 'trim', explode( ',', $sanitized ) );
+	$parts = array_filter( array_map( 'strtolower', $parts ), 'strlen' );
+	return array_values( array_unique( $parts ) );
+}

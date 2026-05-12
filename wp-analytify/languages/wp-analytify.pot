@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: Analytify Dashboard 9.0.0\n"
+"Project-Id-Version: Analytify Dashboard 9.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-analytify\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-28T09:33:40+00:00\n"
+"POT-Creation-Date: 2026-05-11T11:43:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wp-analytify\n"
@@ -439,7 +439,7 @@ msgid "Top Cities"
 msgstr ""
 
 #: classes/analytify-rest/endpoints-dimensions.php:162
-#: classes/analytify-settings/fields.php:126
+#: classes/analytify-settings/fields.php:163
 #: inc/analytics-dashboard.php:189
 msgid "Geographic Stats"
 msgstr ""
@@ -736,324 +736,308 @@ msgstr ""
 msgid "GA Tracking ID"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:39
-msgid "Manually add the Tracking ID that looks a like"
+#. translators: %1$s UA example in code, %2$s G example in code, %3$s line break with trailing space, %4$s gtag label in code.
+#: classes/analytify-settings/fields.php:41
+msgid "Manually add the Tracking ID that looks like %1$s or %2$s%3$sOur default tracking method is newly recommended %4$s by Google Analytics."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:39
-msgid "Our default tracking method is newly recommended"
-msgstr ""
-
-#: classes/analytify-settings/fields.php:39
-msgid "Global Site Tag (gtag.js)"
-msgstr ""
-
-#: classes/analytify-settings/fields.php:39
-msgid "by Google Analytics."
-msgstr ""
-
-#: classes/analytify-settings/fields.php:47
+#: classes/analytify-settings/fields.php:58
 msgid "Install Google Analytics tracking code"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:48
+#: classes/analytify-settings/fields.php:59
 msgid "Insert Google Analytics (GA) JavaScript code between the HEADER tags in your website. Uncheck this option if you have already inserted the GA code."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:54
+#: classes/analytify-settings/fields.php:65
 msgid "Exclude users from tracking"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:55
+#: classes/analytify-settings/fields.php:66
 msgid "Don't insert the tracking code for the above user roles."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:62
+#: classes/analytify-settings/fields.php:73
 msgid "Profile for posts (Backend/Front-end)"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:63
-msgid "Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics. <br /><strong>Note:</strong> GA4 properties from the above list."
+#. translators: %1$s opening line break and strong, %2$s closing strong and space before GA4 sentence.
+#: classes/analytify-settings/fields.php:76
+msgid "Select your Google Analytics website profile/stream for Analytify front-end/back-end statistics.%1$sNote:%2$s GA4 properties from the above list."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:71
+#: classes/analytify-settings/fields.php:90
 msgid "Profile for dashboard"
 msgstr ""
 
-#. translators: %s: documentation link
-#: classes/analytify-settings/fields.php:74
-msgid "Select your Google Analytics website profile/stream for Analytify dashboard statistics. Note: Not seeing new GA4 properties in the above list? See %s."
+#. translators: %1$s, %2$s: documentation link open and close around link text.
+#: classes/analytify-settings/fields.php:93
+msgid "Select your Google Analytics website profile/stream for Analytify dashboard statistics. Note: Not seeing new GA4 properties in the above list? See %1$swhy and how to fix it%2$s."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:79
-msgid "why and how to fix it"
-msgstr ""
-
-#: classes/analytify-settings/fields.php:88
+#: classes/analytify-settings/fields.php:106
 msgid "Hide profiles list"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:89
+#: classes/analytify-settings/fields.php:107
 msgid "Hide the selection of profiles for the back-end/front-end dashboard and posts. You might want to do this so clients cannot see other profiles available."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:96
+#: classes/analytify-settings/fields.php:114
 msgid "Enable analytics under posts/pages (wp-admin)"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:97
+#: classes/analytify-settings/fields.php:115
 msgid "Disable if you don't want to load statistics on all pages by default."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:102
+#: classes/analytify-settings/fields.php:120
 msgid "Display analytics to roles (posts & pages)"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:103
+#: classes/analytify-settings/fields.php:121
 msgid "Show analytics under posts and pages to the above selected user roles only."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:110
+#: classes/analytify-settings/fields.php:128
 msgid "Analytics on post types"
 msgstr ""
 
-#. translators: %1$s is the opening link tag, %1$s is the closing link tag.
-#: classes/analytify-settings/fields.php:112
+#: classes/analytify-settings/fields.php:130
 msgid "Show Analytics under the above post types only"
 msgstr ""
 
-#. translators: %1$s is the opening link tag, %1$s is the closing link tag.
-#: classes/analytify-settings/fields.php:112
-msgid "Show analytics below these post types only. Buy %1$sPremium%1$s version for Custom Post Types."
+#. translators: %1$s, %2$s: Premium upsell link open and close.
+#: classes/analytify-settings/fields.php:133
+msgid "Show analytics below these post types only. Buy %1$sPremium%2$s version for Custom Post Types."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:119
+#: classes/analytify-settings/fields.php:146
 msgid "Edit posts/pages analytics panels"
 msgstr ""
 
-#. translators: %1$s is the opening link tag, %2$s is the closing link tag.
-#: classes/analytify-settings/fields.php:121
+#: classes/analytify-settings/fields.php:148
 msgid "Select which statistic panels you want to display under posts/pages."
 msgstr ""
 
-#. translators: %1$s is the opening link tag, %2$s is the closing link tag.
-#: classes/analytify-settings/fields.php:121
+#. translators: %1$s, %2$s: Premium upsell link open and close.
+#: classes/analytify-settings/fields.php:151
 msgid "Select which statistic panels you want to display under posts/pages. Only \"General Stats\" will visible in Free Version. Buy %1$sPremium%2$s version to see the full statistics."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:125
+#: classes/analytify-settings/fields.php:162
 msgid "General Stats"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:127
+#: classes/analytify-settings/fields.php:164
 #: inc/analytics-dashboard.php:225
 msgid "System Stats"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:128
+#: classes/analytify-settings/fields.php:165
 msgid "Keywords Stats"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:129
+#: classes/analytify-settings/fields.php:166
 msgid "Social Media Stats"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:130
+#: classes/analytify-settings/fields.php:167
 msgid "Referrers Stats"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:131
-#: classes/analytify-settings/fields.php:212
+#: classes/analytify-settings/fields.php:168
+#: classes/analytify-settings/fields.php:272
 msgid "Scroll Depth"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:132
-#: classes/analytify-settings/fields.php:218
+#: classes/analytify-settings/fields.php:169
+#: classes/analytify-settings/fields.php:278
 #: inc/analytify-go-pro.php:384
 msgid "Video Tracking"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:133
+#: classes/analytify-settings/fields.php:170
 msgid "Entrance Exits Stats"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:138
+#: classes/analytify-settings/fields.php:175
 msgid "Exclude analytics on specific pages"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:139
+#: classes/analytify-settings/fields.php:176
 msgid "Enter a comma-separated list of the post/page ID's you do not want to display analytics for. For example: 21,44,66"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:147
+#: classes/analytify-settings/fields.php:184
 msgid "Data Streams"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:148
+#: classes/analytify-settings/fields.php:185
 msgid "Choose GA4 data/web stream to use for website tracking."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:154
+#: classes/analytify-settings/fields.php:191
 msgid "Measurement Protocol Secret"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:155
+#: classes/analytify-settings/fields.php:192
 msgid "Analytify creates measurement protocol secret itself, however you can also create your own secret key."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:161
+#: classes/analytify-settings/fields.php:198
 msgid "Setup Custom API keys?"
 msgstr ""
 
-#. translators: %1$s is line break, %2$s is Google Console link, %3$s is line break, %4$s is video guide link, %5$s is closing link tag.
-#: classes/analytify-settings/fields.php:163
-msgid "It is highly recommended by Google to use your own API keys. %1$sYou need to create a Project in Google %2$s. %3$sHere is a short %4$svideo guide%5$s to get your own ClientID, Client Secret and Redirect URL and enter them in below inputs."
+#. translators: %1$s line break (reused). %2$s Google Console link open, %3$s closing </a> (reused). %4$s video guide link open.
+#: classes/analytify-settings/fields.php:201
+msgid "It is highly recommended by Google to use your own API keys.%1$s You need to create a Project in Google %2$sConsole%3$s.%1$s Here is a short %4$svideo guide%3$s to get your own Client ID, Client Secret and Redirect URL and enter them in the inputs below."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:169
+#: classes/analytify-settings/fields.php:216
 msgid "Client ID"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:170
+#: classes/analytify-settings/fields.php:217
 msgid "Your Client ID"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:177
+#: classes/analytify-settings/fields.php:224
 msgid "Client secret"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:178
+#: classes/analytify-settings/fields.php:225
 msgid "Your Client Secret"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:185
+#: classes/analytify-settings/fields.php:232
 msgid "Redirect URL"
 msgstr ""
 
-#. translators: %1$s is the admin URL.
-#: classes/analytify-settings/fields.php:187
+#. translators: %1$s bold block containing the admin settings URL as text.
+#: classes/analytify-settings/fields.php:235
 msgid "( Redirect URL is very important when you are using your own keys. Paste this into the above field: %1$s )"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:199
+#: classes/analytify-settings/fields.php:252
 msgid "Host Google Analytics Locally"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:200
+#: classes/analytify-settings/fields.php:253
 msgid "Hosting Google Analytics locally may improve your site speed and other core web vitals."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:205
+#: classes/analytify-settings/fields.php:258
 msgid "Track User ID"
 msgstr ""
 
-#. translators: %1$s is the opening link tag, %2$s is the closing link tag.
-#: classes/analytify-settings/fields.php:207
+#. translators: %1$s, %2$s: Google help link open and close around "here".
+#: classes/analytify-settings/fields.php:261
 msgid "Detailed information about Track User ID in Google Analytics can be found %1$shere%2$s."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:213
+#: classes/analytify-settings/fields.php:273
 msgid "Track page scroll depth percentage. This will help you figure out the most highlighted area of the page. Percentage events are fired at the 25%, 50%, 75%, and 100% scrolling points"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:219
+#: classes/analytify-settings/fields.php:279
 msgid "Track embedded video interactions such as play, pause, and completion. This will help you understand user engagement with video content."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:224
+#: classes/analytify-settings/fields.php:284
 msgid "Demographic & Interest Tracking"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:225
+#: classes/analytify-settings/fields.php:285
 msgid "This allows you to view extra dimensions about users: Age, gender, affinity categories, in-market segments, etc."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:230
+#: classes/analytify-settings/fields.php:290
 msgid "Page Not Found (404)"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:231
+#: classes/analytify-settings/fields.php:291
 msgid "Track all 404 pages."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:236
+#: classes/analytify-settings/fields.php:296
 msgid "JavaScript Errors"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:237
+#: classes/analytify-settings/fields.php:297
 msgid "Track all JavaScript errors."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:242
+#: classes/analytify-settings/fields.php:302
 msgid "AJAX Errors"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:243
+#: classes/analytify-settings/fields.php:303
 msgid "Track all AJAX errors."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:248
+#: classes/analytify-settings/fields.php:308
 msgid "Setup Cross-domain Tracking"
 msgstr ""
 
-#. translators: %1$s is the code tag, %2$s is the opening link tag, %3$s is the closing link tag.
-#: classes/analytify-settings/fields.php:250
+#. translators: %1$s code sample, %2$s and %3$s guide link open and close.
+#: classes/analytify-settings/fields.php:311
 msgid "This will add the %1$s tag to your tracking code. Read this %2$sguide%3$s for more information."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:256
+#: classes/analytify-settings/fields.php:324
 msgid "Domain"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:257
+#: classes/analytify-settings/fields.php:325
 msgid "All the linked domains separated by a comma"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:270
+#: classes/analytify-settings/fields.php:338
 msgid "Exclude URL Query Parameters"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:271
+#: classes/analytify-settings/fields.php:339
 msgid "Filter out specific URL query parameters from being tracked inside Google Analytics."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:277
+#: classes/analytify-settings/fields.php:345
 msgid "Exclude Query Parameters"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:278
+#: classes/analytify-settings/fields.php:346
 msgid "Enter comma-separated query parameters to exclude (e.g. fbclid, ref). Only letters, numbers, underscores and hyphens are allowed."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:285
+#: classes/analytify-settings/fields.php:353
 msgid "Reauthentication Email Alert"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:286
+#: classes/analytify-settings/fields.php:354
 msgid "Get an email notification when your site needs you to sign in again due to a Google error or revoked refresh token."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:292
+#: classes/analytify-settings/fields.php:360
 msgid "Remove All Data On Uninstall"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:293
+#: classes/analytify-settings/fields.php:361
 msgid "Upon uninstall, this will remove all defined settings and their data from your website and reset them to default."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:298
+#: classes/analytify-settings/fields.php:366
 msgid "Custom JavaScript Code"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:299
+#: classes/analytify-settings/fields.php:367
 msgid "This will add inline tracking code before sending the pageview hit to Google Analytics."
 msgstr ""
 
-#: classes/analytify-settings/fields.php:304
+#: classes/analytify-settings/fields.php:372
 msgid "Custom CSS Code"
 msgstr ""
 
-#: classes/analytify-settings/fields.php:305
+#: classes/analytify-settings/fields.php:373
 msgid "This will add inline css code in admin dashboard pages of Analytify"
 msgstr ""
 
@@ -1763,13 +1747,13 @@ msgstr ""
 
 #: inc/admin-notices.php:204
 #: inc/ajax-traits/utility.php:27
-#: inc/ajax-traits/utility.php:429
-#: inc/ajax-traits/utility.php:442
-#: inc/ajax-traits/utility.php:455
+#: inc/ajax-traits/utility.php:477
 #: inc/ajax-traits/utility.php:490
-#: inc/ajax-traits/utility.php:517
-#: inc/ajax-traits/utility.php:544
-#: inc/ajax-traits/utility.php:559
+#: inc/ajax-traits/utility.php:503
+#: inc/ajax-traits/utility.php:538
+#: inc/ajax-traits/utility.php:565
+#: inc/ajax-traits/utility.php:592
+#: inc/ajax-traits/utility.php:608
 #: inc/core-traits/profile-helpers.php:174
 msgid "You do not have permission to perform this action."
 msgstr ""
@@ -1789,7 +1773,7 @@ msgstr ""
 msgid "rated"
 msgstr ""
 
-#: inc/ajax-traits/utility.php:606
+#: inc/ajax-traits/utility.php:660
 msgid "No cheating, huh!"
 msgstr ""
 
@@ -2764,7 +2748,7 @@ msgid "Rate 5 Stars"
 msgstr ""
 
 #: inc/scripts-styles.php:124
-#: inc/scripts-styles.php:277
+#: inc/scripts-styles.php:297
 msgid "No activity during this period."
 msgstr ""
 
@@ -2772,147 +2756,147 @@ msgstr ""
 msgid "Something went wrong. Please try again later single."
 msgstr ""
 
-#: inc/scripts-styles.php:181
+#: inc/scripts-styles.php:203
 msgid "Previous Month"
 msgstr ""
 
-#: inc/scripts-styles.php:182
+#: inc/scripts-styles.php:204
 msgid "Next Month"
 msgstr ""
 
-#: inc/scripts-styles.php:184
+#: inc/scripts-styles.php:206
 msgid "January"
 msgstr ""
 
-#: inc/scripts-styles.php:185
+#: inc/scripts-styles.php:207
 msgid "February"
 msgstr ""
 
-#: inc/scripts-styles.php:186
+#: inc/scripts-styles.php:208
 msgid "March"
 msgstr ""
 
-#: inc/scripts-styles.php:187
+#: inc/scripts-styles.php:209
 msgid "April"
 msgstr ""
 
-#: inc/scripts-styles.php:188
+#: inc/scripts-styles.php:210
 msgid "May"
 msgstr ""
 
-#: inc/scripts-styles.php:189
+#: inc/scripts-styles.php:211
 msgid "June"
 msgstr ""
 
-#: inc/scripts-styles.php:190
+#: inc/scripts-styles.php:212
 msgid "July"
 msgstr ""
 
-#: inc/scripts-styles.php:191
+#: inc/scripts-styles.php:213
 msgid "August"
 msgstr ""
 
-#: inc/scripts-styles.php:192
+#: inc/scripts-styles.php:214
 msgid "September"
 msgstr ""
 
-#: inc/scripts-styles.php:193
+#: inc/scripts-styles.php:215
 msgid "October"
 msgstr ""
 
-#: inc/scripts-styles.php:194
+#: inc/scripts-styles.php:216
 msgid "November"
 msgstr ""
 
-#: inc/scripts-styles.php:195
+#: inc/scripts-styles.php:217
 msgid "December"
 msgstr ""
 
-#: inc/scripts-styles.php:198
+#: inc/scripts-styles.php:220
 msgid "Sunday"
 msgstr ""
 
-#: inc/scripts-styles.php:199
+#: inc/scripts-styles.php:221
 msgid "Monday"
 msgstr ""
 
-#: inc/scripts-styles.php:200
+#: inc/scripts-styles.php:222
 msgid "Tuesday"
 msgstr ""
 
-#: inc/scripts-styles.php:201
+#: inc/scripts-styles.php:223
 msgid "Wednesday"
 msgstr ""
 
-#: inc/scripts-styles.php:202
+#: inc/scripts-styles.php:224
 msgid "Thursday"
 msgstr ""
 
-#: inc/scripts-styles.php:203
+#: inc/scripts-styles.php:225
 msgid "Friday"
 msgstr ""
 
-#: inc/scripts-styles.php:204
+#: inc/scripts-styles.php:226
 msgid "Saturday"
 msgstr ""
 
-#: inc/scripts-styles.php:207
+#: inc/scripts-styles.php:229
 msgid "Sun"
 msgstr ""
 
-#: inc/scripts-styles.php:208
+#: inc/scripts-styles.php:230
 msgid "Mon"
 msgstr ""
 
-#: inc/scripts-styles.php:209
+#: inc/scripts-styles.php:231
 msgid "Tue"
 msgstr ""
 
-#: inc/scripts-styles.php:210
+#: inc/scripts-styles.php:232
 msgid "Wed"
 msgstr ""
 
-#: inc/scripts-styles.php:211
+#: inc/scripts-styles.php:233
 msgid "Thu"
 msgstr ""
 
-#: inc/scripts-styles.php:212
+#: inc/scripts-styles.php:234
 msgid "Fri"
 msgstr ""
 
-#: inc/scripts-styles.php:213
+#: inc/scripts-styles.php:235
 msgid "Sat"
 msgstr ""
 
-#: inc/scripts-styles.php:278
+#: inc/scripts-styles.php:298
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: inc/scripts-styles.php:294
+#: inc/scripts-styles.php:314
 msgid "Failed to copy to clipboard. Please copy manually."
 msgstr ""
 
-#: inc/scripts-styles.php:295
+#: inc/scripts-styles.php:315
 msgid "Copied!"
 msgstr ""
 
-#: inc/scripts-styles.php:296
+#: inc/scripts-styles.php:316
 msgid "No diagnostic information available to copy. Please load the diagnostic log first."
 msgstr ""
 
-#: inc/scripts-styles.php:412
+#: inc/scripts-styles.php:432
 msgid "Please enter your license key."
 msgstr ""
 
-#: inc/scripts-styles.php:413
+#: inc/scripts-styles.php:433
 msgid "A problem occurred when trying to register the license, please try again."
 msgstr ""
 
-#: inc/scripts-styles.php:414
+#: inc/scripts-styles.php:434
 msgid "A problem occurred when trying to check the license, please try again."
 msgstr ""
 
-#: inc/scripts-styles.php:415
+#: inc/scripts-styles.php:435
 msgid "Your license has been activated. You will now receive automatic updates and access to email support."
 msgstr ""
 
@@ -2929,31 +2913,31 @@ msgstr ""
 msgid "Debug mode is not enabled."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:218
+#: lib/wpb-sdk/views/wpb-debug.php:230
 msgid "Successfully set the option."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:219
+#: lib/wpb-sdk/views/wpb-debug.php:231
 msgid "Option not set. Name must start with wpb_."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:231
+#: lib/wpb-sdk/views/wpb-debug.php:243
 msgid "Admin-only debug page."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:232
+#: lib/wpb-sdk/views/wpb-debug.php:244
 msgid "This page shows sensitive data (keys, paths, user info). Do not share screenshots or leave unattended."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:235
+#: lib/wpb-sdk/views/wpb-debug.php:247
 msgid "Actions"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:292
+#: lib/wpb-sdk/views/wpb-debug.php:304
 msgid "Set DB Option"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-debug.php:296
+#: lib/wpb-sdk/views/wpb-debug.php:308
 msgid "Option Name (must start with wpb_):"
 msgstr ""
 
